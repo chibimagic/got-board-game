@@ -1,5 +1,4 @@
 require_relative 'player.rb'
-require_relative 'house.rb'
 require_relative 'deck.rb'
 
 class Game
@@ -36,7 +35,7 @@ class Game
 
   def validate_houses(players)
     available_houses = HouseDeck.new
-    available_houses.deck.each do | house |
+    available_houses.cards.each do | house |
       selected_by_players = players.find_all { |player| player.house.class == house.class }
       if selected_by_players.length > 1
         raise 'More than one player has chosen ' + house.to_s + ': ' + selected_by_players.join(', ')
