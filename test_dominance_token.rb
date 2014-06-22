@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative 'dominance_token.rb'
+require_relative 'game.rb'
 
 class TestGame < Test::Unit::TestCase
   def test_usable_token

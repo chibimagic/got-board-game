@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative 'deck.rb'
+require_relative 'game.rb'
 
 class TestHouseCard < Test::Unit::TestCase
   DECK_CLASSES = [HouseStarkDeck, HouseLannisterDeck, HouseBaratheonDeck, HouseGreyjoyDeck, HouseTyrellDeck, HouseMartellDeck]

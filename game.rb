@@ -1,5 +1,13 @@
 require_relative 'player.rb'
 require_relative 'deck.rb'
+require_relative 'house.rb'
+require_relative 'house_deck.rb'
+require_relative 'house_card.rb'
+require_relative 'house_card_deck.rb'
+require_relative 'wildling_card.rb'
+require_relative 'wildling_deck.rb'
+require_relative 'westeros_deck.rb'
+require_relative 'dominance_token.rb'
 
 class Game
   attr_reader \

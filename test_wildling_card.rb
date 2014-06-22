@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative 'deck.rb'
+require_relative 'game.rb'
 
 class TestWildlingCard < Test::Unit::TestCase
   # Every card has title, lowest bidder text, everyone else text, and highest bidder text
