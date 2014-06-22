@@ -4,7 +4,8 @@ require_relative 'deck.rb'
 
 class Game
   attr_reader \
-    :players
+    :players,
+    :wildling_track
 
   def initialize(players)
     if players.length < 3 || players.length > 6
@@ -14,7 +15,9 @@ class Game
     validate_houses(players)
 
     @players = players
+    @wildling_track = 2
 
+    @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new
     @westeros_deck_ii = WesterosDeckII.new
     @westeros_deck_iii = WesterosDeckIII.new

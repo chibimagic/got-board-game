@@ -24,6 +24,9 @@ class HouseDeck < PublicDeck
   ]
 end
 
+class WildlingDeck < Deck
+end
+
 class WesterosDeck < Deck
 end
 
