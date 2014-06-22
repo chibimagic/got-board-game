@@ -14,6 +14,10 @@ class Game
     validate_houses(players)
 
     @players = players
+
+    @westeros_deck_i = WesterosDeckI.new
+    @westeros_deck_ii = WesterosDeckII.new
+    @westeros_deck_iii = WesterosDeckIII.new
   end
 
   def validate_houses(players)
