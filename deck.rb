@@ -1,5 +1,6 @@
 require_relative 'house.rb'
 require_relative 'house_card.rb'
+require_relative 'wildling_card.rb'
 
 class Deck
   STARTING_CARD_CLASSES = []
@@ -10,13 +11,52 @@ class Deck
       @cards.push(card_class.new)
     end
   end
+
+  def cards_remaining
+    @cards.length
+  end
 end
 
-class PublicDeck < Deck
-  attr_reader :cards
+module PublicDeck
+  def cards
+    @cards
+  end
 end
 
-class HouseDeck < PublicDeck
+module DrawFromTopDeck
+  def draw_from_top
+    @cards.shift
+  end
+end
+
+module DropFromBottomDeck
+  def draw_from_bottom
+    @cards.pop
+  end
+end
+
+module PlaceAtTopDeck
+  def place_at_top(card)
+    @cards.unshift(card)
+  end
+end
+
+module PlaceAtBottomDeck
+  def place_at_bottom(card)
+    @cards.push(card)
+  end
+end
+
+class RandomDeck < Deck
+  def initialize
+    super
+    @cards.shuffle!
+  end
+end
+
+class HouseDeck < Deck
+  include PublicDeck
+
   STARTING_CARD_CLASSES = [
     HouseStark,
     HouseLannister,
@@ -27,7 +67,8 @@ class HouseDeck < PublicDeck
   ]
 end
 
-class HouseCardDeck < PublicDeck
+class HouseCardDeck < Deck
+  include PublicDeck
 end
 
 class HouseStarkDeck < HouseCardDeck
@@ -102,10 +143,25 @@ class HouseMartellDeck < HouseCardDeck
   ]
 end
 
-class WildlingDeck < Deck
+class WildlingDeck < RandomDeck
+  include DrawFromTopDeck
+  include PlaceAtTopDeck
+  include PlaceAtBottomDeck
+
+  STARTING_CARD_CLASSES = [
+    AKingBeyondTheWall,
+    CrowKillers,
+    MammothRiders,
+    MassingOnTheMilkwater,
+    PreemptiveRaid,
+    RattleshirtsRaiders,
+    SilenceAtTheWall,
+    SkinchangerScout,
+    TheHordeDescends
+  ]
 end
 
-class WesterosDeck < Deck
+class WesterosDeck < RandomDeck
 end
 
 class WesterosDeckI < WesterosDeck
