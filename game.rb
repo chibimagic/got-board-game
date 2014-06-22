@@ -8,6 +8,8 @@ require_relative 'wildling_card.rb'
 require_relative 'wildling_deck.rb'
 require_relative 'westeros_deck.rb'
 require_relative 'dominance_token.rb'
+require_relative 'area.rb'
+require_relative 'map.rb'
 
 class Game
   attr_reader \
@@ -30,6 +32,7 @@ class Game
     validate_houses(players)
 
     @players = players
+    @map = Map.new
     @wildling_track = 2
     @game_round = 1
 
