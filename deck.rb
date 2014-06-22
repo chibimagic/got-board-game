@@ -1,5 +1,5 @@
 class Deck
-  STARTING_CARD_CLASSSES = []
+  STARTING_CARD_CLASSES = []
 
   def initialize
     @deck = []
