@@ -9,6 +9,17 @@ class TestGame < Test::Unit::TestCase
     assert_raise(RuntimeError) { Game.new([]) }
   end
 
+  def test_game_setup
+    players = [
+      Player.new('a', HouseStark),
+      Player.new('b', HouseLannister),
+      Player.new('c', HouseBaratheon)
+    ]
+    game = Game.new(players)
+    assert_equal(3, game.players.length)
+    assert_equal(1, game.game_round)
+  end
+
   def test_house_selection_valid
     data = [
       [HouseStark, HouseLannister, HouseBaratheon],

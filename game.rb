@@ -5,6 +5,7 @@ require_relative 'deck.rb'
 class Game
   attr_reader \
     :players,
+    :game_round,
     :wildling_track
 
   def initialize(players)
@@ -16,6 +17,7 @@ class Game
 
     @players = players
     @wildling_track = 2
+    @game_round = 1
 
     @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new
