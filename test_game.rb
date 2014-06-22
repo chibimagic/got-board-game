@@ -18,6 +18,7 @@ class TestGame < Test::Unit::TestCase
     game = Game.new(players)
     assert_equal(3, game.players.length)
     assert_equal(1, game.game_round)
+    assert_equal(:planning, game.round_phase)
   end
 
   def test_house_selection_valid

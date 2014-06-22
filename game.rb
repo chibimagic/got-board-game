@@ -6,7 +6,14 @@ class Game
   attr_reader \
     :players,
     :game_round,
+    :round_phase,
     :wildling_track
+
+  ROUND_PHASES = [
+    :westeros,
+    :planning,
+    :action
+  ]
 
   def initialize(players)
     if players.length < 3 || players.length > 6
@@ -23,6 +30,8 @@ class Game
     @westeros_deck_i = WesterosDeckI.new
     @westeros_deck_ii = WesterosDeckII.new
     @westeros_deck_iii = WesterosDeckIII.new
+
+    @round_phase = :planning
   end
 
   def validate_houses(players)
