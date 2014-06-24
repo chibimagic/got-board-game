@@ -35,4 +35,13 @@ class TestArea < Test::Unit::TestCase
     assert_equal(19, power, 'Map power count incorrect')
     assert_equal(8, ports, 'Map port count incorrect')
   end
+
+  def test_area_ports
+    @m.areas.each do |area|
+      if area.has_port?
+        assert_not_equal(nil, area.port_to, area.to_s + ' has an unconnected port')
+        assert_equal(SeaArea, area.port_to.superclass, area.to_s + ' has a port that doesn\'t connect to a sea area')
+      end
+    end
+  end
 end

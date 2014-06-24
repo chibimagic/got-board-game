@@ -5,6 +5,7 @@ class Area
   SUPPLY = 0
   POWER = 0
   PORT = false
+  PORT_TO = nil
 
   def to_s
     self.class::TITLE
@@ -29,12 +30,64 @@ class Area
   def has_port?
     self.class::PORT
   end
+
+  def port_to
+    self.class::PORT_TO
+  end
+end
+
+class SeaArea < Area
 end
 
 class LandArea < Area
 end
 
-class SeaArea < Area
+class BayOfIce < SeaArea
+  TITLE = 'Bay of Ice'
+end
+
+class BlackwaterBay < SeaArea
+  TITLE = 'Blackwater Bay'
+end
+
+class EastSummerSea < SeaArea
+  TITLE = 'East Summer Sea'
+end
+
+class IronmansBay < SeaArea
+  TITLE = 'Ironman\'s Bay'
+end
+
+class RedwyneStraits < SeaArea
+  TITLE = 'Redwyne Straits'
+end
+
+class SeaOfDorne < SeaArea
+  TITLE = 'Sea of Dorne'
+end
+
+class ShipbreakerBay < SeaArea
+  TITLE = 'Shipbreaker Bay'
+end
+
+class SunsetSea < SeaArea
+  TITLE = 'Sunset Sea'
+end
+
+class TheGoldenSound < SeaArea
+  TITLE = 'The Golden Sound'
+end
+
+class TheNarrowSea < SeaArea
+  TITLE = 'The Narrow Sea'
+end
+
+class TheShiveringSea < SeaArea
+  TITLE = 'The Shivering Sea'
+end
+
+class WestSummerSea < SeaArea
+  TITLE = 'West Summer Sea'
 end
 
 class Blackwater < LandArea
@@ -63,6 +116,7 @@ class Dragonstone < LandArea
   SUPPLY = 1
   POWER = 1
   PORT = true
+  PORT_TO = ShipbreakerBay
 end
 
 class FlintsFinger < LandArea
@@ -109,6 +163,7 @@ class Lannisport < LandArea
   STRONGHOLD = true
   SUPPLY = 2
   PORT = true
+  PORT_TO = TheGoldenSound
 end
 
 class MoatCalin < LandArea
@@ -120,6 +175,7 @@ class Oldtown < LandArea
   TITLE = 'Oldtown'
   STRONGHOLD = true
   PORT = true
+  PORT_TO = RedwyneStraits
 end
 
 class PrincesPass < LandArea
@@ -134,6 +190,7 @@ class Pyke < LandArea
   SUPPLY = 1
   POWER = 1
   PORT = true
+  PORT_TO = IronmansBay
 end
 
 class Riverrun < LandArea
@@ -175,6 +232,7 @@ class StormsEnd < LandArea
   TITLE = 'Storm\'s End'
   CASTLE = true
   PORT = true
+  PORT_TO = ShipbreakerBay
 end
 
 class Sunspear < LandArea
@@ -183,6 +241,7 @@ class Sunspear < LandArea
   SUPPLY = 1
   POWER = 1
   PORT = true
+  PORT_TO = EastSummerSea
 end
 
 class TheArbor < LandArea
@@ -236,6 +295,7 @@ class WhiteHarbor < LandArea
   TITLE = 'White Harbor'
   CASTLE = true
   PORT = true
+  PORT_TO = TheNarrowSea
 end
 
 class WidowsWatch < LandArea
@@ -249,57 +309,10 @@ class Winterfell < LandArea
   SUPPLY = 1
   POWER = 1
   PORT = true
+  PORT_TO = BayOfIce
 end
 
 class Yronwood < LandArea
   TITLE = 'Yronwood'
   CASTLE = true
-end
-
-class BayOfIce < SeaArea
-  TITLE = 'Bay of Ice'
-end
-
-class BlackwaterBay < SeaArea
-  TITLE = 'Blackwater Bay'
-end
-
-class EastSummerSea < SeaArea
-  TITLE = 'East Summer Sea'
-end
-
-class IronmansBay < SeaArea
-  TITLE = 'Ironman\'s Bay'
-end
-
-class RedwyneStraits < SeaArea
-  TITLE = 'Redwyne Straits'
-end
-
-class SeaOfDorne < SeaArea
-  TITLE = 'Sea of Dorne'
-end
-
-class ShipbreakerBay < SeaArea
-  TITLE = 'Shipbreaker Bay'
-end
-
-class SunsetSea < SeaArea
-  TITLE = 'Sunset Sea'
-end
-
-class TheGoldenSound < SeaArea
-  TITLE = 'The Golden Sound'
-end
-
-class TheNarrowSea < SeaArea
-  TITLE = 'The Narrow Sea'
-end
-
-class TheShiveringSea < SeaArea
-  TITLE = 'The Shivering Sea'
-end
-
-class WestSummerSea < SeaArea
-  TITLE = 'West Summer Sea'
 end

@@ -2,6 +2,18 @@ class Map
   attr_reader :areas
 
   AREAS = [
+    BayOfIce,
+    BlackwaterBay,
+    EastSummerSea,
+    IronmansBay,
+    RedwyneStraits,
+    SeaOfDorne,
+    ShipbreakerBay,
+    SunsetSea,
+    TheGoldenSound,
+    TheNarrowSea,
+    TheShiveringSea,
+    WestSummerSea,
     Blackwater,
     CastleBlack,
     CrackclawPoint,
@@ -39,19 +51,7 @@ class Map
     WhiteHarbor,
     WidowsWatch,
     Winterfell,
-    Yronwood,
-    BayOfIce,
-    BlackwaterBay,
-    EastSummerSea,
-    IronmansBay,
-    RedwyneStraits,
-    SeaOfDorne,
-    ShipbreakerBay,
-    SunsetSea,
-    TheGoldenSound,
-    TheNarrowSea,
-    TheShiveringSea,
-    WestSummerSea,
+    Yronwood
   ]
 
   def initialize
