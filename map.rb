@@ -1,7 +1,7 @@
 class Map
-  attr_reader :locations
+  attr_reader :areas
 
-  LOCATIONS = [
+  AREAS = [
     Blackwater,
     CastleBlack,
     CrackclawPoint,
@@ -55,9 +55,9 @@ class Map
   ]
 
   def initialize
-    @locations = []
-    LOCATIONS.each do |location_class|
-      @locations.push(location_class.new)
+    @areas = []
+    AREAS.each do |area_class|
+      @areas.push(area_class.new)
     end
   end
 end
