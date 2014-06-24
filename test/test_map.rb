@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative 'game.rb'
+require_relative '../lib/game.rb'
 
 class TestMap < Test::Unit::TestCase
   def setup
