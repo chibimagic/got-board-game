@@ -1,5 +1,3 @@
-require 'set'
-
 class Map
   attr_reader :areas
 

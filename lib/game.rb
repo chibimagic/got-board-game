@@ -1,3 +1,4 @@
+require 'set'
 require_relative 'player.rb'
 require_relative 'deck.rb'
 require_relative 'house_card.rb'
@@ -9,6 +10,7 @@ require_relative 'dominance_token.rb'
 require_relative 'area.rb'
 require_relative 'map.rb'
 require_relative 'game_track.rb'
+require_relative 'unit.rb'
 require_relative 'house.rb'
 require_relative 'house_deck.rb'
 

@@ -1,6 +1,16 @@
 class House
+  attr_reader :units
+
   HOUSE_NAME = ''
   MINIMUM_PLAYERS = 3
+
+  def initialize
+    @units = [].to_set
+    10.times { @units.add(Footman.new) }
+    5.times { @units.add(Knight.new) }
+    6.times { @units.add(Ship.new) }
+    2.times { @units.add(SiegeEngine.new) }
+  end
 
   def self.to_s
     'House ' + self::HOUSE_NAME
