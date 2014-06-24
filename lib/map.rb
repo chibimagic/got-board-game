@@ -52,7 +52,7 @@ class Map
     WidowsWatch,
     Winterfell,
     Yronwood
-  ]
+  ].to_set
 
   CONNECTIONS = [
     # Land to land
@@ -188,9 +188,9 @@ class Map
   ].to_set
 
   def initialize
-    @areas = []
+    @areas = [].to_set
     AREAS.each do |area_class|
-      @areas.push(area_class.new)
+      @areas.add(area_class.new)
     end
   end
 
