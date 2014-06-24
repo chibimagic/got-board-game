@@ -1,7 +1,7 @@
 require 'test/unit'
 require_relative '../lib/game.rb'
 
-class TestGame < Test::Unit::TestCase
+class TestDominanceToken < Test::Unit::TestCase
   def test_usable_token
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
     token_classes.each do |token_class|
