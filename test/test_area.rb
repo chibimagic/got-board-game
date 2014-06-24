@@ -1,6 +1,3 @@
-require 'test/unit'
-require_relative '../lib/game.rb'
-
 class TestArea < Test::Unit::TestCase
   def setup
     @m = Map.new

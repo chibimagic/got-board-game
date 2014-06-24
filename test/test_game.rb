@@ -1,6 +1,3 @@
-require 'test/unit'
-require_relative '../lib/game.rb'
-
 class TestGame < Test::Unit::TestCase
   def test_initialize_invalid
     # Game must be initialized with players

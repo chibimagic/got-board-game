@@ -1,0 +1,10 @@
+require 'test/unit'
+require_relative '../lib/game.rb'
+
+require_relative 'test_area.rb'
+require_relative 'test_dominance_token.rb'
+require_relative 'test_game_track.rb'
+require_relative 'test_game.rb'
+require_relative 'test_house_card.rb'
+require_relative 'test_map.rb'
+require_relative 'test_wildling_card.rb'

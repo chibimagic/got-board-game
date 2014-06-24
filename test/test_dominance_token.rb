@@ -1,6 +1,3 @@
-require 'test/unit'
-require_relative '../lib/game.rb'
-
 class TestDominanceToken < Test::Unit::TestCase
   def test_usable_token
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
