@@ -218,7 +218,7 @@ class SearoadMarches < LandArea
 end
 
 class Starfall < LandArea
-  TITLE = 'Starfell'
+  TITLE = 'Starfall'
   CASTLE = true
   SUPPLY = 1
 end
