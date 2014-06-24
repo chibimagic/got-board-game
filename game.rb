@@ -1,7 +1,5 @@
 require_relative 'player.rb'
 require_relative 'deck.rb'
-require_relative 'house.rb'
-require_relative 'house_deck.rb'
 require_relative 'house_card.rb'
 require_relative 'house_card_deck.rb'
 require_relative 'wildling_card.rb'
@@ -10,13 +8,20 @@ require_relative 'westeros_deck.rb'
 require_relative 'dominance_token.rb'
 require_relative 'area.rb'
 require_relative 'map.rb'
+require_relative 'game_track.rb'
+require_relative 'house.rb'
+require_relative 'house_deck.rb'
 
 class Game
   attr_reader \
     :players,
     :game_round,
     :round_phase,
-    :wildling_track
+    :wildling_track,
+    :iron_throne_track,
+    :fiefdoms_track,
+    :kings_court_track,
+    :supply_track
 
   ROUND_PHASES = [
     :westeros,
@@ -33,8 +38,12 @@ class Game
 
     @players = players
     @map = Map.new
-    @wildling_track = 2
     @game_round = 1
+    @wildling_track = WildlingTrack.new
+    @iron_throne_track = IronThroneTrack.new(players)
+    @fiefdoms_track = FiefdomsTrack.new(players)
+    @kings_court_track = KingsCourtTrack.new(players)
+    @supply_track = SupplyTrack.new(players)
 
     @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new
