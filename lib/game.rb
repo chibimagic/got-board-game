@@ -12,7 +12,7 @@ require_relative 'map.rb'
 require_relative 'game_track.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
-require_relative 'house_deck.rb'
+require_relative 'houses.rb'
 
 class Game
   attr_reader \
@@ -64,13 +64,12 @@ class Game
   end
 
   def validate_houses(players)
-    available_houses = HouseDeck.new
-    available_houses.cards.each do | house |
-      selected_by_players = players.find_all { |player| player.house.class == house.class }
+    Houses.new.each do |house|
+      selected_by_players = players.find_all { |player| player.house.class == house }
       if selected_by_players.length > 1
         raise 'More than one player has chosen ' + house.to_s + ': ' + selected_by_players.join(', ')
-      elsif selected_by_players.length == 1 && players.length < house.class::MINIMUM_PLAYERS
-        raise house.to_s + ' cannot be chosen when there are ' + players.length.to_s + ' players (' + house.class::MINIMUM_PLAYERS.to_s + ' required)'
+      elsif selected_by_players.length == 1 && players.length < house::MINIMUM_PLAYERS
+        raise house.to_s + ' cannot be chosen when there are ' + players.length.to_s + ' players (' + house::MINIMUM_PLAYERS.to_s + ' required)'
       end
     end
   end
