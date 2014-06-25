@@ -61,10 +61,10 @@ class TestNeutralForceToken < Test::Unit::TestCase
     ]
     data.each do |datum|
       tokens = NeutralForceTokens.new(datum[:players]).get_tokens
-      datum[:tokens].each do |location_class, strength|
-        token = tokens.find { |token| token.location_class == location_class }
-        assert_not_nil(token, datum[:players].to_s + ' player game should have token for ' + location_class.to_s)
-        assert_equal(strength, token.strength, datum[:players].to_s + ' player game should have ' + location_class.to_s + ' token with strength ' + strength.to_s)
+      datum[:tokens].each do |area_class, strength|
+        token = tokens.find { |token| token.area_class == area_class }
+        assert_not_nil(token, datum[:players].to_s + ' player game should have token for ' + area_class.to_s)
+        assert_equal(strength, token.strength, datum[:players].to_s + ' player game should have ' + area_class.to_s + ' token with strength ' + strength.to_s)
       end
       assert_equal(datum[:tokens].length, tokens.length)
     end

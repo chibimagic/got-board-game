@@ -22,10 +22,10 @@ class NeutralForceTokens
 
   def get_tokens
     tokens = []
-    self.class::TOKENS.each do |location_class, counts|
+    self.class::TOKENS.each do |area_class, counts|
       if counts.has_key? (@player_count)
         strength = counts.fetch(@player_count)
-        tokens.push(NeutralForceToken.new(location_class, strength))
+        tokens.push(NeutralForceToken.new(area_class, strength))
       end
     end
     tokens

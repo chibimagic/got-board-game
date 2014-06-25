@@ -1,12 +1,12 @@
 class NeutralForceToken
-  attr_reader :location_class, :strength
+  attr_reader :area_class, :strength
 
-  def initialize(location_class, strength)
-    @location_class = location_class
+  def initialize(area_class, strength)
+    @area_class = area_class
     @strength = strength
   end
 
   def to_s
-    @location_class.to_s + ' (' + strength.to_s + ')'
+    @area_class.to_s + ' (' + strength.to_s + ')'
   end
 end
