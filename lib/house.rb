@@ -23,6 +23,7 @@ end
 
 class HouseStark < House
   HOUSE_NAME = 'Stark'
+  INITIAL_SUPPLY = 1
 
   STARTING_UNITS = {
     Winterfell => [Knight, Footman],
@@ -39,6 +40,7 @@ end
 
 class HouseLannister < House
   HOUSE_NAME = 'Lannister'
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Lannisport => [Knight, Footman],
@@ -55,6 +57,7 @@ end
 
 class HouseBaratheon < House
   HOUSE_NAME = 'Baratheon'
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Dragonstone => [Knight, Footman],
@@ -72,6 +75,7 @@ end
 class HouseGreyjoy < House
   HOUSE_NAME = 'Greyjoy'
   MINIMUM_PLAYERS = 4
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Pyke => [Knight, Footman, Ship],
@@ -89,6 +93,7 @@ end
 class HouseTyrell < House
   HOUSE_NAME = 'Tyrell'
   MINIMUM_PLAYERS = 5
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Highgarden => [Knight, Footman],
@@ -106,6 +111,7 @@ end
 class HouseMartell < House
   HOUSE_NAME = 'Martell'
   MINIMUM_PLAYERS = 6
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Sunspear => [Knight, Footman],

@@ -17,13 +17,13 @@ require_relative 'houses.rb'
 class Game
   attr_reader \
     :players,
+    :map,
     :game_round,
     :round_phase,
     :wildling_track,
     :iron_throne_track,
     :fiefdoms_track,
-    :kings_court_track,
-    :supply_track
+    :kings_court_track
 
   ROUND_PHASES = [
     :westeros,
@@ -45,7 +45,6 @@ class Game
     @iron_throne_track = IronThroneTrack.new(players)
     @fiefdoms_track = FiefdomsTrack.new(players)
     @kings_court_track = KingsCourtTrack.new(players)
-    @supply_track = SupplyTrack.new(players)
 
     @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new

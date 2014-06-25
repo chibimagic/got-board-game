@@ -187,6 +187,16 @@ class Map
     [TheNarrowSea, TheShiveringSea].to_set,
   ].to_set
 
+  ARMIES_ALLOWED = {
+    0 => [2, 2],
+    1 => [3, 2],
+    2 => [3, 2, 2],
+    3 => [3, 2, 2, 2],
+    4 => [3, 3, 2, 2],
+    5 => [4, 3, 2, 2],
+    6 => [4, 3, 2, 2, 2]
+  }
+
   def initialize
     @areas = [].to_set
     AREAS.each do |area_class|
@@ -216,5 +226,13 @@ class Map
 
   def connected_seas(area)
     connected_areas(area).find_all { |area| area < SeaArea }.to_set
+  end
+
+  def supply_level(house_class)
+    @areas.inject(0) { |sum, area| sum + (area.controlling_house == house_class ? area.supply : 0) }
+  end
+
+  def houses_with_supply(supply)
+    Houses.new.find_all { |house| supply_level(house) == supply }.to_set
   end
 end

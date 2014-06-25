@@ -96,26 +96,4 @@ class TestGameTrack < Test::Unit::TestCase
       assert_equal(datum[:kings_court_track], kings_court_track.track)
     end
   end
-
-  # All houses begin at supply = 2
-  def test_supply_track_initialize
-    expected_supply = {
-      0 => [].to_set,
-      1 => [].to_set,
-      2 => [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell].to_set,
-      3 => [].to_set,
-      4 => [].to_set,
-      5 => [].to_set,
-      6 => [].to_set
-    }
-    expected_supply.each do |supply_level, houses|
-      assert_equal(houses, @g.supply_track.get_houses(supply_level))
-    end
-
-    houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
-    houses.each do |house_class|
-      assert_equal(2, @g.supply_track.get_supply(house_class))
-      assert_equal([3, 2, 2], @g.supply_track.armies_allowed(house_class))
-    end
-  end
 end

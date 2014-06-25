@@ -35,6 +35,24 @@ class TestGame < Test::Unit::TestCase
       assert_equal(units_remaining[:ships], player.house.units.count{ |unit| unit.is_a? Ship })
       assert_equal(units_remaining[:siege_engines], player.house.units.count{ |unit| unit.is_a? SiegeEngine })
     end
+
+    # All houses except House Stark begin at supply = 2
+    expected_supply = {
+      0 => [].to_set,
+      1 => [HouseStark].to_set,
+      2 => [HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell].to_set,
+      3 => [].to_set,
+      4 => [].to_set,
+      5 => [].to_set,
+      6 => [].to_set
+    }
+    expected_supply.each do |supply_level, houses|
+      assert_equal(houses, game.map.houses_with_supply(supply_level), 'Houses with supply ' + supply_level.to_s + ' should be: ' + houses.to_a.join(', '))
+    end
+    houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
+    houses.each do |house_class|
+      assert_equal(house_class::INITIAL_SUPPLY, game.map.supply_level(house_class))
+    end
   end
 
   def test_house_selection_valid
