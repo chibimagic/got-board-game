@@ -77,12 +77,11 @@ class Game
   private :validate_houses
 
   def place_unit(player, unit_class, area_class)
-    area = @map.areas.find { |area| area.class == area_class }
     unit = player.house.units.find { |unit| unit.class == unit_class }
     if !unit
       raise player.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
     end
     player.house.units.delete(unit)
-    area.tokens.push(unit_class.new(player.house))
+    @map.area(area_class).tokens.push(unit_class.new(player.house))
   end
 end
