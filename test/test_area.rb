@@ -41,4 +41,20 @@ class TestArea < Test::Unit::TestCase
       end
     end
   end
+
+  def test_house_control
+    area = @m.area(CastleBlack)
+    stark_unit = Footman.new(HouseStark.new)
+    lannister_unit = Footman.new(HouseLannister.new)
+    assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
+
+    area.tokens.push(stark_unit)
+    assert_equal(HouseStark, area.controlling_house, 'Area should be controlled by House Stark')
+
+    area.tokens.delete(stark_unit)
+    assert_equal(nil, area.controlling_house, 'Area should revert to uncontrolled')
+
+    area.tokens.push(lannister_unit)
+    assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
+  end
 end

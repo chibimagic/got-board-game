@@ -49,6 +49,10 @@ class Area
   def port_to
     self.class::PORT_TO
   end
+
+  def controlling_house
+    @tokens.empty? ? nil : @tokens[0].house.class
+  end
 end
 
 class SeaArea < Area
