@@ -58,7 +58,7 @@ class HouseBaratheon < House
 
   STARTING_UNITS = {
     Dragonstone => [Knight, Footman],
-    StoneySept => [Footman],
+    Kingswood => [Footman],
     ShipbreakerBay => [Ship, Ship]
   }
 
