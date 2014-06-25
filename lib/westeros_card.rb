@@ -2,6 +2,14 @@ class WesterosCard
   TITLE = ''
   TEXT = ''
   ADVANCE_WILDLINGS = false
+
+  def title
+    self.class::TITLE
+  end
+
+  def text
+    self.class::TEXT
+  end
 end
 
 class AThroneOfBlades < WesterosCard
