@@ -1,53 +1,5 @@
-class TestGameTrack < Test::Unit::TestCase
-  def setup
-    players = [
-      Player.new('a', HouseStark),
-      Player.new('b', HouseLannister),
-      Player.new('c', HouseBaratheon),
-      Player.new('d', HouseGreyjoy),
-      Player.new('e', HouseTyrell),
-      Player.new('f', HouseMartell)
-    ]
-    @g = Game.new(players)
-  end
-
-  def test_wildling_track_initialize
-    assert_equal(2, @g.wildling_track.strength, "Wildling track should start at 2")
-  end
-
-  def test_wildling_track_increase
-    @g.wildling_track.increase
-    assert_equal(4, @g.wildling_track.strength, "Wildling track should increase by 2 each time")
-    @g.wildling_track.increase
-    assert_equal(6, @g.wildling_track.strength, "Wildling track should increase by 2 each time")
-    @g.wildling_track.increase
-    assert_equal(8, @g.wildling_track.strength, "Wildling track should increase by 2 each time")
-    @g.wildling_track.increase
-    assert_equal(10, @g.wildling_track.strength, "Wildling track should increase by 2 each time")
-    @g.wildling_track.increase
-    assert_equal(12, @g.wildling_track.strength, "Wildling track should increase by 2 each time")
-    @g.wildling_track.increase
-    assert_equal(12, @g.wildling_track.strength, "Wildling track should max out at 12")
-  end
-
-  def test_wildling_track_victory
-    @g.wildling_track.increase # 4
-    @g.wildling_track.increase # 6
-    @g.wildling_track.increase # 8
-    @g.wildling_track.nights_watch_victory
-    assert_equal(0, @g.wildling_track.strength, "Wildling track should be at 0 after a Night's Watch victory")
-    @g.wildling_track.increase # 2
-    @g.wildling_track.increase # 4
-    @g.wildling_track.increase # 6
-    @g.wildling_track.wildling_victory
-    assert_equal(2, @g.wildling_track.strength, "Wildling track should be set back 2 positions after a Wildling victory")
-    @g.wildling_track.wildling_victory
-    assert_equal(0, @g.wildling_track.strength, "Wildling track should be set back to a minimum of 0 after a Wildling victory")
-    @g.wildling_track.wildling_victory
-    assert_equal(0, @g.wildling_track.strength, "Wildling track should be set back to a minimum of 0 after a Wildling victory")
-  end
-
-  def test_influence_track_initialize
+class TestInfluenceTrack < Test::Unit::TestCase
+  def test_initialize
     data = [
       # Default track position for full board
       {
