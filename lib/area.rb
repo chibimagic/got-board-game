@@ -1,5 +1,5 @@
 class Area
-  attr_reader :units
+  attr_reader :tokens
 
   TITLE = ''
   CONNECTION_COUNT = 0
@@ -11,7 +11,7 @@ class Area
   PORT_TO = nil
 
   def initialize
-    @units = []
+    @tokens = []
   end
 
   def self.to_s
