@@ -52,7 +52,7 @@ class Map
     WidowsWatch,
     Winterfell,
     Yronwood
-  ].to_set
+  ]
 
   CONNECTIONS = [
     # Land to land
@@ -198,9 +198,9 @@ class Map
   }
 
   def initialize
-    @areas = [].to_set
+    @areas = []
     AREAS.each do |area_class|
-      @areas.add(area_class.new)
+      @areas.push(area_class.new)
     end
   end
 
@@ -229,7 +229,7 @@ class Map
   end
 
   def controlled_areas(house_class)
-    @areas.to_a.find_all { |area| area.controlling_house == house_class }
+    @areas.find_all { |area| area.controlling_house == house_class }
   end
 
   def supply_level(house_class)
