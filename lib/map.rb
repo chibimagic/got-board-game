@@ -228,8 +228,12 @@ class Map
     connected_areas(area).find_all { |area| area < SeaArea }.to_set
   end
 
+  def controlled_areas(house_class)
+    @areas.to_a.find_all { |area| area.controlling_house == house_class }
+  end
+
   def supply_level(house_class)
-    @areas.inject(0) { |sum, area| sum + (area.controlling_house == house_class ? area.supply : 0) }
+    controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end
 
   def houses_with_supply(supply)
