@@ -53,6 +53,16 @@ class Area
   def controlling_house
     @tokens.empty? ? nil : @tokens[0].house.class
   end
+
+  def mustering_points
+    if has_stronghold?
+      2
+    elsif has_castle?
+      1
+    else
+      0
+    end
+  end
 end
 
 class SeaArea < Area

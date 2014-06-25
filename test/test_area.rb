@@ -20,6 +20,65 @@ class TestArea < Test::Unit::TestCase
     end
   end
 
+  def test_area_mustering_points
+    expected_points = {
+      BayOfIce => 0,
+      BlackwaterBay => 0,
+      EastSummerSea => 0,
+      IronmansBay => 0,
+      RedwyneStraits => 0,
+      SeaOfDorne => 0,
+      ShipbreakerBay => 0,
+      SunsetSea => 0,
+      TheGoldenSound => 0,
+      TheNarrowSea => 0,
+      TheShiveringSea => 0,
+      WestSummerSea => 0,
+      Blackwater => 0,
+      CastleBlack => 0,
+      CrackclawPoint => 1,
+      DornishMarches => 0,
+      Dragonstone => 2,
+      FlintsFinger => 1,
+      GreywaterWatch => 0,
+      Harrenhal => 1,
+      Highgarden => 2,
+      Karhold => 0,
+      KingsLanding => 2,
+      Kingswood => 0,
+      Lannisport => 2,
+      MoatCalin => 1,
+      Oldtown => 2,
+      PrincesPass => 0,
+      Pyke => 2,
+      Riverrun => 2,
+      SaltShore => 0,
+      Seagard => 2,
+      SearoadMarches => 0,
+      Starfall => 1,
+      StoneySept => 0,
+      StormsEnd => 1,
+      Sunspear => 2,
+      TheArbor => 0,
+      TheBoneway => 0,
+      TheEyrie => 1,
+      TheFingers => 0,
+      TheMountainsOfTheMoon => 0,
+      TheReach => 1,
+      TheStoneyShore => 0,
+      TheTwins => 0,
+      ThreeTowers => 0,
+      WhiteHarbor => 1,
+      WidowsWatch => 0,
+      Winterfell => 2,
+      Yronwood => 1
+    }
+    expected_points.each do |area_class, points|
+      a = area_class.new
+      assert_equal(points, a.mustering_points, a.to_s + ' has wrong number of mustering points')
+    end
+  end
+
   def test_area_totals
     strongholds = @m.areas.count { |area| area.has_stronghold? }
     castles = @m.areas.count { |area| area.has_castle? }
