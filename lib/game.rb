@@ -83,6 +83,6 @@ class Game
       raise player.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
     end
     player.house.units.delete(unit)
-    area.units.push(unit_class.new)
+    area.tokens.push(unit_class.new(player.house))
   end
 end

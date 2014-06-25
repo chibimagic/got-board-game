@@ -6,10 +6,10 @@ class House
 
   def initialize
     @units = [].to_set
-    10.times { @units.add(Footman.new) }
-    5.times { @units.add(Knight.new) }
-    6.times { @units.add(Ship.new) }
-    2.times { @units.add(SiegeEngine.new) }
+    10.times { @units.add(Footman.new(self)) }
+    5.times { @units.add(Knight.new(self)) }
+    6.times { @units.add(Ship.new(self)) }
+    2.times { @units.add(SiegeEngine.new(self)) }
   end
 
   def self.to_s

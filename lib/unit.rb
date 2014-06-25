@@ -1,4 +1,10 @@
 class Unit
+  attr_reader :house
+
+  def initialize(house)
+    @house = house
+  end
+
   def to_s
     self.class::TITLE
   end
