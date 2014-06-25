@@ -52,6 +52,14 @@ class Game
     @westeros_deck_ii = WesterosDeckII.new
     @westeros_deck_iii = WesterosDeckIII.new
 
+    @players.each do |player|
+      player.house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
+        starting_unit_classes.each do |starting_unit_class|
+          place_unit(player, starting_unit_class, area_class)
+        end
+      end
+    end
+
     @round_phase = :planning
   end
 
@@ -67,4 +75,14 @@ class Game
     end
   end
   private :validate_houses
+
+  def place_unit(player, unit_class, area_class)
+    area = @map.areas.find { |area| area.class == area_class }
+    unit = player.house.units.find { |unit| unit.class == unit_class }
+    if !unit
+      raise player.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
+    end
+    player.house.units.delete(unit)
+    area.units.push(unit_class.new)
+  end
 end

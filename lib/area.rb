@@ -1,4 +1,6 @@
 class Area
+  attr_reader :units
+
   TITLE = ''
   CONNECTION_COUNT = 0
   STRONGHOLD = false
@@ -7,6 +9,14 @@ class Area
   POWER = 0
   PORT = false
   PORT_TO = nil
+
+  def initialize
+    @units = []
+  end
+
+  def self.to_s
+    self::TITLE
+  end
 
   def to_s
     self.class::TITLE

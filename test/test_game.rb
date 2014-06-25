@@ -10,12 +10,31 @@ class TestGame < Test::Unit::TestCase
     players = [
       Player.new('a', HouseStark),
       Player.new('b', HouseLannister),
-      Player.new('c', HouseBaratheon)
+      Player.new('c', HouseBaratheon),
+      Player.new('d', HouseGreyjoy),
+      Player.new('e', HouseTyrell),
+      Player.new('f', HouseMartell),
     ]
     game = Game.new(players)
-    assert_equal(3, game.players.length)
+    assert_equal(6, game.players.length)
     assert_equal(1, game.game_round)
     assert_equal(:planning, game.round_phase)
+
+    expected_units_remaining = {
+      HouseStark => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
+      HouseLannister => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
+      HouseBaratheon => { :footmen => 8, :knights => 4, :ships => 4, :siege_engines => 2 },
+      HouseGreyjoy => { :footmen => 8, :knights => 4, :ships => 4, :siege_engines => 2 },
+      HouseTyrell => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
+      HouseMartell => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
+    }
+    expected_units_remaining.each do |house_class, units_remaining|
+      player = players.find { |player| player.house.class == house_class }
+      assert_equal(units_remaining[:footmen], player.house.units.count{ |unit| unit.is_a? Footman })
+      assert_equal(units_remaining[:knights], player.house.units.count{ |unit| unit.is_a? Knight })
+      assert_equal(units_remaining[:ships], player.house.units.count{ |unit| unit.is_a? Ship })
+      assert_equal(units_remaining[:siege_engines], player.house.units.count{ |unit| unit.is_a? SiegeEngine })
+    end
   end
 
   def test_house_selection_valid
@@ -59,5 +78,22 @@ class TestGame < Test::Unit::TestCase
         g = Game.new(players)
       }
     end
+  end
+
+  def test_place_units
+    p1 = Player.new('a', HouseStark)
+    p2 = Player.new('b', HouseLannister)
+    p3 = Player.new('c', HouseBaratheon)
+    players = [p1, p2, p3]
+    g = Game.new(players)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    g.place_unit(p1, Footman, CastleBlack)
+    assert_raise(RuntimeError) { g.place_unit(p1, Footman, CastleBlack) }
   end
 end
