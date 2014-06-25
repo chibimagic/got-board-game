@@ -96,4 +96,20 @@ class TestGameTrack < Test::Unit::TestCase
       assert_equal(datum[:kings_court_track], kings_court_track.track)
     end
   end
+
+  def test_kings_court_orders
+    data = [
+      { HouseStark => 3, HouseLannister => 3, HouseBaratheon => 1, HouseGreyjoy => 0, HouseTyrell => 0, HouseMartell => 2 },
+      { HouseStark => 3, HouseLannister => 3, HouseBaratheon => 2, HouseGreyjoy => 0, HouseTyrell => 1 },
+      { HouseStark => 2, HouseLannister => 3, HouseBaratheon => 1, HouseGreyjoy => 0 },
+      { HouseStark => 2, HouseLannister => 3, HouseBaratheon => 1 }
+    ]
+    data.each do |datum|
+      players = datum.map { |house_class, special_orders_allowed| Player.new('', house_class) }
+      track = KingsCourtTrack.new(players)
+      datum.each do |house_class, special_orders_allowed|
+        assert_equal(special_orders_allowed, track.special_orders_allowed(house_class), house_class.to_s + ' is allowed wrong number of special orders')
+      end
+    end
+  end
 end
