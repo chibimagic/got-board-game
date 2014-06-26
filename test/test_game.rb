@@ -7,16 +7,16 @@ class TestGame < Test::Unit::TestCase
   end
 
   def test_game_setup
-    players = [
-      Player.new('a', HouseStark),
-      Player.new('b', HouseLannister),
-      Player.new('c', HouseBaratheon),
-      Player.new('d', HouseGreyjoy),
-      Player.new('e', HouseTyrell),
-      Player.new('f', HouseMartell),
+    houses = [
+      HouseStark.new,
+      HouseLannister.new,
+      HouseBaratheon.new,
+      HouseGreyjoy.new,
+      HouseTyrell.new,
+      HouseMartell.new
     ]
-    game = Game.new(players)
-    assert_equal(6, game.players.length)
+    game = Game.new(houses)
+    assert_equal(6, game.houses.length)
     assert_equal(1, game.game_round)
     assert_equal(:planning, game.round_phase)
 
@@ -29,11 +29,11 @@ class TestGame < Test::Unit::TestCase
       HouseMartell => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
     }
     expected_units_remaining.each do |house_class, units_remaining|
-      player = players.find { |player| player.house.class == house_class }
-      assert_equal(units_remaining[:footmen], player.house.units.count{ |unit| unit.is_a? Footman })
-      assert_equal(units_remaining[:knights], player.house.units.count{ |unit| unit.is_a? Knight })
-      assert_equal(units_remaining[:ships], player.house.units.count{ |unit| unit.is_a? Ship })
-      assert_equal(units_remaining[:siege_engines], player.house.units.count{ |unit| unit.is_a? SiegeEngine })
+      house = houses.find { |house| house.class == house_class }
+      assert_equal(units_remaining[:footmen], house.units.count{ |unit| unit.is_a? Footman })
+      assert_equal(units_remaining[:knights], house.units.count{ |unit| unit.is_a? Knight })
+      assert_equal(units_remaining[:ships], house.units.count{ |unit| unit.is_a? Ship })
+      assert_equal(units_remaining[:siege_engines], house.units.count{ |unit| unit.is_a? SiegeEngine })
     end
 
     # All houses except House Stark begin at supply = 2
@@ -71,11 +71,8 @@ class TestGame < Test::Unit::TestCase
     ]
     data.each do |datum|
       assert_nothing_raised {
-        players = []
-        datum.each do |house|
-          players.push(Player.new(nil, house))
-        end
-        g = Game.new(players)
+        houses = datum.map { |house_class| house_class.new }
+        g = Game.new(houses)
       }
     end
   end
@@ -98,29 +95,26 @@ class TestGame < Test::Unit::TestCase
     ]
     data.each do |datum|
       assert_raise(RuntimeError) {
-        players = []
-        datum.each do |house|
-          players.push(Player.new(nil, house))
-        end
-        g = Game.new(players)
+        houses = datum.map { |house_class| house_class.new }
+        g = Game.new(houses)
       }
     end
   end
 
   def test_place_units
-    p1 = Player.new('a', HouseStark)
-    p2 = Player.new('b', HouseLannister)
-    p3 = Player.new('c', HouseBaratheon)
-    players = [p1, p2, p3]
-    g = Game.new(players)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    g.place_unit(p1, Footman, CastleBlack)
-    assert_raise(RuntimeError) { g.place_unit(p1, Footman, CastleBlack) }
+    h1 = HouseStark.new
+    h2 = HouseLannister.new
+    h3 = HouseBaratheon.new
+    houses = [h1, h2, h3]
+    g = Game.new(houses)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    g.place_unit(h1, Footman, CastleBlack)
+    assert_raise(RuntimeError) { g.place_unit(h1, Footman, CastleBlack) }
   end
 end

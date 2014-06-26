@@ -1,10 +1,11 @@
 class House
-  attr_reader :units
+  attr_reader :player_name, :units
 
   HOUSE_NAME = ''
   MINIMUM_PLAYERS = 3
 
-  def initialize
+  def initialize(player_name = '')
+    @player_name = player_name
     @units = [].to_set
     10.times { @units.add(Footman.new(self)) }
     5.times { @units.add(Knight.new(self)) }
@@ -17,7 +18,8 @@ class House
   end
 
   def to_s
-    'House ' + self.class::HOUSE_NAME
+    name = @player_name.length > 0 ? @player_name : 'no name'
+    'House ' + self.class::HOUSE_NAME + ' (' + name + ')'
   end
 end
 

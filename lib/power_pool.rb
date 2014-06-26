@@ -1,10 +1,10 @@
 class PowerPool
   attr_reader :pool
 
-  def initialize(players)
+  def initialize(houses)
     @pool = []
-    players.each do |player|
-      20.times { @pool.push(PowerToken.new(player.house.class)) }
+    houses.each do |house|
+      20.times { @pool.push(PowerToken.new(house)) }
     end
   end
 end

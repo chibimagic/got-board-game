@@ -1,13 +1,13 @@
 class InfluenceTrack
   attr_reader :track
 
-  def initialize(players)
+  def initialize(houses)
     @track = Array.new(6)
-    players.each do |player|
-      position = player.house.class::STARTING_POSITIONS[self.class]
-      @track[position - 1] = player.house.class
+    houses.each do |house|
+      position = house.class::STARTING_POSITIONS[self.class]
+      @track[position - 1] = house.class
     end
-    @track.delete(nil) # Fill in empty spots from missing players
+    @track.delete(nil) # Fill in empty spots from missing houses
   end
 
   # Returns 1-based index
@@ -27,9 +27,9 @@ class KingsCourtTrack < InfluenceTrack
   FIVE_SIX_PLAYER_SPECIAL_ORDERS = [3, 3, 2, 1, 0, 0]
   THREE_FOUR_PLAYER_SPECIAL_ORDERS = [3, 2, 1, 0]
 
-  def initialize(players)
-    super(players)
-    case players.count
+  def initialize(houses)
+    super(houses)
+    case houses.count
     when 3..4
       @special_orders = THREE_FOUR_PLAYER_SPECIAL_ORDERS
     when 5..6

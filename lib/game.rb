@@ -1,5 +1,4 @@
 require 'set'
-require_relative 'player.rb'
 require_relative 'deck.rb'
 require_relative 'house_card.rb'
 require_relative 'house_card_deck.rb'
@@ -22,7 +21,7 @@ require_relative 'houses.rb'
 
 class Game
   attr_reader \
-    :players,
+    :houses,
     :map,
     :game_round,
     :round_phase,
@@ -38,35 +37,35 @@ class Game
     :action
   ]
 
-  def initialize(players)
-    if players.length < 3 || players.length > 6
-      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + players.length.to_s
+  def initialize(houses)
+    if houses.length < 3 || houses.length > 6
+      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
     end
 
-    validate_houses(players)
+    validate_houses(houses)
 
-    @players = players
+    @houses = houses
     @map = Map.new
     @game_round = 1
     @wildling_track = WildlingTrack.new
-    @iron_throne_track = IronThroneTrack.new(players)
-    @fiefdoms_track = FiefdomsTrack.new(players)
-    @kings_court_track = KingsCourtTrack.new(players)
-    @power_pool = PowerPool.new(players)
+    @iron_throne_track = IronThroneTrack.new(@houses)
+    @fiefdoms_track = FiefdomsTrack.new(@houses)
+    @kings_court_track = KingsCourtTrack.new(@houses)
+    @power_pool = PowerPool.new(@houses)
 
     @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new
     @westeros_deck_ii = WesterosDeckII.new
     @westeros_deck_iii = WesterosDeckIII.new
 
-    NeutralForceTokens.new(@players.count).get_tokens.each do |token|
+    NeutralForceTokens.new(@houses.count).get_tokens.each do |token|
       @map.area(token.area_class).tokens.push(token)
     end
 
-    @players.each do |player|
-      player.house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
+    @houses.each do |house|
+      house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
-          place_unit(player, starting_unit_class, area_class)
+          place_unit(house, starting_unit_class, area_class)
         end
       end
     end
@@ -74,24 +73,24 @@ class Game
     @round_phase = :planning
   end
 
-  def validate_houses(players)
-    Houses.new.each do |house|
-      selected_by_players = players.find_all { |player| player.house.class == house }
-      if selected_by_players.length > 1
-        raise 'More than one player has chosen ' + house.to_s + ': ' + selected_by_players.join(', ')
-      elsif selected_by_players.length == 1 && players.length < house::MINIMUM_PLAYERS
-        raise house.to_s + ' cannot be chosen when there are ' + players.length.to_s + ' players (' + house::MINIMUM_PLAYERS.to_s + ' required)'
+  def validate_houses(houses)
+    Houses.new.each do |house_class|
+      selected_times = houses.count { |house| house.class == house_class }
+      if selected_times > 1
+        raise 'Multiple instances of ' + house_class.to_s
+      elsif selected_times == 1 && houses.length < house_class::MINIMUM_PLAYERS
+        raise house_class.to_s + ' cannot be chosen when there are ' + houses.length.to_s + ' houses (' + house_class::MINIMUM_PLAYERS.to_s + ' required)'
       end
     end
   end
   private :validate_houses
 
-  def place_unit(player, unit_class, area_class)
-    unit = player.house.units.find { |unit| unit.class == unit_class }
+  def place_unit(house, unit_class, area_class)
+    unit = house.units.find { |unit| unit.class == unit_class }
     if !unit
-      raise player.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
+      raise house.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
     end
-    player.house.units.delete(unit)
-    @map.area(area_class).tokens.push(unit_class.new(player.house))
+    house.units.delete(unit)
+    @map.area(area_class).tokens.push(unit_class.new(house))
   end
 end
