@@ -116,4 +116,21 @@ class TestArea < Test::Unit::TestCase
     area.tokens.push(lannister_unit)
     assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
   end
+
+  def test_unit_count
+    h = HouseStark.new
+
+    area = @m.area(Winterfell)
+    assert_equal(0, area.unit_count, 'Area should start with no units')
+    area.tokens.push(Footman.new(h))
+    assert_equal(1, area.unit_count, 'Footman should count has 1 unit')
+    area.tokens.push(Knight.new(h))
+    assert_equal(2, area.unit_count, 'Knight should count as 1 unit')
+    area.tokens.push(GarrisonToken.new(h))
+    assert_equal(2, area.unit_count, 'Garrison token should not count as unit')
+    area.tokens.push(PowerToken.new(h))
+    assert_equal(2, area.unit_count, 'Power token should not count as unit')
+    area.tokens.push(MarchOrder.new(h, false, 0))
+    assert_equal(2, area.unit_count, 'Orders should not count as unit')
+  end
 end

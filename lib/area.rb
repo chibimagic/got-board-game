@@ -63,6 +63,10 @@ class Area
       0
     end
   end
+
+  def unit_count
+    @tokens.count { |token| token.is_a? Unit }
+  end
 end
 
 class SeaArea < Area
