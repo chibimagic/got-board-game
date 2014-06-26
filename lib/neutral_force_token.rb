@@ -9,4 +9,8 @@ class NeutralForceToken
   def to_s
     @area_class.to_s + ' (' + strength.to_s + ')'
   end
+
+  def house
+    HouseIndependent.new
+  end
 end

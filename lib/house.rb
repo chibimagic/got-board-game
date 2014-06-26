@@ -21,6 +21,11 @@ class House
   end
 end
 
+# This represents the house for neutral house tokens
+class HouseIndependent < House
+  HOUSE_NAME = 'Independent'
+end
+
 class HouseStark < House
   HOUSE_NAME = 'Stark'
   INITIAL_SUPPLY = 1

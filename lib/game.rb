@@ -55,6 +55,10 @@ class Game
     @westeros_deck_ii = WesterosDeckII.new
     @westeros_deck_iii = WesterosDeckIII.new
 
+    NeutralForceTokens.new(@players.count).get_tokens.each do |token|
+      @map.area(token.area_class).tokens.push(token)
+    end
+
     @players.each do |player|
       player.house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
