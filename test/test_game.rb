@@ -62,6 +62,11 @@ class TestGame < Test::Unit::TestCase
     # Neutral tokens in a 6 player game
     area_classes = game.map.controlled_areas(HouseIndependent).map { |area| area.class }
     assert_equal([KingsLanding, TheEyrie], area_classes, 'Wrong neutral tokens')
+
+    assert_equal(90, game.power_pool.pool.count, 'Wrong number of tokens in power pool')
+    game.houses.each do |house|
+      assert_equal(5, house.power_tokens.count, house.to_s + ' has wrong number of power tokens')
+    end
   end
 
   def test_house_selection_valid

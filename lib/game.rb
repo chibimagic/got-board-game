@@ -68,6 +68,8 @@ class Game
           place_unit(house, starting_unit_class, area_class)
         end
       end
+
+      5.times { receive_power_token(house) }
     end
 
     @round_phase = :planning
@@ -92,5 +94,14 @@ class Game
     end
     house.units.delete(unit)
     @map.area(area_class).tokens.push(unit_class.new(house))
+  end
+
+  def receive_power_token(house)
+    token = @power_pool.pool.find { |token| token.house == house }
+    if !token
+      raise house.to_s + ' does not have any available power tokens in the Power Pool'
+    end
+    @power_pool.pool.delete(token)
+    house.power_tokens.push(token)
   end
 end
