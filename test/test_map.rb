@@ -32,4 +32,16 @@ class TestMap < Test::Unit::TestCase
     assert_equal(castle_black_lands, @m.connected_lands(CastleBlack), 'Castle Black has wrong areas connected')
     assert_equal(castle_black_seas, @m.connected_seas(CastleBlack), 'Castle Black has wrong areas connected')
   end
+
+  def test_army_count
+    h1 = HouseStark.new
+    h2 = HouseLannister.new
+    @m.area(CastleBlack).tokens.push(Footman.new(h1))
+    @m.area(Winterfell).tokens.push(SiegeEngine.new(h1)).push(Knight.new(h1)).push(Footman.new(h1))
+    @m.area(Karhold).tokens.push(Knight.new(h1)).push(Knight.new(h1))
+    @m.area(Lannisport).tokens.push(Knight.new(h2)).push(Knight.new(h2))
+    @m.area(StoneySept).tokens.push(Knight.new(h2))
+    assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
+    assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
+  end
 end

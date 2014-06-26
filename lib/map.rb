@@ -232,6 +232,10 @@ class Map
     @areas.find_all { |area| area.controlling_house == house_class }
   end
 
+  def armies(house_class)
+    controlled_areas(house_class).map { |area| area.unit_count }.reject { |unit_count| unit_count < 2 }.sort.reverse
+  end
+
   def supply_level(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end
