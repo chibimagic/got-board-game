@@ -14,6 +14,8 @@ require_relative 'wildling_track.rb'
 require_relative 'influence_track.rb'
 require_relative 'neutral_force_token.rb'
 require_relative 'neutral_force_tokens.rb'
+require_relative 'power_token.rb'
+require_relative 'power_pool.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
 require_relative 'houses.rb'
@@ -27,7 +29,8 @@ class Game
     :wildling_track,
     :iron_throne_track,
     :fiefdoms_track,
-    :kings_court_track
+    :kings_court_track,
+    :power_pool
 
   ROUND_PHASES = [
     :westeros,
@@ -49,6 +52,7 @@ class Game
     @iron_throne_track = IronThroneTrack.new(players)
     @fiefdoms_track = FiefdomsTrack.new(players)
     @kings_court_track = KingsCourtTrack.new(players)
+    @power_pool = PowerPool.new(players)
 
     @wildling_deck = WildlingDeck.new
     @westeros_deck_i = WesterosDeckI.new
