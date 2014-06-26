@@ -1,5 +1,5 @@
 class House
-  attr_reader :player_name, :units, :power_tokens
+  attr_reader :player_name, :units, :power_tokens, :order_tokens
 
   HOUSE_NAME = ''
   MINIMUM_PLAYERS = 3
@@ -8,6 +8,25 @@ class House
     @player_name = player_name
     @units = [].to_set
     @power_tokens = []
+
+    @order_tokens = [
+      MarchOrder.new(self, false, -1),
+      MarchOrder.new(self, false, 0),
+      MarchOrder.new(self, true, 1),
+      DefenseOrder.new(self, false, 1),
+      DefenseOrder.new(self, false, 1),
+      DefenseOrder.new(self, true, 2),
+      SupportOrder.new(self, false, 0),
+      SupportOrder.new(self, false, 0),
+      SupportOrder.new(self, true, 1),
+      RaidOrder.new(self, false, 0),
+      RaidOrder.new(self, false, 0),
+      RaidOrder.new(self, true, 0),
+      ConsolidatePowerOrder.new(self, false, 0),
+      ConsolidatePowerOrder.new(self, false, 0),
+      ConsolidatePowerOrder.new(self, true, 0),
+    ]
+
     10.times { @units.add(Footman.new(self)) }
     5.times { @units.add(Knight.new(self)) }
     6.times { @units.add(Ship.new(self)) }
