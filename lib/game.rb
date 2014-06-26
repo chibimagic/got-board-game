@@ -104,4 +104,9 @@ class Game
     @power_pool.pool.delete(token)
     house.power_tokens.push(token)
   end
+
+  def discard_power_token(house)
+    token = house.power_tokens.pop
+    @power_pool.pool.push(token)
+  end
 end
