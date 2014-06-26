@@ -50,6 +50,7 @@ end
 
 class HouseStark < House
   HOUSE_NAME = 'Stark'
+  HOME_AREA = Winterfell
   INITIAL_SUPPLY = 1
 
   STARTING_UNITS = {
@@ -67,6 +68,7 @@ end
 
 class HouseLannister < House
   HOUSE_NAME = 'Lannister'
+  HOME_AREA = Lannisport
   INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
@@ -84,6 +86,7 @@ end
 
 class HouseBaratheon < House
   HOUSE_NAME = 'Baratheon'
+  HOME_AREA = Dragonstone
   INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
@@ -101,6 +104,7 @@ end
 
 class HouseGreyjoy < House
   HOUSE_NAME = 'Greyjoy'
+  HOME_AREA = Pyke
   MINIMUM_PLAYERS = 4
   INITIAL_SUPPLY = 2
 
@@ -119,6 +123,7 @@ end
 
 class HouseTyrell < House
   HOUSE_NAME = 'Tyrell'
+  HOME_AREA = Highgarden
   MINIMUM_PLAYERS = 5
   INITIAL_SUPPLY = 2
 
@@ -137,6 +142,7 @@ end
 
 class HouseMartell < House
   HOUSE_NAME = 'Martell'
+  HOME_AREA = Sunspear
   MINIMUM_PLAYERS = 6
   INITIAL_SUPPLY = 2
 

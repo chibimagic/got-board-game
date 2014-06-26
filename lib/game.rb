@@ -16,6 +16,7 @@ require_relative 'neutral_force_tokens.rb'
 require_relative 'power_token.rb'
 require_relative 'power_pool.rb'
 require_relative 'order_token.rb'
+require_relative 'garrison_token.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
 require_relative 'houses.rb'
@@ -71,6 +72,7 @@ class Game
       end
 
       5.times { receive_power_token(house) }
+      @map.area(house.class::HOME_AREA).tokens.push(GarrisonToken.new(house))
     end
 
     @round_phase = :planning

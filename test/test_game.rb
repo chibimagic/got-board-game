@@ -67,6 +67,12 @@ class TestGame < Test::Unit::TestCase
     game.houses.each do |house|
       assert_equal(5, house.power_tokens.count, house.to_s + ' has wrong number of power tokens')
     end
+
+    # Garrison tokens
+    garrion_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
+    garrion_token_locations.each do |area_class|
+      assert_not_equal(nil, game.map.area(area_class).tokens.find { |token| token.class == GarrisonToken }, 'Missing garrison token in ' + area_class.to_s)
+    end
   end
 
   def test_house_selection_valid
