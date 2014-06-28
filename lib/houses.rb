@@ -15,5 +15,4 @@ class Houses
       block.call(house_class)
     end
   end
-
 end
