@@ -46,6 +46,9 @@ end
 # This represents the house for neutral house tokens
 class HouseIndependent < House
   HOUSE_NAME = 'Independent'
+
+  def initialize
+  end
 end
 
 class HouseStark < House
