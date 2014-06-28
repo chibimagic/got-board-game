@@ -1,7 +1,7 @@
 class OrderToken
   attr_reader :house, :special, :bonus
 
-  def initialize(house, special, bonus)
+  def initialize(house, special = false, bonus = 0)
     @house = house
     @special = special
     @bonus = bonus
