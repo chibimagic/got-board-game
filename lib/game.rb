@@ -70,7 +70,6 @@ class Game
         end
       end
 
-      5.times { receive_power_token(house) }
       @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
     end
 

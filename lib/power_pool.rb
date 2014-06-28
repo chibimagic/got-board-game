@@ -4,7 +4,7 @@ class PowerPool
   def initialize(houses)
     @pool = []
     houses.each do |house|
-      20.times { @pool.push(PowerToken.new(house)) }
+      15.times { @pool.push(PowerToken.new(house)) }
     end
   end
 end

@@ -13,7 +13,7 @@ class House
     6.times { @units.push(Ship.new(self)) }
     2.times { @units.push(SiegeEngine.new(self)) }
 
-    @power_tokens = []
+    @power_tokens = Array.new(5) { PowerToken.new(self) }
 
     @order_tokens = [
       MarchOrder.new(self, false, -1),
