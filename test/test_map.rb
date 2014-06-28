@@ -36,11 +36,15 @@ class TestMap < Test::Unit::TestCase
   def test_army_count
     h1 = HouseStark.new
     h2 = HouseLannister.new
-    @m.area(CastleBlack).tokens.push(Footman.new(h1))
-    @m.area(Winterfell).tokens.push(SiegeEngine.new(h1)).push(Knight.new(h1)).push(Footman.new(h1))
-    @m.area(Karhold).tokens.push(Knight.new(h1)).push(Knight.new(h1))
-    @m.area(Lannisport).tokens.push(Knight.new(h2)).push(Knight.new(h2))
-    @m.area(StoneySept).tokens.push(Knight.new(h2))
+    @m.place_token(CastleBlack, Footman.new(h1))
+    @m.place_token(Winterfell, SiegeEngine.new(h1))
+    @m.place_token(Winterfell, Knight.new(h1))
+    @m.place_token(Winterfell, Footman.new(h1))
+    @m.place_token(Karhold, Knight.new(h1))
+    @m.place_token(Karhold, Knight.new(h1))
+    @m.place_token(Lannisport, Knight.new(h2))
+    @m.place_token(Lannisport, Knight.new(h2))
+    @m.place_token(StoneySept, Knight.new(h2))
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end

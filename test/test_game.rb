@@ -69,10 +69,9 @@ class TestGame < Test::Unit::TestCase
     end
 
     # Garrison tokens
-    garrion_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
-    garrion_token_locations.each do |area_class|
-      assert_not_equal(nil, game.map.area(area_class).tokens.find { |token| token.class == GarrisonToken }, 'Missing garrison token in ' + area_class.to_s)
-    end
+    expected_garrison_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
+    actual_garrison_token_locations = game.map.areas.find_all { |area| area.tokens.find { |token| token.class == GarrisonToken } }.map { |area| area.class }
+    assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 
   def test_house_selection_valid
@@ -118,14 +117,14 @@ class TestGame < Test::Unit::TestCase
     h3 = HouseBaratheon.new
     houses = [h1, h2, h3]
     g = Game.new(houses)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    g.place_unit(h1, Footman, CastleBlack)
-    assert_raise(RuntimeError) { g.place_unit(h1, Footman, CastleBlack) }
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    g.place_unit(CastleBlack, h1, Footman)
+    assert_raise(RuntimeError) { g.place_unit(CastleBlack, h1, Footman) }
   end
 end

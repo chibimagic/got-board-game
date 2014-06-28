@@ -207,6 +207,7 @@ class Map
   def area(area_class)
     @areas.find { |area| area.class == area_class }
   end
+  private :area
 
   def connections
     self.class::CONNECTIONS
@@ -230,6 +231,10 @@ class Map
 
   def controlled_areas(house_class)
     @areas.find_all { |area| area.controlling_house == house_class }
+  end
+
+  def place_token(area_class, token)
+    area(area_class).place_token(token)
   end
 
   def armies(house_class)

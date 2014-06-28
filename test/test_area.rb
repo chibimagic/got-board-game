@@ -102,7 +102,7 @@ class TestArea < Test::Unit::TestCase
   end
 
   def test_house_control
-    area = @m.area(CastleBlack)
+    area = CastleBlack.new
     stark_unit = Footman.new(HouseStark.new)
     lannister_unit = Footman.new(HouseLannister.new)
     assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
@@ -120,7 +120,7 @@ class TestArea < Test::Unit::TestCase
   def test_unit_count
     h = HouseStark.new
 
-    area = @m.area(Winterfell)
+    area = Winterfell.new
     assert_equal(0, area.unit_count, 'Area should start with no units')
     area.tokens.push(Footman.new(h))
     assert_equal(1, area.unit_count, 'Footman should count has 1 unit')

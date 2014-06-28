@@ -61,18 +61,18 @@ class Game
     @westeros_deck_iii = WesterosDeckIII.new
 
     NeutralForceTokens.new(@houses.count).get_tokens.each do |token|
-      @map.area(token.area_class).tokens.push(token)
+      @map.place_token(token.area_class, token)
     end
 
     @houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
-          place_unit(house, starting_unit_class, area_class)
+          place_unit(area_class, house, starting_unit_class)
         end
       end
 
       5.times { receive_power_token(house) }
-      @map.area(house.class::HOME_AREA).tokens.push(GarrisonToken.new(house))
+      @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
     end
 
     @round_phase = :planning
@@ -90,13 +90,13 @@ class Game
   end
   private :validate_houses
 
-  def place_unit(house, unit_class, area_class)
+  def place_unit(area_class, house, unit_class)
     unit = house.units.find { |unit| unit.class == unit_class }
     if !unit
       raise house.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
     end
+    @map.place_token(area_class, unit)
     house.units.delete(unit)
-    @map.area(area_class).tokens.push(unit_class.new(house))
   end
 
   def receive_power_token(house)
