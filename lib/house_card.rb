@@ -5,10 +5,6 @@ class HouseCard
   FORTIFICATIONS = 0
   TEXT = ''
 
-  def to_s
-    title.length > 0 ? title : self.class.to_s
-  end
-
   def title
     self.class::TITLE
   end

@@ -7,7 +7,7 @@ class NeutralForceToken
   end
 
   def to_s
-    @area_class.to_s + ' (' + strength.to_s + ')'
+    @area_class.to_s + ' (' + @strength.to_s + ')'
   end
 
   def house

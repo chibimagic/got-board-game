@@ -1,7 +1,7 @@
 class House
   attr_reader :player_name, :units, :power_tokens, :order_tokens
 
-  HOUSE_NAME = ''
+  TITLE = ''
   MINIMUM_PLAYERS = 3
 
   def initialize(player_name = '')
@@ -35,25 +35,25 @@ class House
   end
 
   def self.to_s
-    'House ' + self::HOUSE_NAME
+    self::TITLE
   end
 
   def to_s
     name = @player_name.length > 0 ? @player_name : 'no name'
-    'House ' + self.class::HOUSE_NAME + ' (' + name + ')'
+    self.class::TITLE + ' (' + name + ')'
   end
 end
 
 # This represents the house for neutral house tokens
 class HouseIndependent < House
-  HOUSE_NAME = 'Independent'
+  TITLE = 'Independent Houses'
 
   def initialize
   end
 end
 
 class HouseStark < House
-  HOUSE_NAME = 'Stark'
+  TITLE = 'House Stark'
   HOME_AREA = Winterfell
   INITIAL_SUPPLY = 1
 
@@ -71,7 +71,7 @@ class HouseStark < House
 end
 
 class HouseLannister < House
-  HOUSE_NAME = 'Lannister'
+  TITLE = 'House Lannister'
   HOME_AREA = Lannisport
   INITIAL_SUPPLY = 2
 
@@ -89,7 +89,7 @@ class HouseLannister < House
 end
 
 class HouseBaratheon < House
-  HOUSE_NAME = 'Baratheon'
+  TITLE = 'House Baratheon'
   HOME_AREA = Dragonstone
   INITIAL_SUPPLY = 2
 
@@ -107,7 +107,7 @@ class HouseBaratheon < House
 end
 
 class HouseGreyjoy < House
-  HOUSE_NAME = 'Greyjoy'
+  TITLE = 'House Greyjoy'
   HOME_AREA = Pyke
   MINIMUM_PLAYERS = 4
   INITIAL_SUPPLY = 2
@@ -126,7 +126,7 @@ class HouseGreyjoy < House
 end
 
 class HouseTyrell < House
-  HOUSE_NAME = 'Tyrell'
+  TITLE = 'House Tyrell'
   HOME_AREA = Highgarden
   MINIMUM_PLAYERS = 5
   INITIAL_SUPPLY = 2
@@ -145,7 +145,7 @@ class HouseTyrell < House
 end
 
 class HouseMartell < House
-  HOUSE_NAME = 'Martell'
+  TITLE = 'House Martell'
   HOME_AREA = Sunspear
   MINIMUM_PLAYERS = 6
   INITIAL_SUPPLY = 2

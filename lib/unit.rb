@@ -8,7 +8,7 @@ class Unit
   end
 
   def to_s
-    self.class::TITLE
+    self.class::TITLE + ' (' + @house.class.to_s + ')'
   end
 end
 

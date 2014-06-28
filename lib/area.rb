@@ -19,7 +19,7 @@ class Area
   end
 
   def to_s
-    self.class::TITLE
+    self.class::TITLE + ' (' + @tokens.count.to_s + ')'
   end
 
   def connection_count

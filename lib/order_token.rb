@@ -6,6 +6,10 @@ class OrderToken
     @special = special
     @bonus = bonus
   end
+
+  def to_s
+    self.class::TITLE + ' (' + @house.class.to_s + ')'
+  end
 end
 
 class MarchOrder < OrderToken
