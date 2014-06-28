@@ -80,25 +80,40 @@ class TestArea < Test::Unit::TestCase
   end
 
   def test_area_totals
+    land_areas = @m.areas.count { |area| area.is_a?(LandArea) }
+    sea_areas = @m.areas.count { |area| area.is_a?(SeaArea) }
+    port_areas = @m.areas.count { |area| area.is_a?(PortArea) }
     strongholds = @m.areas.count { |area| area.has_stronghold? }
     castles = @m.areas.count { |area| area.has_castle? }
     supply = @m.areas.inject(0) { |sum, area| sum + area.supply }
     power = @m.areas.inject(0) { |sum, area| sum + area.power }
-    ports = @m.areas.count { |area| area.has_port? }
+    assert_equal(38, land_areas, 'Map port count incorrect')
+    assert_equal(12, sea_areas, 'Map port count incorrect')
+    assert_equal(8, port_areas, 'Map port count incorrect')
     assert_equal(10, strongholds, 'Map stronghold count incorrect')
     assert_equal(10, castles, 'Map castle count incorrect')
     assert_equal(24, supply, 'Map supply count incorrect')
     assert_equal(19, power, 'Map power count incorrect')
-    assert_equal(8, ports, 'Map port count incorrect')
   end
 
-  def test_area_ports
-    @m.areas.each do |area|
-      if area.has_port?
-        assert_not_equal(nil, area.port_to, area.to_s + ' has an unconnected port')
-        assert_equal(SeaArea, area.port_to.superclass, area.to_s + ' has a port that doesn\'t connect to a sea area')
-      end
+  def test_port_connection
+    ports = @m.areas.find_all { |area| area.is_a?(PortArea) }
+    ports.each do |port|
+      assert_equal(LandArea, port.land.superclass, port.to_s + ' should be connected to land')
+      assert_equal(SeaArea, port.sea.superclass, port.to_s + ' should be connected to the sea')
     end
+  end
+
+  def test_port_uniqueness
+    expected_port_lands = [Dragonstone, Lannisport, Oldtown, Pyke, StormsEnd, Sunspear, WhiteHarbor, Winterfell]
+    expected_port_seas = [BayOfIce, EastSummerSea, IronmansBay, RedwyneStraits, ShipbreakerBay, TheGoldenSound, TheNarrowSea]
+    ports = @m.areas.find_all { |area| area.is_a?(PortArea) }
+    port_lands = ports.map { |port| port.land }
+    port_seas = ports.map { |port| port.sea }
+    assert_equal(expected_port_lands.to_set, port_lands.to_set, 'Wrong land areas for port')
+    assert_equal(expected_port_seas.to_set, port_seas.to_set, 'Wrong sea areas for port')
+    assert_equal(port_lands, port_lands.uniq, 'Multiple ports in a land area')
+    assert_not_equal(port_seas, port_seas.uniq, 'Should be multiple ports on a sea')
   end
 
   def test_house_control

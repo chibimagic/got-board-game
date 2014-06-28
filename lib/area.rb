@@ -5,8 +5,6 @@ class Area
   CASTLE = false
   SUPPLY = 0
   POWER = 0
-  PORT = false
-  PORT_TO = nil
 
   def initialize
     @tokens = []
@@ -38,14 +36,6 @@ class Area
 
   def power
     self.class::POWER
-  end
-
-  def has_port?
-    self.class::PORT
-  end
-
-  def port_to
-    self.class::PORT_TO
   end
 
   def controlling_house
@@ -83,6 +73,16 @@ class SeaArea < Area
 end
 
 class LandArea < Area
+end
+
+class PortArea < Area
+  def land
+    self.class::LAND_AREA
+  end
+
+  def sea
+    self.class::SEA_AREA
+  end
 end
 
 class BayOfIce < SeaArea
@@ -175,8 +175,6 @@ class Dragonstone < LandArea
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
-  PORT = true
-  PORT_TO = ShipbreakerBay
 end
 
 class FlintsFinger < LandArea
@@ -230,8 +228,6 @@ class Lannisport < LandArea
   CONNECTION_COUNT = 4
   STRONGHOLD = true
   SUPPLY = 2
-  PORT = true
-  PORT_TO = TheGoldenSound
 end
 
 class MoatCalin < LandArea
@@ -244,8 +240,6 @@ class Oldtown < LandArea
   TITLE = 'Oldtown'
   CONNECTION_COUNT = 4
   STRONGHOLD = true
-  PORT = true
-  PORT_TO = RedwyneStraits
 end
 
 class PrincesPass < LandArea
@@ -261,8 +255,6 @@ class Pyke < LandArea
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
-  PORT = true
-  PORT_TO = IronmansBay
 end
 
 class Riverrun < LandArea
@@ -310,8 +302,6 @@ class StormsEnd < LandArea
   TITLE = 'Storm\'s End'
   CONNECTION_COUNT = 5
   CASTLE = true
-  PORT = true
-  PORT_TO = ShipbreakerBay
 end
 
 class Sunspear < LandArea
@@ -320,8 +310,6 @@ class Sunspear < LandArea
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
-  PORT = true
-  PORT_TO = EastSummerSea
 end
 
 class TheArbor < LandArea
@@ -384,8 +372,6 @@ class WhiteHarbor < LandArea
   TITLE = 'White Harbor'
   CONNECTION_COUNT = 5
   CASTLE = true
-  PORT = true
-  PORT_TO = TheNarrowSea
 end
 
 class WidowsWatch < LandArea
@@ -400,12 +386,58 @@ class Winterfell < LandArea
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
-  PORT = true
-  PORT_TO = BayOfIce
 end
 
 class Yronwood < LandArea
   TITLE = 'Yronwood'
   CONNECTION_COUNT = 6
   CASTLE = true
+end
+
+class DragonstonePortToShipbreakerBay < PortArea
+  TITLE = 'Dragonstone Port (Shipbreaker Bay)'
+  LAND_AREA = Dragonstone
+  SEA_AREA = ShipbreakerBay
+end
+
+class LannisportPortToTheGoldenSound < PortArea
+  TITLE = 'Lannisport Port (The Golden Sound)'
+  LAND_AREA = Lannisport
+  SEA_AREA = TheGoldenSound
+end
+
+class OldtownPortToRedwyneStraits < PortArea
+  TITLE = 'Oldtown Port (Redwyne Straits)'
+  LAND_AREA = Oldtown
+  SEA_AREA = RedwyneStraits
+end
+
+class PykePortToIronmansBay < PortArea
+  TITLE = 'Pyke Port (Ironmans Bay)'
+  LAND_AREA = Pyke
+  SEA_AREA = IronmansBay
+end
+
+class StormsEndPortToShipbreakerBay < PortArea
+  TITLE = 'Storm\'s End Port (Shipbreaker Bay)'
+  LAND_AREA = StormsEnd
+  SEA_AREA = ShipbreakerBay
+end
+
+class SunspearPortToEastSummerSea < PortArea
+  TITLE = 'Sunspear Port (East Summer Sea)'
+  LAND_AREA = Sunspear
+  SEA_AREA = EastSummerSea
+end
+
+class WhiteHarborPortToTheNarrowSea < PortArea
+  TITLE = 'White Harbor Port (The Narrow Sea)'
+  LAND_AREA = WhiteHarbor
+  SEA_AREA = TheNarrowSea
+end
+
+class WinterfellPortToBayOIce < PortArea
+  TITLE = 'Winterfell Port (Bay of Ice)'
+  LAND_AREA = Winterfell
+  SEA_AREA = BayOfIce
 end

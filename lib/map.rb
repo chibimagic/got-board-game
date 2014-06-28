@@ -2,6 +2,7 @@ class Map
   attr_reader :areas
 
   AREAS = [
+    # Sea areas
     BayOfIce,
     BlackwaterBay,
     EastSummerSea,
@@ -14,6 +15,7 @@ class Map
     TheNarrowSea,
     TheShiveringSea,
     WestSummerSea,
+    # Land areas
     Blackwater,
     CastleBlack,
     CrackclawPoint,
@@ -51,7 +53,16 @@ class Map
     WhiteHarbor,
     WidowsWatch,
     Winterfell,
-    Yronwood
+    Yronwood,
+    # Ports
+    DragonstonePortToShipbreakerBay,
+    LannisportPortToTheGoldenSound,
+    OldtownPortToRedwyneStraits,
+    PykePortToIronmansBay,
+    StormsEndPortToShipbreakerBay,
+    SunspearPortToEastSummerSea,
+    WhiteHarborPortToTheNarrowSea,
+    WinterfellPortToBayOIce,
   ]
 
   CONNECTIONS = [
