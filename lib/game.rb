@@ -66,7 +66,7 @@ class Game
     @houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
-          place_unit(area_class, house, starting_unit_class)
+          place_token(area_class, house.class, starting_unit_class)
         end
       end
 
@@ -88,13 +88,18 @@ class Game
   end
   private :validate_houses
 
-  def place_unit(area_class, house, unit_class)
-    unit = house.units.find { |unit| unit.class == unit_class }
-    if !unit
-      raise house.to_s + ' does not have an available ' + unit_class.to_s + ' to place in ' + area_class.to_s
+  def house(house_class)
+    @houses.find { |house| house.class == house_class }
+  end
+  private :house
+
+  def place_token(area_class, house_class, token_class)
+    token = house(house_class).get_token(token_class)
+    if !token
+      raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
-    @map.place_token(area_class, unit)
-    house.units.delete(unit)
+    @map.place_token(area_class, token)
+    house(house_class).remove_token(token)
   end
 
   def receive_power_token(house)

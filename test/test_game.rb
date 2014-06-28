@@ -112,19 +112,15 @@ class TestGame < Test::Unit::TestCase
   end
 
   def test_place_units
-    h1 = HouseStark.new
-    h2 = HouseLannister.new
-    h3 = HouseBaratheon.new
-    houses = [h1, h2, h3]
-    g = Game.new(houses)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    g.place_unit(CastleBlack, h1, Footman)
-    assert_raise(RuntimeError) { g.place_unit(CastleBlack, h1, Footman) }
+    g = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    assert_raise(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
   end
 end

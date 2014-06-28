@@ -42,6 +42,17 @@ class House
     name = @player_name.length > 0 ? @player_name : 'no name'
     self.class::TITLE + ' (' + name + ')'
   end
+
+  def get_token(token_class)
+    tokens = [@units, @power_tokens, @order_tokens].flatten
+    tokens.find { |token| token.class == token_class }
+  end
+
+  def remove_token(token)
+    @units.delete(token)
+    @power_tokens.delete(token)
+    @order_tokens.delete(token)
+  end
 end
 
 # This represents the house for neutral house tokens
