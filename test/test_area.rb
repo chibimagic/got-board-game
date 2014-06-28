@@ -133,4 +133,22 @@ class TestArea < Test::Unit::TestCase
     area.place_token(MarchOrder.new(h, false, 0))
     assert_equal(2, area.unit_count, 'Orders should not count as unit')
   end
+
+  def test_token_existence
+    a = CastleBlack.new
+    h = HouseStark.new
+    assert_equal(false, a.has_token?(Footman))
+    assert_equal(false, a.has_token?(PowerToken))
+    assert_equal(false, a.has_token?(MarchOrder))
+    assert_equal(false, a.has_token?(GarrisonToken))
+
+    a.place_token(Footman.new(h))
+    assert_equal(true, a.has_token?(Footman))
+    a.place_token(PowerToken.new(h))
+    assert_equal(true, a.has_token?(PowerToken))
+    a.place_token(MarchOrder.new(h))
+    assert_equal(true, a.has_token?(MarchOrder))
+    a.place_token(GarrisonToken.new(h))
+    assert_equal(true, a.has_token?(GarrisonToken))
+  end
 end

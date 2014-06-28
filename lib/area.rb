@@ -67,7 +67,7 @@ class Area
   end
 
   def has_token? (token_class)
-    @tokens.find { |token| token.class == token_class }
+    @tokens.find { |token| token.class == token_class } ? true : false
   end
 
   def place_token(token)
