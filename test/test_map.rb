@@ -26,11 +26,11 @@ class TestMap < Test::Unit::TestCase
   end
 
   def test_connected_areas
-    castle_black_lands = [Winterfell, Karhold].to_set
-    castle_black_seas = [BayOfIce, TheShiveringSea].to_set
-    assert_equal(castle_black_lands + castle_black_seas, @m.connected_areas(CastleBlack), 'Castle Black has wrong areas connected')
-    assert_equal(castle_black_lands, @m.connected_lands(CastleBlack), 'Castle Black has wrong areas connected')
-    assert_equal(castle_black_seas, @m.connected_seas(CastleBlack), 'Castle Black has wrong areas connected')
+    castle_black_lands = [Winterfell, Karhold]
+    castle_black_seas = [BayOfIce, TheShiveringSea]
+    assert_equal(castle_black_lands.to_set + castle_black_seas.to_set, @m.connected_areas(CastleBlack).to_set, 'Castle Black has wrong areas connected')
+    assert_equal(castle_black_lands.to_set, @m.connected_lands(CastleBlack).to_set, 'Castle Black has wrong areas connected')
+    assert_equal(castle_black_seas.to_set, @m.connected_seas(CastleBlack).to_set, 'Castle Black has wrong areas connected')
   end
 
   def test_army_count

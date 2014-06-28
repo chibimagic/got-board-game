@@ -7,11 +7,11 @@ class House
   def initialize(player_name = '')
     @player_name = player_name
 
-    @units = [].to_set
-    10.times { @units.add(Footman.new(self)) }
-    5.times { @units.add(Knight.new(self)) }
-    6.times { @units.add(Ship.new(self)) }
-    2.times { @units.add(SiegeEngine.new(self)) }
+    @units = []
+    10.times { @units.push(Footman.new(self)) }
+    5.times { @units.push(Knight.new(self)) }
+    6.times { @units.push(Ship.new(self)) }
+    2.times { @units.push(SiegeEngine.new(self)) }
 
     @power_tokens = []
 

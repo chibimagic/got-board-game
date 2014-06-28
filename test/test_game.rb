@@ -38,16 +38,16 @@ class TestGame < Test::Unit::TestCase
 
     # All houses except House Stark begin at supply = 2
     expected_supply = {
-      0 => [].to_set,
-      1 => [HouseStark].to_set,
-      2 => [HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell].to_set,
-      3 => [].to_set,
-      4 => [].to_set,
-      5 => [].to_set,
-      6 => [].to_set
+      0 => [],
+      1 => [HouseStark],
+      2 => [HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell],
+      3 => [],
+      4 => [],
+      5 => [],
+      6 => []
     }
     expected_supply.each do |supply_level, houses|
-      assert_equal(houses, game.map.houses_with_supply(supply_level), 'Houses with supply ' + supply_level.to_s + ' should be: ' + houses.to_a.join(', '))
+      assert_equal(houses.to_set, game.map.houses_with_supply(supply_level).to_set, 'Houses with supply ' + supply_level.to_s + ' should be: ' + houses.to_a.join(', '))
     end
     houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
     houses.each do |house_class|

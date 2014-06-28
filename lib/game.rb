@@ -1,4 +1,3 @@
-require 'set'
 require_relative 'deck.rb'
 require_relative 'house_card.rb'
 require_relative 'house_card_deck.rb'
