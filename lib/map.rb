@@ -213,20 +213,20 @@ class Map
     self.class::CONNECTIONS
   end
 
-  def connected?(area1, area2)
-    connections.include?([area1, area2]) || connections.include?([area2, area1])
+  def connected?(area_class1, area_class2)
+    connections.include?([area_class1, area_class2]) || connections.include?([area_class2, area_class1])
   end
 
-  def connected_areas(area)
-    connections.find_all { |connection| connection.include?(area) }.map { |connection| connection - [area] }.flatten
+  def connected_areas(area_class)
+    connections.find_all { |connection| connection.include?(area_class) }.map { |connection| connection - [area_class] }.flatten
   end
 
-  def connected_lands(area)
-    connected_areas(area).find_all { |area| area < LandArea }
+  def connected_lands(area_class)
+    connected_areas(area_class).find_all { |area_class| area_class < LandArea }
   end
 
-  def connected_seas(area)
-    connected_areas(area).find_all { |area| area < SeaArea }
+  def connected_seas(area_class)
+    connected_areas(area_class).find_all { |area_class| area_class < SeaArea }
   end
 
   def controlled_areas(house_class)
