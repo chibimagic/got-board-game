@@ -107,13 +107,13 @@ class TestArea < Test::Unit::TestCase
     lannister_unit = Footman.new(HouseLannister.new)
     assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
 
-    area.tokens.push(stark_unit)
+    area.place_token(stark_unit)
     assert_equal(HouseStark, area.controlling_house, 'Area should be controlled by House Stark')
 
-    area.tokens.delete(stark_unit)
+    area.remove_token(stark_unit)
     assert_equal(nil, area.controlling_house, 'Area should revert to uncontrolled')
 
-    area.tokens.push(lannister_unit)
+    area.place_token(lannister_unit)
     assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
   end
 
@@ -122,15 +122,15 @@ class TestArea < Test::Unit::TestCase
 
     area = Winterfell.new
     assert_equal(0, area.unit_count, 'Area should start with no units')
-    area.tokens.push(Footman.new(h))
+    area.place_token(Footman.new(h))
     assert_equal(1, area.unit_count, 'Footman should count has 1 unit')
-    area.tokens.push(Knight.new(h))
+    area.place_token(Knight.new(h))
     assert_equal(2, area.unit_count, 'Knight should count as 1 unit')
-    area.tokens.push(GarrisonToken.new(h))
+    area.place_token(GarrisonToken.new(h))
     assert_equal(2, area.unit_count, 'Garrison token should not count as unit')
-    area.tokens.push(PowerToken.new(h))
+    area.place_token(PowerToken.new(h))
     assert_equal(2, area.unit_count, 'Power token should not count as unit')
-    area.tokens.push(MarchOrder.new(h, false, 0))
+    area.place_token(MarchOrder.new(h, false, 0))
     assert_equal(2, area.unit_count, 'Orders should not count as unit')
   end
 end

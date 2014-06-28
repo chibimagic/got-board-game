@@ -1,6 +1,4 @@
 class Area
-  attr_reader :tokens
-
   TITLE = ''
   CONNECTION_COUNT = 0
   STRONGHOLD = false
@@ -68,8 +66,16 @@ class Area
     @tokens.count { |token| token.is_a? Unit }
   end
 
+  def has_token? (token_class)
+    @tokens.find { |token| token.class == token_class }
+  end
+
   def place_token(token)
     @tokens.push(token)
+  end
+
+  def remove_token(token)
+    @tokens.delete(token)
   end
 end
 

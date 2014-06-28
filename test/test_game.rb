@@ -70,7 +70,7 @@ class TestGame < Test::Unit::TestCase
 
     # Garrison tokens
     expected_garrison_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
-    actual_garrison_token_locations = game.map.areas.find_all { |area| area.tokens.find { |token| token.class == GarrisonToken } }.map { |area| area.class }
+    actual_garrison_token_locations = game.map.areas.find_all { |area| area.has_token? (GarrisonToken) }.map { |area| area.class }
     assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 
