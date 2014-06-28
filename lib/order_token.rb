@@ -9,16 +9,21 @@ class OrderToken
 end
 
 class MarchOrder < OrderToken
+  TITLE = 'March Order'
 end
 
 class DefenseOrder < OrderToken
+  TITLE = 'Defense Order'
 end
 
 class SupportOrder < OrderToken
+  TITLE = 'Support Order'
 end
 
 class RaidOrder < OrderToken
+  TITLE = 'Raid Order'
 end
 
 class ConsolidatePowerOrder < OrderToken
+  TITLE = 'Consolidate Power Order'
 end
