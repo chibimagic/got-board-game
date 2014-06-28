@@ -12,7 +12,7 @@ class TestOrderToken < Test::Unit::TestCase
       ConsolidatePowerOrder => [0, 0, 0]
     }
     data.each do |order_class, expected_bonuses|
-      actual_bonuses = @t.find_all { |token| token.class == order_class }.map { |token| token.bonus }
+      actual_bonuses = @t.find_all { |token| token.is_a?(order_class) }.map { |token| token.bonus }
       assert_equal(expected_bonuses, actual_bonuses, 'Wrong bonuses for ' + order_class.to_s)
     end
   end

@@ -16,21 +16,21 @@ class House
     @power_tokens = Array.new(5) { PowerToken.new(self) }
 
     @order_tokens = [
-      MarchOrder.new(self, false, -1),
-      MarchOrder.new(self, false, 0),
-      MarchOrder.new(self, true, 1),
-      DefenseOrder.new(self, false, 1),
-      DefenseOrder.new(self, false, 1),
-      DefenseOrder.new(self, true, 2),
-      SupportOrder.new(self, false, 0),
-      SupportOrder.new(self, false, 0),
-      SupportOrder.new(self, true, 1),
-      RaidOrder.new(self, false, 0),
-      RaidOrder.new(self, false, 0),
-      RaidOrder.new(self, true, 0),
-      ConsolidatePowerOrder.new(self, false, 0),
-      ConsolidatePowerOrder.new(self, false, 0),
-      ConsolidatePowerOrder.new(self, true, 0),
+      WeakMarchOrder.new(self),
+      MarchOrder.new(self),
+      SpecialMarchOrder.new(self),
+      DefenseOrder.new(self),
+      DefenseOrder.new(self),
+      SpecialDefenseOrder.new(self),
+      SupportOrder.new(self),
+      SupportOrder.new(self),
+      SpecialSupportOrder.new(self),
+      RaidOrder.new(self),
+      RaidOrder.new(self),
+      SpecialRaidOrder.new(self),
+      ConsolidatePowerOrder.new(self),
+      ConsolidatePowerOrder.new(self),
+      SpecialConsolidatePowerOrder.new(self),
     ]
   end
 

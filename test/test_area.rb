@@ -130,7 +130,7 @@ class TestArea < Test::Unit::TestCase
     assert_equal(2, area.unit_count, 'Garrison token should not count as unit')
     area.place_token(PowerToken.new(h))
     assert_equal(2, area.unit_count, 'Power token should not count as unit')
-    area.place_token(MarchOrder.new(h, false, 0))
+    area.place_token(MarchOrder.new(h))
     assert_equal(2, area.unit_count, 'Orders should not count as unit')
   end
 
