@@ -63,10 +63,10 @@ class Area
   end
 
   def unit_count
-    @tokens.count { |token| token.is_a? Unit }
+    @tokens.count { |token| token.is_a?(Unit) }
   end
 
-  def has_token? (token_class)
+  def has_token?(token_class)
     @tokens.find { |token| token.class == token_class } ? true : false
   end
 

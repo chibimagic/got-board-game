@@ -30,10 +30,10 @@ class TestGame < Test::Unit::TestCase
     }
     expected_units_remaining.each do |house_class, units_remaining|
       house = houses.find { |house| house.class == house_class }
-      assert_equal(units_remaining[:footmen], house.units.count{ |unit| unit.is_a? Footman })
-      assert_equal(units_remaining[:knights], house.units.count{ |unit| unit.is_a? Knight })
-      assert_equal(units_remaining[:ships], house.units.count{ |unit| unit.is_a? Ship })
-      assert_equal(units_remaining[:siege_engines], house.units.count{ |unit| unit.is_a? SiegeEngine })
+      assert_equal(units_remaining[:footmen], house.units.count{ |unit| unit.is_a?(Footman) })
+      assert_equal(units_remaining[:knights], house.units.count{ |unit| unit.is_a?(Knight) })
+      assert_equal(units_remaining[:ships], house.units.count{ |unit| unit.is_a?(Ship) })
+      assert_equal(units_remaining[:siege_engines], house.units.count{ |unit| unit.is_a?(SiegeEngine) })
     end
 
     # All houses except House Stark begin at supply = 2
@@ -70,7 +70,7 @@ class TestGame < Test::Unit::TestCase
 
     # Garrison tokens
     expected_garrison_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
-    actual_garrison_token_locations = game.map.areas.find_all { |area| area.has_token? (GarrisonToken) }.map { |area| area.class }
+    actual_garrison_token_locations = game.map.areas.find_all { |area| area.has_token?(GarrisonToken) }.map { |area| area.class }
     assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 

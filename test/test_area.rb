@@ -6,7 +6,7 @@ class TestArea < Test::Unit::TestCase
   def test_area_something
     @m.areas.each do |area|
       has_strategic_value = area.has_stronghold? || area.has_castle? || area.supply > 0 || area.power > 0
-      if area.kind_of? LandArea
+      if area.kind_of?(LandArea)
         assert_equal(true, has_strategic_value, area.to_s + ' should have strategic value')
       else
         assert_equal(false, has_strategic_value, area.to_s + ' should not have strategic value')
