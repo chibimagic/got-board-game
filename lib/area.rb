@@ -57,10 +57,19 @@ class Area
   end
 
   def has_token?(token_class)
-    @tokens.find { |token| token.class == token_class } ? true : false
+    @tokens.find { |token| token.is_a?(token_class) } ? true : false
   end
 
   def place_token(token)
+    if token.is_a?(OrderToken)
+      if unit_count == 0
+        raise 'Cannot place order because ' + to_s + ' has no units'
+      elsif controlling_house != token.house.class
+        raise token.to_s + ' cannot be placed because ' + controlling_house.to_s + ' controls ' + to_s
+      elsif has_token?(OrderToken)
+        raise to_s + ' already has an order token'
+      end
+    end
     @tokens.push(token)
   end
 

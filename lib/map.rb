@@ -252,6 +252,10 @@ class Map
     controlled_areas(house_class).map { |area| area.unit_count }.reject { |unit_count| unit_count < 2 }.sort.reverse
   end
 
+  def orders_in?
+    @areas.find { |area| area.has_token?(Unit) && !area.has_token?(OrderToken) } ? false : true
+  end
+
   def supply_level(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end

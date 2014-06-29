@@ -18,7 +18,7 @@ class TestGame < Test::Unit::TestCase
     game = Game.new(houses)
     assert_equal(6, game.houses.length)
     assert_equal(1, game.game_round)
-    assert_equal(:planning, game.round_phase)
+    assert_equal(:planning_assign, game.round_phase)
 
     expected_units_remaining = {
       HouseStark => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },

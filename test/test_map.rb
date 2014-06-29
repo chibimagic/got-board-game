@@ -48,4 +48,14 @@ class TestMap < Test::Unit::TestCase
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
+
+  def test_orders_in
+    h = HouseStark.new
+
+    assert_equal(true, @m.orders_in?)
+    @m.place_token(CastleBlack, Footman.new(h))
+    assert_equal(false, @m.orders_in?)
+    @m.place_token(CastleBlack, MarchOrder.new(h))
+    assert_equal(true, @m.orders_in?)
+  end
 end

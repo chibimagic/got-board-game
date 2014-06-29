@@ -34,7 +34,8 @@ class Game
 
   ROUND_PHASES = [
     :westeros,
-    :planning,
+    :planning_assign,
+    :planning_raven,
     :action
   ]
 
@@ -73,7 +74,7 @@ class Game
       @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
     end
 
-    @round_phase = :planning
+    @round_phase = :planning_assign
   end
 
   def validate_houses(houses)
@@ -94,12 +95,18 @@ class Game
   private :house
 
   def place_token(area_class, house_class, token_class)
+    if token_class < OrderToken && @round_phase != :planning_assign
+      raise 'Cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
+    end
     token = house(house_class).get_token(token_class)
     if !token
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
     @map.place_token(area_class, token)
     house(house_class).remove_token(token)
+    if @round_phase == :planning_assign && @map.orders_in?
+      @round_phase = :planning_raven
+    end
   end
 
   def receive_power_token(house)

@@ -166,4 +166,17 @@ class TestArea < Test::Unit::TestCase
     a.place_token(GarrisonToken.new(h))
     assert_equal(true, a.has_token?(GarrisonToken))
   end
+
+  def test_place_token
+    a = CastleBlack.new
+    h = HouseStark.new
+
+    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(h)) }
+
+    a.place_token(Footman.new(h))
+    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister.new)) }
+
+    a.place_token(MarchOrder.new(h))
+    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(h)) }
+  end
 end
