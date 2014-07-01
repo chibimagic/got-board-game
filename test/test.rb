@@ -2,7 +2,8 @@ require 'simplecov'
 SimpleCov.start
 
 require 'test/unit'
-require_relative '../lib/game.rb'
+require 'rest_client'
+require_relative '../routes.rb'
 
 require 'set'
 
