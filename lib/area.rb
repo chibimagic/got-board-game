@@ -10,6 +10,13 @@ class Area
     @tokens = []
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+    @tokens.map { |token| token.serialize }
+  end
+
   def self.to_s
     self::TITLE
   end

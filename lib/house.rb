@@ -38,6 +38,12 @@ class House
   end
 
   def serialize
+    {
+      :player_name => @player_name,
+      :units => @units.map { |unit| unit.serialize },
+      :power_tokens => @power_tokens.count,
+      :order_tokens => @order_tokens.map { |order_token| order_token.serialize }
+    }
   end
 
   def self.to_s

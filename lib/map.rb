@@ -219,6 +219,7 @@ class Map
   end
 
   def serialize
+    Hash[@areas.map { |area| [area.class, area.serialize] }]
   end
 
   def area(area_class)

@@ -6,6 +6,13 @@ class NeutralForceToken
     @strength = strength
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+    { self.class => @strength }
+  end
+
   def to_s
     @area_class.to_s + ' (' + @strength.to_s + ')'
   end

@@ -12,6 +12,7 @@ class Deck
   end
 
   def serialize
+    @cards.map { |card| card.class }
   end
 
   def cards_remaining

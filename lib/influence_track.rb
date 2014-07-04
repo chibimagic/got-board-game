@@ -14,6 +14,7 @@ class InfluenceTrack
   end
 
   def serialize
+    @track
   end
 
   # Returns 1-based index

@@ -9,6 +9,7 @@ class WildlingTrack
   end
 
   def serialize
+    @strength
   end
 
   def increase

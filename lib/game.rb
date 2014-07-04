@@ -85,6 +85,7 @@ class Game
       :houses => @houses.map { |house| house.serialize },
       :map => @map.serialize,
       :game_round => @game_round,
+      :round_phase => @round_phase,
       :wildling_track => @wildling_track.serialize,
       :iron_throne_track => @iron_throne_track.serialize,
       :fiefdoms_track => @fiefdoms_track.serialize,
