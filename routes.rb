@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'JSON'
 require_relative 'lib/game.rb'
+require_relative 'lib/storage.rb'
 
 # Start a new game
 post '/games' do
@@ -17,6 +18,8 @@ post '/games' do
     }
     houses = data.map { |house, player_name| house_map[house].new(player_name) }
     g = Game.new(houses)
+    game_id = Storage.save_game(nil, g)
+    { :game_id => game_id }.to_json
   rescue JSON::ParserError => e
     'JSON input expected'
   rescue RuntimeError => e
