@@ -7,4 +7,10 @@ class PowerPool
       15.times { @pool.push(PowerToken.new(house)) }
     end
   end
+
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
 end

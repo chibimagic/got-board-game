@@ -77,6 +77,26 @@ class Game
     @round_phase = :planning_assign
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+    {
+      :houses => @houses.map { |house| house.serialize },
+      :map => @map.serialize,
+      :game_round => @game_round,
+      :wildling_track => @wildling_track.serialize,
+      :iron_throne_track => @iron_throne_track.serialize,
+      :fiefdoms_track => @fiefdoms_track.serialize,
+      :kings_court_track => @kings_court_track.serialize,
+      :power_pool => @power_pool.serialize,
+      :wildling_deck => @wildling_deck.serialize,
+      :westeros_deck_i => @westeros_deck_i.serialize,
+      :westeros_deck_ii => @westeros_deck_ii.serialize,
+      :westeros_deck_iii => @westeros_deck_iii.serialize
+    }.to_json
+  end
+
   def validate_houses(houses)
     Houses.new.each do |house_class|
       selected_times = houses.count { |house| house.class == house_class }

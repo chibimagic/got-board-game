@@ -34,6 +34,12 @@ class House
     ]
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
+
   def self.to_s
     self::TITLE
   end

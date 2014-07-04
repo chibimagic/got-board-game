@@ -8,6 +8,12 @@ class Deck
     end
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
+
   def cards_remaining
     @cards.length
   end

@@ -10,6 +10,12 @@ class InfluenceTrack
     @track.delete(nil) # Fill in empty spots from missing houses
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
+
   # Returns 1-based index
   def position(house_class)
     @track.find_index(house_class) + 1

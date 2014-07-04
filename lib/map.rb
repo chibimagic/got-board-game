@@ -215,6 +215,12 @@ class Map
     end
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
+
   def area(area_class)
     @areas.find { |area| area.class == area_class }
   end

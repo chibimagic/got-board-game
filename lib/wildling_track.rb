@@ -5,6 +5,12 @@ class WildlingTrack
     @strength = 2
   end
 
+  def self.unserialize(data)
+  end
+
+  def serialize
+  end
+
   def increase
     @strength = [@strength + 2, 12].min
   end
