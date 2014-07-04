@@ -12,6 +12,15 @@ class Storage
     db
   end
 
+  def self.list_games
+    db.execute('select game_id from games').flatten
+  end
+
+  def self.get_game(game_id)
+    data = db.execute('select data from games where game_id=?', game_id)
+    Game.unserialize(data)
+  end
+
   def self.save_game(game_id, game)
     data = game.serialize
     db.execute('insert or replace into games (game_id, data) values (?, ?)', [game_id, data])

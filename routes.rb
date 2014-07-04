@@ -3,6 +3,11 @@ require 'JSON'
 require_relative 'lib/game.rb'
 require_relative 'lib/storage.rb'
 
+# List existing games
+get '/games' do
+  Storage.list_games.to_json
+end
+
 # Start a new game
 post '/games' do
   begin
