@@ -1,4 +1,4 @@
-class TestWesterosDeck < Test::Unit::TestCase
+class TestWesterosDeck < MiniTest::Test
   def test_deck_count
     decks = [WesterosDeckI, WesterosDeckII, WesterosDeckIII]
     decks.each do |deck_class|

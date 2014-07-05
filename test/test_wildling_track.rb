@@ -1,4 +1,4 @@
-class TestWildlingTrack < Test::Unit::TestCase
+class TestWildlingTrack < MiniTest::Test
   def setup
     @track = WildlingTrack.new
   end

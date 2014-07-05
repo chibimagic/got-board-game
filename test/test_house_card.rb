@@ -1,4 +1,4 @@
-class TestHouseCard < Test::Unit::TestCase
+class TestHouseCard < MiniTest::Test
   DECK_CLASSES = [HouseStarkDeck, HouseLannisterDeck, HouseBaratheonDeck, HouseGreyjoyDeck, HouseTyrellDeck, HouseMartellDeck]
 
   def setup
@@ -31,7 +31,7 @@ class TestHouseCard < Test::Unit::TestCase
   def test_card_title
     @decks.each do |deck|
       deck.cards.each do |card|
-        assert_not_equal('', card.title, card.to_s + ' has no title')
+        refute_equal('', card.title, card.to_s + ' has no title')
       end
     end
   end
@@ -43,7 +43,7 @@ class TestHouseCard < Test::Unit::TestCase
         if card.swords > 0 || card.fortifications > 0
           assert_equal('', card.text, card.to_s + ' has both sword/fortifications and text')
         else
-          assert_not_equal('', card.text, card.to_s + ' has no sword, fortiications, or text')
+          refute_equal('', card.text, card.to_s + ' has no sword, fortiications, or text')
         end
       end
     end

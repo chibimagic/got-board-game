@@ -1,4 +1,4 @@
-class TestPowerPool < Test::Unit::TestCase
+class TestPowerPool < MiniTest::Test
   def test_count
     h1 = HouseStark.new
     h2 = HouseLannister.new

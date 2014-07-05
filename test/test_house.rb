@@ -1,4 +1,4 @@
-class TestHouse < Test::Unit::TestCase
+class TestHouse < MiniTest::Test
   def setup
     house_classes = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
     @houses = house_classes.map { |house_class| house_class.new }

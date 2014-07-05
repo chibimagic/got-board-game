@@ -1,4 +1,4 @@
-class TestDominanceToken < Test::Unit::TestCase
+class TestDominanceToken < MiniTest::Test
   def test_usable_token
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
     token_classes.each do |token_class|
@@ -14,7 +14,7 @@ class TestDominanceToken < Test::Unit::TestCase
   def test_usable_token_reuse
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
     token_classes.each do |token_class|
-      assert_raise(RuntimeError) {
+      assert_raises(RuntimeError) {
         t = token_class.new
         t.use
         t.use

@@ -1,9 +1,9 @@
-class TestGame < Test::Unit::TestCase
+class TestGame < MiniTest::Test
   def test_initialize_invalid
     # Game must be initialized with players
-    assert_raise(ArgumentError) { Game.new }
-    assert_raise(RuntimeError) { Game.new({}) }
-    assert_raise(RuntimeError) { Game.new([]) }
+    assert_raises(ArgumentError) { Game.new }
+    assert_raises(RuntimeError) { Game.new({}) }
+    assert_raises(RuntimeError) { Game.new([]) }
   end
 
   def test_game_setup
@@ -80,7 +80,7 @@ class TestGame < Test::Unit::TestCase
       [HouseMartell, HouseTyrell, HouseGreyjoy, HouseBaratheon, HouseLannister, HouseStark]
     ]
     data.each do |datum|
-      assert_nothing_raised {
+      refute_raises {
         houses = datum.map { |house_class| house_class.new }
         g = Game.new(houses)
       }
@@ -104,7 +104,7 @@ class TestGame < Test::Unit::TestCase
       [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseMartell]
     ]
     data.each do |datum|
-      assert_raise(RuntimeError) {
+      assert_raises(RuntimeError) {
         houses = datum.map { |house_class| house_class.new }
         g = Game.new(houses)
       }
@@ -121,6 +121,6 @@ class TestGame < Test::Unit::TestCase
     g.place_token(CastleBlack, HouseStark, Footman)
     g.place_token(CastleBlack, HouseStark, Footman)
     g.place_token(CastleBlack, HouseStark, Footman)
-    assert_raise(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
+    assert_raises(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
   end
 end

@@ -1,4 +1,4 @@
-class TestArea < Test::Unit::TestCase
+class TestArea < MiniTest::Test
   def setup
     @m = Map.new
   end
@@ -113,7 +113,7 @@ class TestArea < Test::Unit::TestCase
     assert_equal(expected_port_lands.to_set, port_lands.to_set, 'Wrong land areas for port')
     assert_equal(expected_port_seas.to_set, port_seas.to_set, 'Wrong sea areas for port')
     assert_equal(port_lands, port_lands.uniq, 'Multiple ports in a land area')
-    assert_not_equal(port_seas, port_seas.uniq, 'Should be multiple ports on a sea')
+    refute_equal(port_seas, port_seas.uniq, 'Should be multiple ports on a sea')
   end
 
   def test_house_control
@@ -171,12 +171,12 @@ class TestArea < Test::Unit::TestCase
     a = CastleBlack.new
     h = HouseStark.new
 
-    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(h)) }
+    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(h)) }
 
     a.place_token(Footman.new(h))
-    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister.new)) }
+    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister.new)) }
 
     a.place_token(MarchOrder.new(h))
-    assert_raise(RuntimeError) { a.place_token(MarchOrder.new(h)) }
+    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(h)) }
   end
 end

@@ -1,4 +1,4 @@
-class TestMap < Test::Unit::TestCase
+class TestMap < MiniTest::Test
   def setup
     @m = Map.new
   end
