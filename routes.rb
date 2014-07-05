@@ -3,6 +3,17 @@ require 'JSON'
 require_relative 'lib/game.rb'
 require_relative 'lib/storage.rb'
 
+before do
+  if request.request_method == 'POST'
+    begin
+      request.body.rewind
+      @data = JSON.parse(request.body.read)
+    rescue JSON::ParserError => e
+      halt('JSON input expected')
+    end
+  end
+end
+
 # List existing games
 get '/games' do
   Storage.list_games.to_json
@@ -11,8 +22,6 @@ end
 # Start a new game
 post '/games' do
   begin
-    request.body.rewind
-    data = JSON.parse(request.body.read)
     house_map = {
       'Stark' => HouseStark,
       'Lannister' => HouseLannister,
@@ -21,12 +30,10 @@ post '/games' do
       'Tyrell' => HouseTyrell,
       'Martell' => HouseMartell,
     }
-    houses = data.map { |house, player_name| house_map[house].new(player_name) }
+    houses = @data.map { |house, player_name| house_map[house].new(player_name) }
     g = Game.new(houses)
     game_id = Storage.save_game(nil, g)
     { :game_id => game_id }.to_json
-  rescue JSON::ParserError => e
-    'JSON input expected'
   rescue RuntimeError => e
     e.message
   end
