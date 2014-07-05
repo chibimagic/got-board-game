@@ -39,42 +39,79 @@ class Game
     :action
   ]
 
-  def initialize(houses)
-    if houses.length < 3 || houses.length > 6
-      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
-    end
-
+  def initialize(
+    houses,
+    map = nil,
+    game_round = 0,
+    wildling_track = nil,
+    iron_throne_track = nil,
+    fiefdoms_track = nil,
+    kings_court_track = nil,
+    power_pool = nil,
+    wildling_deck = nil,
+    westeros_deck_i = nil,
+    westeros_deck_ii = nil,
+    westeros_deck_iii = nil,
+    round_phase = nil
+  )
     validate_houses(houses)
-
     @houses = houses
-    @map = Map.new
-    @game_round = 1
-    @wildling_track = WildlingTrack.new
-    @iron_throne_track = IronThroneTrack.new(@houses)
-    @fiefdoms_track = FiefdomsTrack.new(@houses)
-    @kings_court_track = KingsCourtTrack.new(@houses)
-    @power_pool = PowerPool.new(@houses)
 
-    @wildling_deck = WildlingDeck.new
-    @westeros_deck_i = WesterosDeckI.new
-    @westeros_deck_ii = WesterosDeckII.new
-    @westeros_deck_iii = WesterosDeckIII.new
+    if map.is_a?(Map) &&
+      game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10 &&
+      wildling_track.is_a?(WildlingTrack) &&
+      iron_throne_track.is_a?(IronThroneTrack) &&
+      fiefdoms_track.is_a?(FiefdomsTrack) &&
+      kings_court_track.is_a?(KingsCourtTrack) &&
+      power_pool.is_a?(PowerPool) &&
+      wildling_deck.is_a?(WildlingDeck) &&
+      westeros_deck_i.is_a?(WesterosDeckI) &&
+      westeros_deck_ii.is_a?(WesterosDeckII) &&
+      westeros_deck_iii.is_a?(WesterosDeckIII) &&
+      ROUND_PHASES.include?(round_phase)
 
-    NeutralForceTokens.new(@houses.count).get_tokens.each do |token|
-      @map.place_token(token.area_class, token)
-    end
+      # Restore game
+      @map = map
+      @game_round = game_round
+      @wildling_track = wildling_track
+      @iron_throne_track = iron_throne_track
+      @fiefdoms_track = fiefdoms_track
+      @kings_court_track = kings_court_track
+      @power_pool = power_pool
+      @wildling_deck = wildling_deck
+      @westeros_deck_i = westeros_deck_i
+      @westeros_deck_ii = westeros_deck_ii
+      @westeros_deck_iii = westeros_deck_iii
+      @round_phase = round_phase
+    else
+      # New game
+      @map = Map.new
 
-    @houses.each do |house|
-      house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
-        starting_unit_classes.each do |starting_unit_class|
-          place_token(area_class, house.class, starting_unit_class)
-        end
+      NeutralForceTokens.new(@houses.count).get_tokens.each do |token|
+        @map.place_token(token.area_class, token)
       end
 
-      @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
-    end
+      @houses.each do |house|
+        house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
+          starting_unit_classes.each do |starting_unit_class|
+            place_token(area_class, house.class, starting_unit_class)
+          end
+        end
+        @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
+      end
 
-    @round_phase = :planning_assign
+      @game_round = 1
+      @wildling_track = WildlingTrack.new
+      @iron_throne_track = IronThroneTrack.new(@houses)
+      @fiefdoms_track = FiefdomsTrack.new(@houses)
+      @kings_court_track = KingsCourtTrack.new(@houses)
+      @power_pool = PowerPool.new(@houses)
+      @wildling_deck = WildlingDeck.new
+      @westeros_deck_i = WesterosDeckI.new
+      @westeros_deck_ii = WesterosDeckII.new
+      @westeros_deck_iii = WesterosDeckIII.new
+      @round_phase = :planning_assign
+    end
   end
 
   def self.unserialize(data)
@@ -99,6 +136,12 @@ class Game
   end
 
   def validate_houses(houses)
+    if !houses.is_a?(Array) || houses.count { |house| house.is_a?(House) } != houses.count
+      raise 'Need an array of houses'
+    end
+    if houses.length < 3 || houses.length > 6
+      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
+    end
     Houses.new.each do |house_class|
       selected_times = houses.count { |house| house.class == house_class }
       if selected_times > 1
