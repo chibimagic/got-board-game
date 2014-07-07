@@ -1,21 +1,21 @@
 class House
-  attr_reader :player_name, :units, :power_tokens, :order_tokens
+  attr_reader :player_name, :tokens
 
   TITLE = ''
   MINIMUM_PLAYERS = 3
 
   def initialize(player_name = '')
     @player_name = player_name
+    @tokens = []
 
-    @units = []
-    10.times { @units.push(Footman.new(self)) }
-    5.times { @units.push(Knight.new(self)) }
-    6.times { @units.push(Ship.new(self)) }
-    2.times { @units.push(SiegeEngine.new(self)) }
+    10.times { @tokens.push(Footman.new(self)) }
+    5.times { @tokens.push(Knight.new(self)) }
+    6.times { @tokens.push(Ship.new(self)) }
+    2.times { @tokens.push(SiegeEngine.new(self)) }
 
-    @power_tokens = Array.new(5) { PowerToken.new(self) }
+    5.times { @tokens.push(PowerToken.new(self)) }
 
-    @order_tokens = [
+    @tokens.push(
       WeakMarchOrder.new(self),
       MarchOrder.new(self),
       SpecialMarchOrder.new(self),
@@ -31,7 +31,7 @@ class House
       ConsolidatePowerOrder.new(self),
       ConsolidatePowerOrder.new(self),
       SpecialConsolidatePowerOrder.new(self),
-    ]
+    )
   end
 
   def self.unserialize(data)
@@ -40,9 +40,7 @@ class House
   def serialize
     {
       :player_name => @player_name,
-      :units => @units.map { |unit| unit.serialize },
-      :power_tokens => @power_tokens.count,
-      :order_tokens => @order_tokens.map { |order_token| order_token.serialize }
+      :tokens => @tokens.map { |token| token.serialize }
     }
   end
 
@@ -55,15 +53,24 @@ class House
     self.class::TITLE + ' (' + name + ')'
   end
 
+  def units
+    @tokens.find_all { |token| token.is_a?(Unit) }
+  end
+
+  def power_tokens
+    @tokens.find_all { |token| token.is_a?(PowerToken) }
+  end
+
+  def order_tokens
+    @tokens.find_all { |token| token.is_a?(OrderToken) }
+  end
+
   def get_token(token_class)
-    tokens = [@units, @power_tokens, @order_tokens].flatten
-    tokens.find { |token| token.class == token_class }
+    @tokens.find { |token| token.class == token_class }
   end
 
   def remove_token(token)
-    @units.delete(token)
-    @power_tokens.delete(token)
-    @order_tokens.delete(token)
+    @tokens.delete(token)
   end
 end
 
