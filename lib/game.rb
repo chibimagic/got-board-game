@@ -138,7 +138,7 @@ class Game
       :westeros_deck_i => @westeros_deck_i.serialize,
       :westeros_deck_ii => @westeros_deck_ii.serialize,
       :westeros_deck_iii => @westeros_deck_iii.serialize
-    }.to_json
+    }
   end
 
   def ==(o)

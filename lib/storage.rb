@@ -1,4 +1,5 @@
 require 'sqlite3'
+require 'base64'
 
 class Storage
   def self.db
@@ -17,13 +18,13 @@ class Storage
   end
 
   def self.get_game(game_id)
-    data = db.execute('select data from games where game_id=?', game_id)
-    Game.unserialize(data)
+    data = db.execute('select data from games where game_id=? limit 1', game_id)[0][0]
+    Marshal.load(Base64.decode64(data))
   end
 
   def self.save_game(game_id, game)
-    data = game.serialize
+    data = Base64.encode64(Marshal.dump(game))
     db.execute('insert or replace into games (game_id, data) values (?, ?)', [game_id, data])
-    db.execute('select game_id from games where data=? limit 1', data).flatten[0]
+    db.execute('select game_id from games where data=? limit 1', data)[0][0]
   end
 end
