@@ -17,6 +17,6 @@ class PowerPool
   end
 
   def remove_token(token)
-    @pool.delete(token)
+    @pool.delete_at(@pool.index(token))
   end
 end

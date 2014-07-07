@@ -7,7 +7,7 @@ class InfluenceTrack
       position = house.class::STARTING_POSITIONS[self.class]
       @track[position - 1] = house.class
     end
-    @track.delete(nil) # Fill in empty spots from missing houses
+    @track.compact! # Fill in empty spots from missing houses
   end
 
   def self.unserialize(data)

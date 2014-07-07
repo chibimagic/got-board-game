@@ -81,7 +81,7 @@ class Area
   end
 
   def remove_token(token)
-    @tokens.delete(token)
+    @tokens.delete_at(@tokens.index(token))
   end
 end
 
