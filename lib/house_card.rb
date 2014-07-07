@@ -1,4 +1,4 @@
-class HouseCard
+class HouseCard < Card
   TITLE = ''
   COMBAT_STRENGTH = 0
   SWORDS = 0

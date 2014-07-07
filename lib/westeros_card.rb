@@ -1,4 +1,4 @@
-class WesterosCard
+class WesterosCard < Card
   TITLE = ''
   TEXT = ''
   ADVANCE_WILDLINGS = false

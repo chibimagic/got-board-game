@@ -1,4 +1,4 @@
-class WildlingCard
+class WildlingCard < Card
   TITLE = ''
   LOWEST_BIDDER = ''
   EVERYONE_ELSE = ''
