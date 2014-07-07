@@ -41,6 +41,7 @@ end
 
 # See information about an existing game
 get '/games/:game' do |game_id|
+  Storage.get_game(game_id).serialize.to_json
 end
 
 # Place orders, execute orders
