@@ -1,4 +1,19 @@
 class TestPowerPool < MiniTest::Test
+  def test_equality
+    p1 = PowerPool.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    p2 = PowerPool.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    p3 = PowerPool.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new, HouseGreyjoy.new])
+    assert_equal(p1, p2)
+
+    t1 = p1.pool.find { |token| token.house.class == HouseStark }
+    p1.remove_token(t1)
+    refute_equal(p1, p2)
+
+    t2 = p2.pool.find { |token| token.house.class == HouseStark }
+    p2.remove_token(t2)
+    assert_equal(p1, p2)
+  end
+
   def test_count
     h1 = HouseStark.new
     h2 = HouseLannister.new

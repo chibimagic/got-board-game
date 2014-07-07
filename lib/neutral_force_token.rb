@@ -13,6 +13,12 @@ class NeutralForceToken < Token
     { self.class => @strength }
   end
 
+  def ==(o)
+    self.class == o.class &&
+      self.area_class == o.area_class &&
+      self.strength == o.strength
+  end
+
   def to_s
     @area_class.to_s + ' (' + @strength.to_s + ')'
   end

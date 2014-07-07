@@ -74,6 +74,19 @@ class TestGame < MiniTest::Test
     assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 
+  def test_equality
+    # Different decks will make the games unequal
+    g1 = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    g2 = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    refute_equal(g1, g2)
+  end
+
+  def test_marshal_equality
+    original_game = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    restored_game = Marshal.load(Marshal.dump(original_game))
+    assert_equal(original_game, restored_game)
+  end
+
   def test_house_selection_valid
     data = [
       [HouseStark, HouseLannister, HouseBaratheon],

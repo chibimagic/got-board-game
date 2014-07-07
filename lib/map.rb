@@ -222,6 +222,11 @@ class Map
     Hash[@areas.map { |area| [area.class, area.serialize] }]
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @areas == o.areas
+  end
+
   def area(area_class)
     @areas.find { |area| area.class == area_class }
   end

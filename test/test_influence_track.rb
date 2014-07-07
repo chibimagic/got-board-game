@@ -49,6 +49,18 @@ class TestInfluenceTrack < MiniTest::Test
     end
   end
 
+  def test_equality
+    h1 = [HouseStark.new, HouseLannister.new, HouseBaratheon.new]
+    h2 = [HouseStark.new, HouseLannister.new, HouseBaratheon.new]
+    h3 = [HouseStark.new, HouseLannister.new, HouseBaratheon.new, HouseGreyjoy.new]
+    tracks = [IronThroneTrack, FiefdomsTrack, KingsCourtTrack]
+    tracks.each do |track|
+      assert_equal(track.new(h1), track.new(h1))
+      assert_equal(track.new(h1), track.new(h2))
+      refute_equal(track.new(h1), track.new(h3))
+    end
+  end
+
   def test_kings_court_orders
     data = [
       { HouseStark => 3, HouseLannister => 3, HouseBaratheon => 1, HouseGreyjoy => 0, HouseTyrell => 0, HouseMartell => 2 },

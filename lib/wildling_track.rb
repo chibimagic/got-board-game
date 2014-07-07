@@ -12,6 +12,11 @@ class WildlingTrack
     @strength
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @strength == o.strength
+  end
+
   def increase
     @strength = [@strength + 2, 12].min
   end

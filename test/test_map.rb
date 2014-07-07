@@ -3,6 +3,19 @@ class TestMap < MiniTest::Test
     @m = Map.new
   end
 
+  def test_equality
+    m1 = Map.new
+    m2 = Map.new
+    assert_equal(m1, m2)
+
+    t = Footman.new(HouseStark.new)
+    m1.place_token(CastleBlack, t)
+    refute_equal(m1, m2)
+
+    m1.remove_token(CastleBlack, t)
+    assert_equal(m1, m2)
+  end
+
   def test_connection_count_area
     @m.areas.each do |area|
       assert_equal(area.connection_count, @m.connected_areas(area.class).count, area.to_s + ' has wrong number of connections')

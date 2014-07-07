@@ -17,6 +17,11 @@ class Deck
     @cards.map { |card| card.class }
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @cards == o.cards
+  end
+
   def cards_remaining
     @cards.length
   end

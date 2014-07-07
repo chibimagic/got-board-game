@@ -17,6 +17,11 @@ class InfluenceTrack
     @track
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @track == o.track
+  end
+
   # Returns 1-based index
   def position(house_class)
     @track.find_index(house_class) + 1

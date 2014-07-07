@@ -44,6 +44,12 @@ class House
     }
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @player_name == o.player_name &&
+      @tokens == o.tokens
+  end
+
   def self.to_s
     self::TITLE
   end

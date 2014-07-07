@@ -1,3 +1,5 @@
+require_relative 'token.rb'
+require_relative 'card.rb'
 require_relative 'deck.rb'
 require_relative 'house_card.rb'
 require_relative 'house_card_deck.rb'
@@ -30,7 +32,11 @@ class Game
     :iron_throne_track,
     :fiefdoms_track,
     :kings_court_track,
-    :power_pool
+    :power_pool,
+    :wildling_deck,
+    :westeros_deck_i,
+    :westeros_deck_ii,
+    :westeros_deck_iii
 
   ROUND_PHASES = [
     :westeros,
@@ -43,6 +49,7 @@ class Game
     houses,
     map = nil,
     game_round = 0,
+    round_phase = nil,
     wildling_track = nil,
     iron_throne_track = nil,
     fiefdoms_track = nil,
@@ -51,14 +58,14 @@ class Game
     wildling_deck = nil,
     westeros_deck_i = nil,
     westeros_deck_ii = nil,
-    westeros_deck_iii = nil,
-    round_phase = nil
+    westeros_deck_iii = nil
   )
     validate_houses(houses)
     @houses = houses
 
     if map.is_a?(Map) &&
       game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10 &&
+      ROUND_PHASES.include?(round_phase) &&
       wildling_track.is_a?(WildlingTrack) &&
       iron_throne_track.is_a?(IronThroneTrack) &&
       fiefdoms_track.is_a?(FiefdomsTrack) &&
@@ -67,12 +74,12 @@ class Game
       wildling_deck.is_a?(WildlingDeck) &&
       westeros_deck_i.is_a?(WesterosDeckI) &&
       westeros_deck_ii.is_a?(WesterosDeckII) &&
-      westeros_deck_iii.is_a?(WesterosDeckIII) &&
-      ROUND_PHASES.include?(round_phase)
+      westeros_deck_iii.is_a?(WesterosDeckIII)
 
       # Restore game
       @map = map
       @game_round = game_round
+      @round_phase = round_phase
       @wildling_track = wildling_track
       @iron_throne_track = iron_throne_track
       @fiefdoms_track = fiefdoms_track
@@ -82,7 +89,6 @@ class Game
       @westeros_deck_i = westeros_deck_i
       @westeros_deck_ii = westeros_deck_ii
       @westeros_deck_iii = westeros_deck_iii
-      @round_phase = round_phase
     else
       # New game
       @map = Map.new
@@ -133,6 +139,23 @@ class Game
       :westeros_deck_ii => @westeros_deck_ii.serialize,
       :westeros_deck_iii => @westeros_deck_iii.serialize
     }.to_json
+  end
+
+  def ==(o)
+    self.class == o.class &&
+      @houses == o.houses &&
+      @map == o.map &&
+      @game_round == o.game_round &&
+      @round_phase == o.round_phase &&
+      @wildling_track == o.wildling_track &&
+      @iron_throne_track == o.iron_throne_track &&
+      @fiefdoms_track == o.fiefdoms_track &&
+      @kings_court_track == o.kings_court_track &&
+      @power_pool == o.power_pool &&
+      @wildling_deck == o.wildling_deck &&
+      @westeros_deck_i == o.westeros_deck_i &&
+      @westeros_deck_ii == o.westeros_deck_ii &&
+      @westeros_deck_iii == o.westeros_deck_iii
   end
 
   def validate_houses(houses)

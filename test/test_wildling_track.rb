@@ -6,6 +6,19 @@ class TestWildlingTrack < MiniTest::Test
     assert_equal(2, @track.strength, "Wildling track should start at 2")
   end
 
+  def test_equality
+    w1 = WildlingTrack.new
+    w2 = WildlingTrack.new
+    assert_equal(w1, w2)
+
+    w2.increase
+    refute_equal(w1, w2)
+
+    w2.nights_watch_victory
+    w2.increase
+    assert_equal(w1, w2)
+  end
+
   def test_wildling_track_increase
     @track.increase
     assert_equal(4, @track.strength, "Wildling track should increase by 2 each time")

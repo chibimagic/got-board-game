@@ -8,6 +8,11 @@ class HouseToken < Token
     @house = house
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @house == o.house
+  end
+
   def self.unserialize(data)
   end
 

@@ -4,6 +4,14 @@ class TestHouse < MiniTest::Test
     @houses = house_classes.map { |house_class| house_class.new }
   end
 
+  def test_equality
+    assert_equal(HouseStark.new, HouseStark.new)
+    assert_equal(HouseStark.new('a'), HouseStark.new('a'))
+    refute_equal(HouseStark.new('a'), HouseStark.new('b'))
+    refute_equal(HouseStark.new, HouseLannister.new)
+    refute_equal(HouseStark.new('a'), HouseLannister.new('a'))
+  end
+
   def test_units
     @houses.each do |house|
       assert_equal(10, house.units.count { |unit| unit.is_a?(Footman) })

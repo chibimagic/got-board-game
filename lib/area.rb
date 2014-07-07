@@ -1,4 +1,6 @@
 class Area
+  attr_reader :tokens
+
   TITLE = ''
   CONNECTION_COUNT = 0
   STRONGHOLD = false
@@ -15,6 +17,11 @@ class Area
 
   def serialize
     @tokens.map { |token| token.serialize }
+  end
+
+  def ==(o)
+    self.class == o.class &&
+      @tokens == o.tokens
   end
 
   def self.to_s

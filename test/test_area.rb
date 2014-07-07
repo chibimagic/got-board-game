@@ -3,6 +3,21 @@ class TestArea < MiniTest::Test
     @m = Map.new
   end
 
+  def test_equality
+    a1 = CastleBlack.new
+    a2 = CastleBlack.new
+    a3 = Karhold.new
+    assert_equal(a1, a2)
+    refute_equal(a1, a3)
+
+    t = Footman.new(HouseStark.new)
+    a1.place_token(t)
+    refute_equal(a1, a2)
+
+    a1.remove_token(t)
+    assert_equal(a1, a2)
+  end
+
   def test_area_something
     @m.areas.each do |area|
       has_strategic_value = area.has_stronghold? || area.has_castle? || area.supply > 0 || area.power > 0

@@ -16,6 +16,11 @@ class PowerPool
     Hash[houses.map { |house_class| [house_class, @pool.count { |power_token| power_token.house.class == house_class }] }]
   end
 
+  def ==(o)
+    self.class == o.class &&
+      @pool == o.pool
+  end
+
   def remove_token(token)
     @pool.delete_at(@pool.index(token))
   end
