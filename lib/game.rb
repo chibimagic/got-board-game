@@ -178,7 +178,7 @@ class Game
     if !token
       raise house.to_s + ' does not have any available power tokens in the Power Pool'
     end
-    @power_pool.pool.delete(token)
+    @power_pool.remove_token(token)
     house.power_tokens.push(token)
   end
 
