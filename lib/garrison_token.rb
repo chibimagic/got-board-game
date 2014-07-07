@@ -1,4 +1,4 @@
-class GarrisonToken
+class GarrisonToken < HouseToken
   attr_reader :house
 
   def initialize(house)

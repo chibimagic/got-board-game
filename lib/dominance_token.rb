@@ -1,4 +1,4 @@
-class DominanceToken
+class DominanceToken < Token
 end
 
 class UsableDominanceToken < DominanceToken

@@ -1,4 +1,4 @@
-class PowerToken
+class PowerToken < HouseToken
   attr_reader :house
 
   def initialize(house)

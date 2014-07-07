@@ -1,4 +1,4 @@
-class Unit
+class Unit < HouseToken
   attr_reader :house
 
   MUSTERING_COST = 0

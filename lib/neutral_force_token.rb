@@ -1,4 +1,4 @@
-class NeutralForceToken
+class NeutralForceToken < Token
   attr_reader :area_class, :strength
 
   def initialize(area_class, strength)

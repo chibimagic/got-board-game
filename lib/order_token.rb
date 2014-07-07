@@ -1,4 +1,4 @@
-class OrderToken
+class OrderToken < HouseToken
   attr_reader :house
 
   SPECIAL = false
