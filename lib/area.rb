@@ -53,7 +53,7 @@ class Area
   end
 
   def controlling_house
-    @tokens.empty? ? nil : @tokens[0].house.class
+    @tokens.empty? ? nil : @tokens[0].house_class
   end
 
   def mustering_points
@@ -78,7 +78,7 @@ class Area
     if token.is_a?(OrderToken)
       if unit_count == 0
         raise 'Cannot place order because ' + to_s + ' has no units'
-      elsif controlling_house != token.house.class
+      elsif controlling_house != token.house_class
         raise token.to_s + ' cannot be placed because ' + controlling_house.to_s + ' controls ' + to_s
       elsif has_token?(OrderToken)
         raise to_s + ' already has an order token'

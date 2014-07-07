@@ -5,11 +5,11 @@ class TestPowerPool < MiniTest::Test
     p3 = PowerPool.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new, HouseGreyjoy.new])
     assert_equal(p1, p2)
 
-    t1 = p1.pool.find { |token| token.house.class == HouseStark }
+    t1 = p1.pool.find { |token| token.house_class == HouseStark }
     p1.remove_token(t1)
     refute_equal(p1, p2)
 
-    t2 = p2.pool.find { |token| token.house.class == HouseStark }
+    t2 = p2.pool.find { |token| token.house_class == HouseStark }
     p2.remove_token(t2)
     assert_equal(p1, p2)
   end

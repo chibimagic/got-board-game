@@ -4,7 +4,7 @@ class PowerPool
   def initialize(houses)
     @pool = []
     houses.each do |house|
-      15.times { @pool.push(PowerToken.new(house)) }
+      15.times { @pool.push(PowerToken.new(house.class)) }
     end
   end
 
@@ -12,8 +12,8 @@ class PowerPool
   end
 
   def serialize
-    houses = @pool.map { |power_token| power_token.house.class }.uniq
-    Hash[houses.map { |house_class| [house_class, @pool.count { |power_token| power_token.house.class == house_class }] }]
+    houses = @pool.map { |power_token| power_token.house_class }.uniq
+    Hash[houses.map { |house_class| [house_class, @pool.count { |power_token| power_token.house_class == house_class }] }]
   end
 
   def ==(o)

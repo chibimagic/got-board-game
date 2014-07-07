@@ -23,7 +23,7 @@ class NeutralForceToken < Token
     @area_class.to_s + ' (' + @strength.to_s + ')'
   end
 
-  def house
-    HouseIndependent.new
+  def house_class
+    HouseIndependent
   end
 end

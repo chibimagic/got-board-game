@@ -8,29 +8,29 @@ class House
     @player_name = player_name
     @tokens = []
 
-    10.times { @tokens.push(Footman.new(self)) }
-    5.times { @tokens.push(Knight.new(self)) }
-    6.times { @tokens.push(Ship.new(self)) }
-    2.times { @tokens.push(SiegeEngine.new(self)) }
+    10.times { @tokens.push(Footman.new(self.class)) }
+    5.times { @tokens.push(Knight.new(self.class)) }
+    6.times { @tokens.push(Ship.new(self.class)) }
+    2.times { @tokens.push(SiegeEngine.new(self.class)) }
 
-    5.times { @tokens.push(PowerToken.new(self)) }
+    5.times { @tokens.push(PowerToken.new(self.class)) }
 
     @tokens.push(
-      WeakMarchOrder.new(self),
-      MarchOrder.new(self),
-      SpecialMarchOrder.new(self),
-      DefenseOrder.new(self),
-      DefenseOrder.new(self),
-      SpecialDefenseOrder.new(self),
-      SupportOrder.new(self),
-      SupportOrder.new(self),
-      SpecialSupportOrder.new(self),
-      RaidOrder.new(self),
-      RaidOrder.new(self),
-      SpecialRaidOrder.new(self),
-      ConsolidatePowerOrder.new(self),
-      ConsolidatePowerOrder.new(self),
-      SpecialConsolidatePowerOrder.new(self),
+      WeakMarchOrder.new(self.class),
+      MarchOrder.new(self.class),
+      SpecialMarchOrder.new(self.class),
+      DefenseOrder.new(self.class),
+      DefenseOrder.new(self.class),
+      SpecialDefenseOrder.new(self.class),
+      SupportOrder.new(self.class),
+      SupportOrder.new(self.class),
+      SpecialSupportOrder.new(self.class),
+      RaidOrder.new(self.class),
+      RaidOrder.new(self.class),
+      SpecialRaidOrder.new(self.class),
+      ConsolidatePowerOrder.new(self.class),
+      ConsolidatePowerOrder.new(self.class),
+      SpecialConsolidatePowerOrder.new(self.class),
     )
   end
 

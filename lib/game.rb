@@ -103,7 +103,7 @@ class Game
             place_token(area_class, house.class, starting_unit_class)
           end
         end
-        @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house))
+        @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house.class))
       end
 
       @game_round = 1
@@ -196,17 +196,17 @@ class Game
     end
   end
 
-  def receive_power_token(house)
-    token = @power_pool.pool.find { |token| token.house == house }
+  def receive_power_token(house_class)
+    token = @power_pool.pool.find { |token| token.house_class == house_class }
     if !token
-      raise house.to_s + ' does not have any available power tokens in the Power Pool'
+      raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
     end
     @power_pool.remove_token(token)
     house.power_tokens.push(token)
   end
 
-  def discard_power_token(house)
-    token = house.power_tokens.pop
+  def discard_power_token(house_class)
+    token = house(house_class).power_tokens.pop
     @power_pool.pool.push(token)
   end
 end

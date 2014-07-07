@@ -8,7 +8,7 @@ class TestMap < MiniTest::Test
     m2 = Map.new
     assert_equal(m1, m2)
 
-    t = Footman.new(HouseStark.new)
+    t = Footman.new(HouseStark)
     m1.place_token(CastleBlack, t)
     refute_equal(m1, m2)
 
@@ -47,8 +47,8 @@ class TestMap < MiniTest::Test
   end
 
   def test_army_count
-    h1 = HouseStark.new
-    h2 = HouseLannister.new
+    h1 = HouseStark
+    h2 = HouseLannister
     @m.place_token(CastleBlack, Footman.new(h1))
     @m.place_token(Winterfell, SiegeEngine.new(h1))
     @m.place_token(Winterfell, Knight.new(h1))
@@ -63,12 +63,10 @@ class TestMap < MiniTest::Test
   end
 
   def test_orders_in
-    h = HouseStark.new
-
     assert_equal(true, @m.orders_in?)
-    @m.place_token(CastleBlack, Footman.new(h))
+    @m.place_token(CastleBlack, Footman.new(HouseStark))
     assert_equal(false, @m.orders_in?)
-    @m.place_token(CastleBlack, MarchOrder.new(h))
+    @m.place_token(CastleBlack, MarchOrder.new(HouseStark))
     assert_equal(true, @m.orders_in?)
   end
 end
