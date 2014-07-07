@@ -22,15 +22,7 @@ end
 # Start a new game
 post '/games' do
   begin
-    house_map = {
-      'Stark' => HouseStark,
-      'Lannister' => HouseLannister,
-      'Baratheon' => HouseBaratheon,
-      'Greyjoy' => HouseGreyjoy,
-      'Tyrell' => HouseTyrell,
-      'Martell' => HouseMartell,
-    }
-    houses = @data.map { |house, player_name| house_map[house].new(player_name) }
+    houses = @data.map { |house_string, player_name| Houses.get_house_class(house_string).new(player_name) }
     g = Game.new(houses)
     game_id = Storage.save_game(nil, g)
     { :game_id => game_id }.to_json
