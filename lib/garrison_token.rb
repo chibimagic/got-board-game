@@ -1,16 +1,5 @@
 class GarrisonToken < HouseToken
-  attr_reader :house
-
-  def initialize(house)
-    @house = house
-  end
-
-  def self.unserialize(data)
-  end
-
-  def serialize
-    { self.class => @house.class }
-  end
+  TITLE = 'Garrison Token'
 
   def strength
     2

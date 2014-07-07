@@ -1,23 +1,6 @@
 class OrderToken < HouseToken
-  attr_reader :house
-
   SPECIAL = false
   BONUS = 0
-
-  def initialize(house)
-    @house = house
-  end
-
-  def self.unserialize(data)
-  end
-
-  def serialize
-    { self.class => @house.class }
-  end
-
-  def to_s
-    self.class::TITLE + ' (' + @house.class.to_s + ')'
-  end
 
   def special
     self.class::SPECIAL

@@ -1,22 +1,5 @@
 class Unit < HouseToken
-  attr_reader :house
-
   MUSTERING_COST = 0
-
-  def initialize(house)
-    @house = house
-  end
-
-  def self.unserialize(data)
-  end
-
-  def serialize
-    { self.class => @house.class }
-  end
-
-  def to_s
-    self.class::TITLE + ' (' + @house.class.to_s + ')'
-  end
 end
 
 class Footman < Unit
