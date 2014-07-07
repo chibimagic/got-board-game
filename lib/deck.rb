@@ -1,4 +1,6 @@
 class Deck
+  attr_reader :cards
+
   STARTING_CARD_CLASSES = []
 
   def initialize
@@ -17,12 +19,6 @@ class Deck
 
   def cards_remaining
     @cards.length
-  end
-end
-
-module PublicDeck
-  def cards
-    @cards
   end
 end
 

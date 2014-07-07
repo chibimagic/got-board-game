@@ -1,5 +1,4 @@
 class HouseCardDeck < Deck
-  include PublicDeck
 end
 
 class HouseStarkDeck < HouseCardDeck
