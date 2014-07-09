@@ -1,9 +1,14 @@
 class TestGame < MiniTest::Test
-  def test_initialize_invalid
-    # Game must be initialized with players
+  def test_new_invalid
     assert_raises(ArgumentError) { Game.new }
-    assert_raises(RuntimeError) { Game.new({}) }
-    assert_raises(RuntimeError) { Game.new([]) }
+    assert_raises(ArgumentError) { Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new]) }
+  end
+
+  def test_new_game_invalid
+    # Game must be initialized with players
+    assert_raises(ArgumentError) { Game.new_game }
+    assert_raises(RuntimeError) { Game.new_game({}) }
+    assert_raises(RuntimeError) { Game.new_game([]) }
   end
 
   def test_game_setup
@@ -15,7 +20,7 @@ class TestGame < MiniTest::Test
       HouseTyrell.new,
       HouseMartell.new
     ]
-    game = Game.new(houses)
+    game = Game.new_game(houses)
     assert_equal(6, game.houses.length)
     assert_equal(1, game.game_round)
     assert_equal(:planning_assign, game.round_phase)
@@ -76,13 +81,13 @@ class TestGame < MiniTest::Test
 
   def test_equality
     # Different decks will make the games unequal
-    g1 = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
-    g2 = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    g1 = Game.new_game([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    g2 = Game.new_game([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
     refute_equal(g1, g2)
   end
 
   def test_marshal_equality
-    original_game = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    original_game = Game.new_game([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
     restored_game = Marshal.load(Marshal.dump(original_game))
     assert_equal(original_game, restored_game)
   end
@@ -95,7 +100,7 @@ class TestGame < MiniTest::Test
     data.each do |datum|
       refute_raises {
         houses = datum.map { |house_class| house_class.new }
-        g = Game.new(houses)
+        g = Game.new_game(houses)
       }
     end
   end
@@ -119,13 +124,13 @@ class TestGame < MiniTest::Test
     data.each do |datum|
       assert_raises(RuntimeError) {
         houses = datum.map { |house_class| house_class.new }
-        g = Game.new(houses)
+        g = Game.new_game(houses)
       }
     end
   end
 
   def test_place_units
-    g = Game.new([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
+    g = Game.new_game([HouseStark.new, HouseLannister.new, HouseBaratheon.new])
     g.place_token(CastleBlack, HouseStark, Footman)
     g.place_token(CastleBlack, HouseStark, Footman)
     g.place_token(CastleBlack, HouseStark, Footman)

@@ -47,63 +47,65 @@ class Game
 
   def initialize(
     houses,
-    map = nil,
-    game_round = 0,
-    round_phase = nil,
-    wildling_track = nil,
-    iron_throne_track = nil,
-    fiefdoms_track = nil,
-    kings_court_track = nil,
-    power_pool = nil,
-    wildling_deck = nil,
-    westeros_deck_i = nil,
-    westeros_deck_ii = nil,
-    westeros_deck_iii = nil
+    map,
+    game_round,
+    round_phase,
+    wildling_track,
+    iron_throne_track,
+    fiefdoms_track,
+    kings_court_track,
+    power_pool,
+    wildling_deck,
+    westeros_deck_i,
+    westeros_deck_ii,
+    westeros_deck_iii
   )
+    # Validate parameters
     validate_houses(houses)
+    raise 'Invalid Map' unless map.is_a?(Map)
+    raise 'Invalid game round' unless game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10
+    raise 'Invalid round phase' unless ROUND_PHASES.include?(round_phase)
+    raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
+    raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
+    raise 'Invalid Fiefdoms Track' unless fiefdoms_track.is_a?(FiefdomsTrack)
+    raise 'Invalid King\'s Court Track' unless kings_court_track.is_a?(KingsCourtTrack)
+    raise 'Invalid Power Pool' unless power_pool.is_a?(PowerPool)
+    raise 'Invalid Wildling Deck' unless wildling_deck.is_a?(WildlingDeck)
+    raise 'Invalid Westeros Deck I' unless westeros_deck_i.is_a?(WesterosDeckI)
+    raise 'Invalid Westeros Deck II' unless westeros_deck_ii.is_a?(WesterosDeckII)
+    raise 'Invalid Westeros Deck III' unless westeros_deck_iii.is_a?(WesterosDeckIII)
+
     @houses = houses
+    @map = map
+    @game_round = game_round
+    @round_phase = round_phase
+    @wildling_track = wildling_track
+    @iron_throne_track = iron_throne_track
+    @fiefdoms_track = fiefdoms_track
+    @kings_court_track = kings_court_track
+    @power_pool = power_pool
+    @wildling_deck = wildling_deck
+    @westeros_deck_i = westeros_deck_i
+    @westeros_deck_ii = westeros_deck_ii
+    @westeros_deck_iii = westeros_deck_iii
+  end
 
-    if map.is_a?(Map) &&
-      game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10 &&
-      ROUND_PHASES.include?(round_phase) &&
-      wildling_track.is_a?(WildlingTrack) &&
-      iron_throne_track.is_a?(IronThroneTrack) &&
-      fiefdoms_track.is_a?(FiefdomsTrack) &&
-      kings_court_track.is_a?(KingsCourtTrack) &&
-      power_pool.is_a?(PowerPool) &&
-      wildling_deck.is_a?(WildlingDeck) &&
-      westeros_deck_i.is_a?(WesterosDeckI) &&
-      westeros_deck_ii.is_a?(WesterosDeckII) &&
-      westeros_deck_iii.is_a?(WesterosDeckIII)
-
-      # Restore game
-      @map = map
-      @game_round = game_round
-      @round_phase = round_phase
-      @wildling_track = wildling_track
-      @iron_throne_track = iron_throne_track
-      @fiefdoms_track = fiefdoms_track
-      @kings_court_track = kings_court_track
-      @power_pool = power_pool
-      @wildling_deck = wildling_deck
-      @westeros_deck_i = westeros_deck_i
-      @westeros_deck_ii = westeros_deck_ii
-      @westeros_deck_iii = westeros_deck_iii
-    else
-      # New game
-      @map = Map.new(@houses)
-      @game_round = 1
-      @wildling_track = WildlingTrack.new
-      @iron_throne_track = IronThroneTrack.new(@houses)
-      @fiefdoms_track = FiefdomsTrack.new(@houses)
-      @kings_court_track = KingsCourtTrack.new(@houses)
-      @power_pool = PowerPool.new(@houses)
-      @wildling_deck = WildlingDeck.new
-      @westeros_deck_i = WesterosDeckI.new
-      @westeros_deck_ii = WesterosDeckII.new
-      @westeros_deck_iii = WesterosDeckIII.new
-      @round_phase = :planning_assign
-    end
+  def self.new_game(houses)
+    new(
+      houses,
+      Map.new(houses),
+      1,
+      :planning_assign,
+      WildlingTrack.new,
+      IronThroneTrack.new(houses),
+      FiefdomsTrack.new(houses),
+      KingsCourtTrack.new(houses),
+      PowerPool.new(houses),
+      WildlingDeck.new,
+      WesterosDeckI.new,
+      WesterosDeckII.new,
+      WesterosDeckIII.new
+    )
   end
 
   def self.unserialize(data)

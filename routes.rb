@@ -23,7 +23,7 @@ end
 post '/games' do
   begin
     houses = @data.map { |house_string, player_name| Houses.get_house_class(house_string).new(player_name) }
-    g = Game.new(houses)
+    g = Game.new_game(houses)
     game_id = Storage.save_game(nil, g)
     { :game_id => game_id }.to_json
   rescue RuntimeError => e
