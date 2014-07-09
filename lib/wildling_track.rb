@@ -1,8 +1,14 @@
 class WildlingTrack
   attr_reader :strength
 
-  def initialize
-    @strength = 2
+  def initialize(strength)
+    raise 'Invalid strength' unless strength.is_a?(Integer) && 0 <= strength && strength <= 12 && strength.even?
+
+    @strength = strength
+  end
+
+  def self.create_new
+    new(2)
   end
 
   def self.unserialize(data)

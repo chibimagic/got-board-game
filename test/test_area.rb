@@ -1,12 +1,12 @@
 class TestArea < MiniTest::Test
   def setup
-    @m = Map.new
+    @m = Map.create_new
   end
 
   def test_equality
-    a1 = CastleBlack.new
-    a2 = CastleBlack.new
-    a3 = Karhold.new
+    a1 = CastleBlack.create_new
+    a2 = CastleBlack.create_new
+    a3 = Karhold.create_new
     assert_equal(a1, a2)
     refute_equal(a1, a3)
 
@@ -89,7 +89,7 @@ class TestArea < MiniTest::Test
       Yronwood => 1
     }
     expected_points.each do |area_class, points|
-      a = area_class.new
+      a = area_class.create_new
       assert_equal(points, a.mustering_points, a.to_s + ' has wrong number of mustering points')
     end
   end
@@ -132,7 +132,7 @@ class TestArea < MiniTest::Test
   end
 
   def test_house_control
-    area = CastleBlack.new
+    area = CastleBlack.create_new
     stark_unit = Footman.new(HouseStark)
     lannister_unit = Footman.new(HouseLannister)
     assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
@@ -148,7 +148,7 @@ class TestArea < MiniTest::Test
   end
 
   def test_unit_count
-    area = Winterfell.new
+    area = Winterfell.create_new
     assert_equal(0, area.unit_count, 'Area should start with no units')
     area.place_token(Footman.new(HouseStark))
     assert_equal(1, area.unit_count, 'Footman should count has 1 unit')
@@ -163,7 +163,7 @@ class TestArea < MiniTest::Test
   end
 
   def test_token_existence
-    a = CastleBlack.new
+    a = CastleBlack.create_new
     assert_equal(false, a.has_token?(Footman))
     assert_equal(false, a.has_token?(PowerToken))
     assert_equal(false, a.has_token?(MarchOrder))
@@ -180,7 +180,7 @@ class TestArea < MiniTest::Test
   end
 
   def test_place_token
-    a = CastleBlack.new
+    a = CastleBlack.create_new
 
     assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
 

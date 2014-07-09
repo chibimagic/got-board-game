@@ -2,6 +2,9 @@ class NeutralForceToken < Token
   attr_reader :area_class, :strength
 
   def initialize(area_class, strength)
+    raise 'Invalid area class' unless area_class < Area
+    raise 'Invalid strength' unless [3, 4, 5, 6, nil].include?(strength)
+
     @area_class = area_class
     @strength = strength
   end

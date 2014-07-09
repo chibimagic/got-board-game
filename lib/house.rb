@@ -4,34 +4,42 @@ class House
   TITLE = ''
   MINIMUM_PLAYERS = 3
 
-  def initialize(player_name = '')
+  def initialize(player_name, tokens)
+    raise 'Invalid player name' unless player_name.is_a?(String)
+    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(HouseToken) }
+
     @player_name = player_name
-    @tokens = []
+    @tokens = tokens
+  end
 
-    10.times { @tokens.push(Footman.new(self.class)) }
-    5.times { @tokens.push(Knight.new(self.class)) }
-    6.times { @tokens.push(Ship.new(self.class)) }
-    2.times { @tokens.push(SiegeEngine.new(self.class)) }
+  def self.create_new(player_name = '')
+    tokens = []
 
-    5.times { @tokens.push(PowerToken.new(self.class)) }
+    10.times { tokens.push(Footman.new(self)) }
+    5.times { tokens.push(Knight.new(self)) }
+    6.times { tokens.push(Ship.new(self)) }
+    2.times { tokens.push(SiegeEngine.new(self)) }
 
-    @tokens.push(
-      WeakMarchOrder.new(self.class),
-      MarchOrder.new(self.class),
-      SpecialMarchOrder.new(self.class),
-      DefenseOrder.new(self.class),
-      DefenseOrder.new(self.class),
-      SpecialDefenseOrder.new(self.class),
-      SupportOrder.new(self.class),
-      SupportOrder.new(self.class),
-      SpecialSupportOrder.new(self.class),
-      RaidOrder.new(self.class),
-      RaidOrder.new(self.class),
-      SpecialRaidOrder.new(self.class),
-      ConsolidatePowerOrder.new(self.class),
-      ConsolidatePowerOrder.new(self.class),
-      SpecialConsolidatePowerOrder.new(self.class),
+    5.times { tokens.push(PowerToken.new(self)) }
+
+    tokens.push(
+      WeakMarchOrder.new(self),
+      MarchOrder.new(self),
+      SpecialMarchOrder.new(self),
+      DefenseOrder.new(self),
+      DefenseOrder.new(self),
+      SpecialDefenseOrder.new(self),
+      SupportOrder.new(self),
+      SupportOrder.new(self),
+      SpecialSupportOrder.new(self),
+      RaidOrder.new(self),
+      RaidOrder.new(self),
+      SpecialRaidOrder.new(self),
+      ConsolidatePowerOrder.new(self),
+      ConsolidatePowerOrder.new(self),
+      SpecialConsolidatePowerOrder.new(self),
     )
+    new(player_name, tokens)
   end
 
   def self.unserialize(data)

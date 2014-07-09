@@ -1,14 +1,14 @@
 class TestWildlingTrack < MiniTest::Test
   def setup
-    @track = WildlingTrack.new
+    @track = WildlingTrack.create_new
   end
   def test_wildling_track_initialize
     assert_equal(2, @track.strength, "Wildling track should start at 2")
   end
 
   def test_equality
-    w1 = WildlingTrack.new
-    w2 = WildlingTrack.new
+    w1 = WildlingTrack.create_new
+    w2 = WildlingTrack.create_new
     assert_equal(w1, w2)
 
     w2.increase

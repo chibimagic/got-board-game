@@ -1,11 +1,18 @@
 class PowerPool
   attr_reader :pool
 
-  def initialize(houses)
-    @pool = []
+  def initialize(pool)
+    raise 'Invalid pool' unless pool.is_a?(Array) && pool.all? { |token| token.is_a?(PowerToken) }
+
+    @pool = pool
+  end
+
+  def self.create_new(houses)
+    pool = []
     houses.each do |house|
-      15.times { @pool.push(PowerToken.new(house.class)) }
+      15.times { pool.push(PowerToken.new(house.class)) }
     end
+    new(pool)
   end
 
   def self.unserialize(data)

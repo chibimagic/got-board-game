@@ -1,13 +1,21 @@
 class InfluenceTrack
   attr_reader :track
 
-  def initialize(houses)
-    @track = Array.new(6)
+  def initialize(track)
+    raise 'Invalid track' unless track.is_a?(Array) && track.all? { |house_class| house_class < House }
+
+    @track = track
+  end
+
+  def self.create_new(houses)
+    track = Array.new(6)
     houses.each do |house|
-      position = house.class::STARTING_POSITIONS[self.class]
-      @track[position - 1] = house.class
+      position = house.class::STARTING_POSITIONS[self]
+      track[position - 1] = house.class
     end
-    @track.compact! # Fill in empty spots from missing houses
+    track.compact! # Fill in empty spots from missing houses
+
+    new(track)
   end
 
   def self.unserialize(data)

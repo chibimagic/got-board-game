@@ -4,7 +4,7 @@ class TestHouseCard < MiniTest::Test
   def setup
     @decks = []
     self.class::DECK_CLASSES.each do |deck_class|
-      @decks.push(deck_class.new)
+      @decks.push(deck_class.create_new)
     end
   end
 

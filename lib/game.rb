@@ -60,8 +60,7 @@ class Game
     westeros_deck_ii,
     westeros_deck_iii
   )
-    # Validate parameters
-    validate_houses(houses)
+    raise 'Invalid houses' unless houses.is_a?(Array) && houses.all? { |house| house.is_a?(House) }
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid game round' unless game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10
     raise 'Invalid round phase' unless ROUND_PHASES.include?(round_phase)
@@ -90,21 +89,38 @@ class Game
     @westeros_deck_iii = westeros_deck_iii
   end
 
-  def self.new_game(houses)
+  def self.create_new(houses)
+    if !houses.is_a?(Array) || !houses.all? { |house| house.is_a?(House) }
+      raise 'Need an array of houses'
+    end
+    if houses.length < 3 || houses.length > 6
+      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
+    end
+
+    house_classes = houses.map { |house| house.class }
+    if house_classes.uniq != house_classes
+      raise 'Houses must be different'
+    end
+    house_classes.each do |house_class|
+      if house_classes.length < house_class::MINIMUM_PLAYERS
+        raise 'Cannot choose ' + house_class.to_s + ' with ' + house_classes.length.to_s + ' players'
+      end
+    end
+
     new(
       houses,
-      Map.new(houses),
+      Map.create_new(houses),
       1,
       :planning_assign,
-      WildlingTrack.new,
-      IronThroneTrack.new(houses),
-      FiefdomsTrack.new(houses),
-      KingsCourtTrack.new(houses),
-      PowerPool.new(houses),
-      WildlingDeck.new,
-      WesterosDeckI.new,
-      WesterosDeckII.new,
-      WesterosDeckIII.new
+      WildlingTrack.create_new,
+      IronThroneTrack.create_new(houses),
+      FiefdomsTrack.create_new(houses),
+      KingsCourtTrack.create_new(houses),
+      PowerPool.create_new(houses),
+      WildlingDeck.create_new,
+      WesterosDeckI.create_new,
+      WesterosDeckII.create_new,
+      WesterosDeckIII.create_new
     )
   end
 
@@ -145,24 +161,6 @@ class Game
       @westeros_deck_ii == o.westeros_deck_ii &&
       @westeros_deck_iii == o.westeros_deck_iii
   end
-
-  def validate_houses(houses)
-    if !houses.is_a?(Array) || houses.count { |house| house.is_a?(House) } != houses.count
-      raise 'Need an array of houses'
-    end
-    if houses.length < 3 || houses.length > 6
-      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
-    end
-    Houses.new.each do |house_class|
-      selected_times = houses.count { |house| house.class == house_class }
-      if selected_times > 1
-        raise 'Multiple instances of ' + house_class.to_s
-      elsif selected_times == 1 && houses.length < house_class::MINIMUM_PLAYERS
-        raise house_class.to_s + ' cannot be chosen when there are ' + houses.length.to_s + ' houses (' + house_class::MINIMUM_PLAYERS.to_s + ' required)'
-      end
-    end
-  end
-  private :validate_houses
 
   def house(house_class)
     @houses.find { |house| house.class == house_class }

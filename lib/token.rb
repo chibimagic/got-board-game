@@ -7,9 +7,8 @@ class HouseToken < Token
   TITLE = 'House Token'
 
   def initialize(house_class)
-    unless house_class.is_a?(Class) && house_class < House
-      raise self.class.to_s + ' must be instantiated with a House class'
-    end
+    raise 'Invalid house class' unless house_class.is_a?(Class) && house_class < House
+
     @house_class = house_class
   end
 

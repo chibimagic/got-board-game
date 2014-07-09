@@ -1,11 +1,11 @@
 class TestMap < MiniTest::Test
   def setup
-    @m = Map.new
+    @m = Map.create_new
   end
 
   def test_equality
-    m1 = Map.new
-    m2 = Map.new
+    m1 = Map.create_new
+    m2 = Map.create_new
     assert_equal(m1, m2)
 
     t = Footman.new(HouseStark)

@@ -1,6 +1,6 @@
 class TestOrderToken < MiniTest::Test
   def setup
-    @t = HouseStark.new.order_tokens
+    @t = HouseStark.create_new.order_tokens
   end
 
   def test_bonuses

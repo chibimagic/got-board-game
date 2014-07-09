@@ -208,14 +208,20 @@ class Map
     6 => [4, 3, 2, 2, 2]
   }
 
-  def initialize(houses = [])
-    @areas = []
+  def initialize(areas)
+    raise 'Invalid areas' unless areas.is_a?(Array) && areas.all? { |area| area.is_a?(Area) }
+
+    @areas = areas
+  end
+
+  def self.create_new(houses = [])
+    areas = []
     AREAS.each do |area_class|
-      @areas.push(area_class.new)
+      areas.push(area_class.create_new)
     end
 
     NeutralForceTokens.new(houses.count).get_tokens.each do |token|
-      place_token(token.area_class, token)
+      areas.find { |area| area.class == token.area_class }.place_token(token)
     end
 
     houses.each do |house|
@@ -225,12 +231,13 @@ class Map
           if !unit
             raise house.class.to_s + ' does not have an available ' + starting_unit_class.to_s + ' to place in ' + area_class.to_s
           end
-          place_token(area_class, unit)
+          areas.find { |area| area.class == area_class }.place_token(unit)
           house.remove_token(unit)
         end
       end
-      place_token(house.class::HOME_AREA, GarrisonToken.new(house.class))
+      areas.find { |area| area.class == house.class::HOME_AREA }.place_token(GarrisonToken.new(house.class))
     end
+    new(areas)
   end
 
   def self.unserialize(data)

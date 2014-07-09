@@ -8,8 +8,15 @@ class Area
   SUPPLY = 0
   POWER = 0
 
-  def initialize
-    @tokens = []
+  def initialize(tokens)
+    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(Token) }
+
+    @tokens = tokens
+  end
+
+  def self.create_new
+    tokens = []
+    new(tokens)
   end
 
   def self.unserialize(data)

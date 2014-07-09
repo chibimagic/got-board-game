@@ -3,11 +3,18 @@ class Deck
 
   STARTING_CARD_CLASSES = []
 
-  def initialize
-    @cards = []
-    self.class::STARTING_CARD_CLASSES.each do |card_class|
-      @cards.push(card_class.new)
+  def initialize(cards)
+    raise 'Invalid cards' unless cards.is_a?(Array) && cards.all? { |card| card.is_a?(Card) }
+
+    @cards = cards
+  end
+
+  def self.create_new
+    cards = []
+    self::STARTING_CARD_CLASSES.each do |card_class|
+      cards.push(card_class.new)
     end
+    new(cards)
   end
 
   def self.unserialize(data)
@@ -52,8 +59,13 @@ module PlaceAtBottomDeck
 end
 
 class RandomDeck < Deck
-  def initialize
-    super
+  def self.create_new
+    deck = super
+    deck.shuffle
+    deck
+  end
+
+  def shuffle
     @cards.shuffle!
   end
 end
