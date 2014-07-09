@@ -11,6 +11,7 @@ class Houses
   ]
 
   def self.get_house_class(house_string)
+    raise 'Invalid house string' unless house_string.is_a?(String)
     house = self::HOUSES.find { |house_class| house_class.to_s == house_string }
     if house
       house

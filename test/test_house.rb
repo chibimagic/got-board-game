@@ -4,6 +4,13 @@ class TestHouse < MiniTest::Test
     @houses = house_classes.map { |house_class| house_class.create_new }
   end
 
+  def test_serialize
+    original_house = HouseStark.create_new
+    stored_house = original_house.serialize.to_json
+    restored_house = HouseStark.unserialize(JSON.parse(stored_house))
+    assert_equal(original_house, restored_house)
+  end
+
   def test_equality
     assert_equal(HouseStark.create_new, HouseStark.create_new)
     assert_equal(HouseStark.create_new('a'), HouseStark.create_new('a'))
