@@ -7,10 +7,10 @@ class PowerPool
     @pool = pool
   end
 
-  def self.create_new(houses)
+  def self.create_new(house_classes)
     pool = []
-    houses.each do |house|
-      15.times { pool.push(PowerToken.new(house.class)) }
+    house_classes.each do |house_class|
+      15.times { pool.push(PowerToken.new(house_class)) }
     end
     new(pool)
   end

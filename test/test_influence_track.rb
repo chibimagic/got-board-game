@@ -38,10 +38,9 @@ class TestInfluenceTrack < MiniTest::Test
       }
     ]
     data.each do |datum|
-      houses = datum[:houses].map { |house| house.create_new }
-      iron_throne_track = IronThroneTrack.create_new(houses)
-      fiefdoms_track = FiefdomsTrack.create_new(houses)
-      kings_court_track = KingsCourtTrack.create_new(houses)
+      iron_throne_track = IronThroneTrack.create_new(datum[:houses])
+      fiefdoms_track = FiefdomsTrack.create_new(datum[:houses])
+      kings_court_track = KingsCourtTrack.create_new(datum[:houses])
 
       assert_equal(datum[:iron_throne_track], iron_throne_track.track)
       assert_equal(datum[:fiefdoms_track], fiefdoms_track.track)
@@ -50,9 +49,9 @@ class TestInfluenceTrack < MiniTest::Test
   end
 
   def test_equality
-    h1 = [HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]
-    h2 = [HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]
-    h3 = [HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new, HouseGreyjoy.create_new]
+    h1 = [HouseStark, HouseLannister, HouseBaratheon]
+    h2 = [HouseStark, HouseLannister, HouseBaratheon]
+    h3 = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy]
     tracks = [IronThroneTrack, FiefdomsTrack, KingsCourtTrack]
     tracks.each do |track|
       assert_equal(track.create_new(h1), track.create_new(h1))
@@ -69,8 +68,7 @@ class TestInfluenceTrack < MiniTest::Test
       { HouseStark => 2, HouseLannister => 3, HouseBaratheon => 1 }
     ]
     data.each do |datum|
-      houses = datum.map { |house_class, special_orders_allowed| house_class.create_new }
-      track = KingsCourtTrack.create_new(houses)
+      track = KingsCourtTrack.create_new(datum.keys)
       datum.each do |house_class, special_orders_allowed|
         assert_equal(special_orders_allowed, track.special_orders_allowed(house_class), house_class.to_s + ' is allowed wrong number of special orders')
       end

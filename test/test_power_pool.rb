@@ -1,8 +1,8 @@
 class TestPowerPool < MiniTest::Test
   def test_equality
-    p1 = PowerPool.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    p2 = PowerPool.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    p3 = PowerPool.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new, HouseGreyjoy.create_new])
+    p1 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    p2 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    p3 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy])
     assert_equal(p1, p2)
 
     t1 = p1.pool.find { |token| token.house_class == HouseStark }
@@ -15,12 +15,12 @@ class TestPowerPool < MiniTest::Test
   end
 
   def test_count
-    h1 = HouseStark.create_new
-    h2 = HouseLannister.create_new
-    h3 = HouseBaratheon.create_new
-    h4 = HouseGreyjoy.create_new
-    h5 = HouseTyrell.create_new
-    h6 = HouseMartell.create_new
+    h1 = HouseStark
+    h2 = HouseLannister
+    h3 = HouseBaratheon
+    h4 = HouseGreyjoy
+    h5 = HouseTyrell
+    h6 = HouseMartell
 
     p = PowerPool.create_new([h1, h2, h3])
     assert_equal(45, p.pool.count, 'Wrong number of tokens for 3 houses')

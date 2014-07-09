@@ -7,11 +7,11 @@ class InfluenceTrack
     @track = track
   end
 
-  def self.create_new(houses)
+  def self.create_new(house_classes)
     track = Array.new(6)
-    houses.each do |house|
-      position = house.class::STARTING_POSITIONS[self]
-      track[position - 1] = house.class
+    house_classes.each do |house_class|
+      position = house_class::STARTING_POSITIONS[self]
+      track[position - 1] = house_class
     end
     track.compact! # Fill in empty spots from missing houses
 
