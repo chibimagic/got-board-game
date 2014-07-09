@@ -67,6 +67,10 @@ class House
     self.class::TITLE + ' (' + name + ')'
   end
 
+  def self.as_json(*)
+    self.to_s
+  end
+
   def units
     @tokens.find_all { |token| token.is_a?(Unit) }
   end
