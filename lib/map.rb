@@ -208,10 +208,28 @@ class Map
     6 => [4, 3, 2, 2, 2]
   }
 
-  def initialize
+  def initialize(houses = [])
     @areas = []
     AREAS.each do |area_class|
       @areas.push(area_class.new)
+    end
+
+    NeutralForceTokens.new(houses.count).get_tokens.each do |token|
+      place_token(token.area_class, token)
+    end
+
+    houses.each do |house|
+      house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
+        starting_unit_classes.each do |starting_unit_class|
+          unit = house.get_token(starting_unit_class)
+          if !unit
+            raise house.class.to_s + ' does not have an available ' + starting_unit_class.to_s + ' to place in ' + area_class.to_s
+          end
+          place_token(area_class, unit)
+          house.remove_token(unit)
+        end
+      end
+      place_token(house.class::HOME_AREA, GarrisonToken.new(house.class))
     end
   end
 

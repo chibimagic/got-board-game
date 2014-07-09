@@ -91,21 +91,7 @@ class Game
       @westeros_deck_iii = westeros_deck_iii
     else
       # New game
-      @map = Map.new
-
-      NeutralForceTokens.new(@houses.count).get_tokens.each do |token|
-        @map.place_token(token.area_class, token)
-      end
-
-      @houses.each do |house|
-        house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
-          starting_unit_classes.each do |starting_unit_class|
-            place_token(area_class, house.class, starting_unit_class)
-          end
-        end
-        @map.place_token(house.class::HOME_AREA, GarrisonToken.new(house.class))
-      end
-
+      @map = Map.new(@houses)
       @game_round = 1
       @wildling_track = WildlingTrack.new
       @iron_throne_track = IronThroneTrack.new(@houses)
