@@ -1,4 +1,8 @@
 class Token
+  def self.unserialize(data)
+    token_class_string = data.keys[0]
+    token_class_string.constantize.unserialize(data)
+  end
 end
 
 class HouseToken < Token
@@ -18,6 +22,9 @@ class HouseToken < Token
   end
 
   def self.unserialize(data)
+    token_class_string = data.keys[0]
+    house_string = data.values[0]
+    token_class_string.constantize.new(Houses.get_house_class(house_string))
   end
 
   def serialize

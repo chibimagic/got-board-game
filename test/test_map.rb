@@ -3,6 +3,13 @@ class TestMap < MiniTest::Test
     @m = Map.create_new
   end
 
+  def test_serialize
+    original_map = Map.create_new
+    stored_map = original_map.serialize.to_json
+    restored_map = Map.unserialize(JSON.parse(stored_map))
+    assert_equal(original_map, restored_map)
+  end
+
   def test_equality
     m1 = Map.create_new
     m2 = Map.create_new

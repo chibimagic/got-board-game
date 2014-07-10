@@ -10,10 +10,13 @@ class NeutralForceToken < Token
   end
 
   def self.unserialize(data)
+    area_class_string = data.values[0][0]
+    strength = data.values[0][1]
+    new(Map.get_area_class(area_class_string), strength)
   end
 
   def serialize
-    { self.class => @strength }
+    { self.class => [@area_class, @strength] }
   end
 
   def ==(o)

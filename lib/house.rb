@@ -45,15 +45,7 @@ class House
   def self.unserialize(data)
     house_class = Houses.get_house_class(data['house_class'])
     player_name = data['player_name']
-    tokens = data['tokens'].map do |token|
-      if token.length != 1
-        raise 'Invalid token: ' + token.to_s
-      end
-      token_class_string = token.keys[0]
-      house_string = token.values[0]
-
-      token_class_string.constantize.new(Houses.get_house_class(house_string))
-    end
+    tokens = data['tokens'].map { |token_data| HouseToken.unserialize(token_data) }
 
     house_class.new(player_name, tokens)
   end

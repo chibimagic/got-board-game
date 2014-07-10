@@ -20,6 +20,8 @@ class Area
   end
 
   def self.unserialize(data)
+    tokens = data.map { |token_data| Token.unserialize(token_data) }
+    new(tokens)
   end
 
   def serialize
@@ -37,6 +39,10 @@ class Area
 
   def to_s
     self.class::TITLE + ' (' + @tokens.count.to_s + ')'
+  end
+
+  def self.as_json(*)
+    self.to_s
   end
 
   def connection_count

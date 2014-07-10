@@ -241,6 +241,8 @@ class Map
   end
 
   def self.unserialize(data)
+    areas = data.map { |area_class_string, area_data| self.get_area_class(area_class_string).unserialize(area_data) }
+    new(areas)
   end
 
   def serialize
@@ -250,6 +252,10 @@ class Map
   def ==(o)
     self.class == o.class &&
       @areas == o.areas
+  end
+
+  def self.get_area_class(area_string)
+    AREAS.find { |area_class| area_class.to_s == area_string }
   end
 
   def area(area_class)
