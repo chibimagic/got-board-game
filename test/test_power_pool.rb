@@ -1,4 +1,11 @@
 class TestPowerPool < MiniTest::Test
+  def test_serialize
+    original_pool = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    stored_pool = original_pool.serialize.to_json
+    restored_pool = PowerPool.unserialize(JSON.parse(stored_pool))
+    assert_equal(original_pool, restored_pool)
+  end
+
   def test_equality
     p1 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
     p2 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])

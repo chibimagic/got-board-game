@@ -16,6 +16,12 @@ class PowerPool
   end
 
   def self.unserialize(data)
+    pool = []
+    data.each do |house_string, count|
+      house_class = Houses.get_house_class(house_string)
+      count.times { pool.push(PowerToken.new(house_class)) }
+    end
+    new(pool)
   end
 
   def serialize
