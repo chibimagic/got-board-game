@@ -17,16 +17,15 @@ class PowerPool
 
   def self.unserialize(data)
     pool = []
-    data.each do |house_string, count|
-      house_class = Houses.get_house_class(house_string)
-      count.times { pool.push(PowerToken.new(house_class)) }
+    data.each do |house_class_string, power_token_count|
+      power_token_count.times { pool.push(PowerToken.new(house_class_string.constantize)) }
     end
     new(pool)
   end
 
   def serialize
     houses = @pool.map { |power_token| power_token.house_class }.uniq
-    Hash[houses.map { |house_class| [house_class, @pool.count { |power_token| power_token.house_class == house_class }] }]
+    Hash[houses.map { |house_class| [house_class.name, @pool.count { |power_token| power_token.house_class == house_class }] }]
   end
 
   def ==(o)

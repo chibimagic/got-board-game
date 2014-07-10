@@ -42,7 +42,7 @@ class Area
   end
 
   def self.as_json(*)
-    self.to_s
+    self.name
   end
 
   def connection_count

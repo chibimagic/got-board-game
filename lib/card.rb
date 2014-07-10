@@ -4,6 +4,6 @@ class Card
   end
 
   def self.as_json(*)
-    self.to_s
+    self.name
   end
 end

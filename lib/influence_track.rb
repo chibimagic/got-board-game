@@ -19,7 +19,7 @@ class InfluenceTrack
   end
 
   def self.unserialize(data)
-    track = data.map { |house_string| Houses.get_house_class(house_string) }
+    track = data.map { |house_class_string| house_class_string.constantize }
     new(track)
   end
 

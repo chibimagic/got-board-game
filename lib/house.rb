@@ -43,7 +43,7 @@ class House
   end
 
   def self.unserialize(data)
-    house_class = Houses.get_house_class(data['house_class'])
+    house_class = data['house_class'].constantize
     player_name = data['player_name']
     tokens = data['tokens'].map { |token_data| HouseToken.unserialize(token_data) }
 
@@ -74,7 +74,7 @@ class House
   end
 
   def self.as_json(*)
-    self.to_s
+    self.name
   end
 
   def units
