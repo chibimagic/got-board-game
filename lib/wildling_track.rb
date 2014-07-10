@@ -12,6 +12,8 @@ class WildlingTrack
   end
 
   def self.unserialize(data)
+    strength = data
+    new(strength)
   end
 
   def serialize
