@@ -28,7 +28,9 @@ class TestStorage < MiniTest::Test
   def test_game_save_get
     original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     game_id = Storage.save_game(nil, original_game)
+    game_ids = Storage.list_games
+    assert_includes(game_ids, game_id, 'New game not listed')
     restored_game = Storage.get_game(game_id)
-    assert_equal(original_game, restored_game)
+    assert_equal(original_game, restored_game, 'Restored game incorrect')
   end
 end
