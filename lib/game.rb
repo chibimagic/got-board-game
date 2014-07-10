@@ -126,6 +126,21 @@ class Game
   end
 
   def self.unserialize(data)
+    new(
+      data['houses'].map { |house| House.unserialize(house) },
+      Map.unserialize(data['map']),
+      data['game_round'],
+      data['round_phase'].to_sym,
+      WildlingTrack.unserialize(data['wildling_track']),
+      IronThroneTrack.unserialize(data['iron_throne_track']),
+      FiefdomsTrack.unserialize(data['fiefdoms_track']),
+      KingsCourtTrack.unserialize(data['kings_court_track']),
+      PowerPool.unserialize(data['power_pool']),
+      WildlingDeck.unserialize(data['wildling_deck']),
+      WesterosDeckI.unserialize(data['westeros_deck_i']),
+      WesterosDeckII.unserialize(data['westeros_deck_ii']),
+      WesterosDeckIII.unserialize(data['westeros_deck_iii'])
+    )
   end
 
   def serialize

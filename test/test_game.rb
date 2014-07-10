@@ -79,6 +79,13 @@ class TestGame < MiniTest::Test
     assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 
+  def test_serialize
+    original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    stored_game = original_game.serialize.to_json
+    restored_game = Game.unserialize(JSON.parse(stored_game))
+    assert_equal(original_game, restored_game)
+  end
+
   def test_equality
     # Different decks will make the games unequal
     g1 = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
