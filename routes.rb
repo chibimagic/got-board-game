@@ -20,6 +20,7 @@ get '/games' do
 end
 
 # Start a new game
+# Body: {"HouseStark":"Alice","HouseLannister":"Bob","HouseBaratheon":"Carol"}
 post '/games' do
   begin
     houses = @data.map { |house_class_string, player_name| house_class_string.constantize.create_new(player_name) }
@@ -36,19 +37,23 @@ get '/games/:game' do |game_id|
   Storage.get_game(game_id).serialize.to_json
 end
 
-# Place orders, execute orders
+# Place orders, execute orders, replace orders with Messenger Raven token
+# Body: {"CastleBlack":"WeakMarchOrder","DragonstonePortToShipbreakerBay":"SpecialRaidOrder"}
 post '/games/:game/orders' do |game_id|
 end
 
 # Muster troops
+# Body: {"Winterfell":[{"muster":"Knight"}],"Seagard":[{"upgrade":"Ship"},{"muster":"Footman"}]}
 post '/games/:game/muster' do |game_id|
 end
 
 # Bid on influence track or wildling attack
+# Body: 4
 post '/games/:game/bid' do |game_id|
 end
 
 # Use Valyrian Steel Blade token
+# Body: none
 post '/games/:game/combat' do |game_id|
 end
 
@@ -57,5 +62,7 @@ get '/games/:game/wildling_deck' do |game_id|
 end
 
 # Use Messenger Raven token to replace card in wildling deck
+# Body: top
+# Body: bottom
 post '/games/:game/wildling_deck' do |game_id|
 end
