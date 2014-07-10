@@ -14,6 +14,29 @@ before do
   end
 end
 
+# List existing users
+get '/users' do
+  Storage.list_users.to_json
+end
+
+# Create a user
+# Body: {"username":"jdoe","password":"password","player_name":"John"}
+post '/users' do
+  begin
+    username = @data['username']
+    password = @data['password']
+    player_name = @data['player_name']
+    Storage.create_user(username, password, player_name).to_json
+  rescue RuntimeError => e
+    e.message
+  end
+end
+
+# See information about an existing user
+get '/users/:username' do
+  Storage.get_user(username).to_json
+end
+
 # List existing games
 get '/games' do
   Storage.list_games.to_json

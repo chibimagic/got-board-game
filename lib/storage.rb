@@ -1,9 +1,19 @@
 require 'sqlite3'
+require 'bcrypt'
 require 'base64'
 
 class Storage
   def self.db
     db = SQLite3::Database.new('games.db')
+    db.execute <<-EOT
+      create table if not exists users (
+        id integer primary key,
+        username string unique not null,
+        passhash string not null,
+        player_name string not null
+      )
+    EOT
+
     db.execute <<-EOT
       create table if not exists games (
         game_id integer primary key,
@@ -11,6 +21,29 @@ class Storage
       )
     EOT
     db
+  end
+
+  def self.list_users
+    db.execute('select username from users').flatten
+  end
+
+  def self.create_user(username, password, player_name)
+    unless db.execute('select id from users where username=?', username)[0].nil?
+      raise 'The username "' + username + '" is taken'
+    end
+    passhash = BCrypt::Password.create(password)
+    db.execute('insert into users (username, passhash, player_name) values (?, ?, ?)', [username, passhash, player_name])
+    db.execute('select id from users where username=?', username)[0][0]
+  end
+
+  def self.get_user(username)
+    row = db.execute('select id, username, player_name from users where username=?', username)[0]
+    { :id => row[0], :username => row[1], :player_name => row[2] }
+  end
+
+  def self.correct_password?(username, password)
+    passhash = db.execute('select passhash from users where username=?', username)[0][0]
+    BCrypt::Password.new(passhash) == password
   end
 
   def self.list_games
