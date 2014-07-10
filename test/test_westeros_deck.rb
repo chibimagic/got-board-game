@@ -3,6 +3,15 @@ class TestWesterosDeck < MiniTest::Test
     @deck_classes = [WesterosDeckI, WesterosDeckII, WesterosDeckIII]
   end
 
+  def test_serialize
+    @deck_classes.each do |deck_class|
+      original_deck = deck_class.create_new
+      stored_deck = original_deck.serialize.to_json
+      restored_deck = deck_class.unserialize(JSON.parse(stored_deck))
+      assert_equal(original_deck, restored_deck)
+    end
+  end
+
   def test_equality
     @deck_classes.each do |deck_class|
       d1 = deck_class.create_new

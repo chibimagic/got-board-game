@@ -18,6 +18,8 @@ class Deck
   end
 
   def self.unserialize(data)
+    cards = data.map { |card_class_string| card_class_string.constantize.new }
+    new(cards)
   end
 
   def serialize
