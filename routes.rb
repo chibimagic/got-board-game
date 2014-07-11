@@ -23,6 +23,9 @@ end
 # Body: {"username":"jdoe","password":"password","player_name":"John"}
 post '/users' do
   begin
+    if !@data['username'] || !@data['password'] || !@data['player_name']
+      raise 'Format: {"username":"jdoe","password":"password","player_name":"John"}'
+    end
     username = @data['username']
     password = @data['password']
     player_name = @data['player_name']
@@ -43,12 +46,24 @@ get '/games' do
 end
 
 # Start a new game
-# Body: {"HouseStark":"Alice","HouseLannister":"Bob","HouseBaratheon":"Carol"}
+# Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"}
 post '/games' do
   begin
-    houses = @data.map { |house_class_string, player_name| house_class_string.constantize.create_new(player_name) }
+    houses = @data.map do |house_class_string, username|
+      user = Storage.get_user(username)
+      if user.nil?
+        raise 'Cannot find user with username: ' + username
+      end
+      house_class_string.constantize.create_new(user[:player_name])
+    end
     g = Game.create_new(houses)
-    game_id = Storage.save_game(nil, g)
+
+    houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
+    house_ids = houses.map do |house_class|
+      username = @data.fetch(house_class.name, nil)
+      username.nil? ? nil : Storage.get_user(username)[:id]
+    end
+    game_id = Storage.create_game(g, *house_ids)
     { :game_id => game_id }.to_json
   rescue RuntimeError => e
     e.message

@@ -19,15 +19,22 @@ class TestStorage < MiniTest::Test
     assert_equal(false, Storage.correct_password?(username, random_string), 'Incorrect password verified')
   end
 
+  def test_nil_user
+    user = Storage.get_user(random_string)
+    assert_equal(nil, user, 'Found a non-existent user')
+  end
+
   def test_duplicate_username
     username = random_string
     Storage.create_user(username, random_string, random_string)
     assert_raises(RuntimeError) { Storage.create_user(username, random_string, random_string) }
   end
 
-  def test_game_save_get
+  def test_game_create_get
+    usernames = [random_string, random_string, random_string, nil, nil, nil]
+    user_ids = usernames.map { |username| username.nil? ? nil : Storage.create_user(username, 'password', username) }
     original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    game_id = Storage.save_game(nil, original_game)
+    game_id = Storage.create_game(original_game, *user_ids)
     game_ids = Storage.list_games
     assert_includes(game_ids, game_id, 'New game not listed')
     restored_game = Storage.get_game(game_id)
