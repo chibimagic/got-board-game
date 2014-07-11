@@ -1,13 +1,14 @@
 class TestRoutes < MiniTest::Test
   def get(relative_url)
-    RestClient.get('http://0.0.0.0:4567' + relative_url)
+    @browser.get(relative_url).body
   end
 
   def post(relative_url, body)
-    RestClient.post('http://0.0.0.0:4567' + relative_url, body.to_json)
+    @browser.post(relative_url, body.to_json).body
   end
 
   def setup
+    @browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
     usernames = ['a', 'b', 'c', 'd', 'e', 'f']
     usernames.each do |username|
       post('/users', { 'username' => username, 'password' => 'password', 'player_name' => username })

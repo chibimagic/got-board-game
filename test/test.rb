@@ -2,7 +2,6 @@ require 'simplecov'
 SimpleCov.start
 
 require 'minitest/autorun'
-require 'rest_client'
 require_relative '../routes.rb'
 
 require 'set'
