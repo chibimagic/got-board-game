@@ -58,8 +58,10 @@ class Storage
     BCrypt::Password.new(passhash) == password
   end
 
-  def self.list_games
-    db.execute('select game_id from games').flatten
+  def self.list_games(user_id)
+    db.execute('select game_id from games
+      where house_stark=? or house_lannister=? or house_baratheon=? or house_greyjoy =? or house_tyrell=? or house_martell =?',
+      user_id, user_id, user_id, user_id, user_id, user_id).flatten
   end
 
   def self.create_game(
