@@ -41,7 +41,7 @@ class Storage
 
   def self.create_user(username, password, player_name)
     unless db.execute('select id from users where username=?', username)[0].nil?
-      raise 'The username "' + username + '" is taken'
+      raise 'Username is taken: ' + username.to_s
     end
     passhash = BCrypt::Password.create(password)
     db.execute('insert into users (username, passhash, player_name) values (?, ?, ?)', [username, passhash, player_name])
@@ -50,12 +50,16 @@ class Storage
 
   def self.get_user(username)
     row = db.execute('select id, username, player_name from users where username=?', username)[0]
-    row.nil? ? nil : { :id => row[0], :username => row[1], :player_name => row[2] }
+    if row.nil?
+      raise 'No user with username: ' + username.to_s
+    end
+    { :id => row[0], :username => row[1], :player_name => row[2] }
   end
 
+  # Do not distinguish between non-existent user and incorrect password
   def self.correct_password?(username, password)
-    passhash = db.execute('select passhash from users where username=?', username)[0][0]
-    BCrypt::Password.new(passhash) == password
+    row = db.execute('select passhash from users where username=?', username)[0]
+    row.nil? ? false : BCrypt::Password.new(row[0]) == password
   end
 
   def self.list_games(user_id)
@@ -83,8 +87,11 @@ class Storage
   end
 
   def self.get_game(game_id)
-    data = db.execute('select data from games where game_id=? limit 1', game_id)[0][0]
-    Marshal.load(Base64.decode64(data))
+    row = db.execute('select data from games where game_id=?', game_id)[0]
+    if row.nil?
+      raise 'No game with game id: ' + game_id.to_s
+    end
+    Marshal.load(Base64.decode64(row[0]))
   end
 
   def self.save_game(game_id, game)

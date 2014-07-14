@@ -25,14 +25,21 @@ class TestStorage < MiniTest::Test
   end
 
   def test_nil_user
-    user = Storage.get_user(random_string)
-    assert_equal(nil, user, 'Found a non-existent user')
+    assert_raises(RuntimeError) { Storage.get_user(random_string) }
+  end
+
+  def test_correct_password_invalid_username
+    assert_equal(false, Storage.correct_password?(random_string, random_string))
   end
 
   def test_duplicate_username
     username = random_string
     Storage.create_user(username, random_string, random_string)
     assert_raises(RuntimeError) { Storage.create_user(username, random_string, random_string) }
+  end
+
+  def test_get_game_invalid_game_id
+    assert_raises(RuntimeError) { Storage.get_game(random_string) }
   end
 
   def test_game_create_get
