@@ -5,7 +5,7 @@ require_relative 'lib/game.rb'
 require_relative 'lib/storage.rb'
 
 before do
-  if request.request_method == 'POST'
+  if request.post?
     begin
       request.body.rewind
       @data = JSON.parse(request.body.read)
