@@ -1,8 +1,15 @@
 require 'sinatra'
-require 'warden'
 require 'JSON'
 require_relative 'lib/game.rb'
 require_relative 'lib/storage.rb'
+
+enable :sessions
+set :session_secret, 'got-board-game'
+
+UNPROTECTED_ROUTES = [
+  ['post', '/session'],
+  ['post', '/users']
+]
 
 before do
   if request.post?
@@ -12,6 +19,44 @@ before do
     rescue JSON::ParserError => e
       halt('JSON input expected')
     end
+  end
+
+  route = [request.request_method.downcase, request.path_info]
+  unless UNPROTECTED_ROUTES.include?(route)
+    session_id = session['session_id']
+    begin
+      @username = Storage.get_user_for_session(session_id)
+    rescue RuntimeError => e
+      halt(e.message)
+    end
+  end
+end
+
+# Get information about your current session
+get '/session' do
+  session_id = session['session_id']
+  username = Storage.get_user_for_session(session_id)
+  { :username => username, :session_id => session_id }.to_json
+end
+
+# Log in
+# Body: {"username":"jdoe","password":"password"}
+post '/session' do
+  begin
+    if !@data['username'] || !@data['password']
+      raise 'Format: {"username":"jdoe","password":"password}'
+    end
+    username = @data['username']
+    password = @data['password']
+    session_id = session['session_id']
+    if Storage.correct_password?(username, password)
+      Storage.create_session(username, session_id)
+      { :username => username, :session_id => session_id }.to_json
+    else
+      raise 'Incorrect username or password'
+    end
+  rescue RuntimeError => e
+    e.message
   end
 end
 

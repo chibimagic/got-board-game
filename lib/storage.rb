@@ -15,6 +15,15 @@ class Storage
     EOT
 
     db.execute <<-EOT
+      create table if not exists sessions (
+        id integer primary key,
+        user_id integer,
+        session_id unique,
+        foreign key(user_id) references users(id)
+      )
+    EOT
+
+    db.execute <<-EOT
       create table if not exists games (
         id integer primary key,
         house_stark not null,
@@ -65,6 +74,19 @@ class Storage
     user_id = get_user_id(username)
     passhash = db.execute('select passhash from users where id=?', user_id)[0][0]
     BCrypt::Password.new(passhash) == password
+  end
+
+  def self.create_session(username, session_id)
+    user_id = get_user_id(username)
+    db.execute('insert into sessions (user_id, session_id) values (?, ?)', [user_id, session_id])
+  end
+
+  def self.get_user_for_session(session_id)
+    row = db.execute('select username from sessions left join users on sessions.user_id=users.id where session_id=?', session_id)[0]
+    if row.nil?
+      raise 'No user with session id: ' + session_id.to_s
+    end
+    row[0]
   end
 
   def self.list_games(username)

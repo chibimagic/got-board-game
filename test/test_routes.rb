@@ -13,6 +13,7 @@ class TestRoutes < MiniTest::Test
     usernames.each do |username|
       post('/users', { 'username' => username, 'password' => 'password', 'player_name' => username })
     end
+    post('/session', { 'username' => usernames[0], 'password' => 'password' })
   end
 
   def test_create_user_invalid
