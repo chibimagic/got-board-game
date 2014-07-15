@@ -30,7 +30,8 @@ post '/users' do
     username = @data['username']
     password = @data['password']
     player_name = @data['player_name']
-    Storage.create_user(username, password, player_name).to_json
+    Storage.create_user(username, password, player_name)
+    { :username => username, :player_name => player_name }.to_json
   rescue RuntimeError => e
     e.message
   end
@@ -60,11 +61,10 @@ post '/games' do
     g = Game.create_new(houses)
 
     houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
-    house_ids = houses.map do |house_class|
+    house_usernames = houses.map do |house_class|
       username = @data.fetch(house_class.name, nil)
-      username.nil? ? nil : Storage.get_user(username)[:id]
     end
-    game_id = Storage.create_game(g, *house_ids)
+    game_id = Storage.create_game(g, *house_usernames)
     { :game_id => game_id }.to_json
   rescue RuntimeError => e
     e.message

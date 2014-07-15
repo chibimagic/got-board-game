@@ -16,7 +16,7 @@ class Storage
 
     db.execute <<-EOT
       create table if not exists games (
-        game_id integer primary key,
+        id integer primary key,
         house_stark not null,
         house_lannister not null,
         house_baratheon not null,
@@ -45,57 +45,73 @@ class Storage
     end
     passhash = BCrypt::Password.create(password)
     db.execute('insert into users (username, passhash, player_name) values (?, ?, ?)', [username, passhash, player_name])
-    db.execute('select id from users where username=?', username)[0][0]
   end
 
-  def self.get_user(username)
-    row = db.execute('select id, username, player_name from users where username=?', username)[0]
+  def self.get_user_id(username)
+    row = db.execute('select id from users where username=?', username)[0]
     if row.nil?
       raise 'No user with username: ' + username.to_s
     end
-    { :id => row[0], :username => row[1], :player_name => row[2] }
+    row[0]
   end
 
-  # Do not distinguish between non-existent user and incorrect password
+  def self.get_user(username)
+    user_id = get_user_id(username)
+    row = db.execute('select username, player_name from users where id=?', user_id)[0]
+    { :username => row[0], :player_name => row[1] }
+  end
+
   def self.correct_password?(username, password)
-    row = db.execute('select passhash from users where username=?', username)[0]
-    row.nil? ? false : BCrypt::Password.new(row[0]) == password
+    user_id = get_user_id(username)
+    passhash = db.execute('select passhash from users where id=?', user_id)[0][0]
+    BCrypt::Password.new(passhash) == password
   end
 
-  def self.list_games(user_id)
-    db.execute('select game_id from games
+  def self.list_games(username)
+    user_id = get_user_id(username)
+    db.execute('select id from games
       where house_stark=? or house_lannister=? or house_baratheon=? or house_greyjoy =? or house_tyrell=? or house_martell =?',
       user_id, user_id, user_id, user_id, user_id, user_id).flatten
   end
 
   def self.create_game(
     game,
-    house_stark_id,
-    house_lannister_id,
-    house_baratheon_id,
-    house_greyjoy_id,
-    house_tyrell_id,
-    house_martell_id
+    house_stark_username,
+    house_lannister_username,
+    house_baratheon_username,
+    house_greyjoy_username = nil,
+    house_tyrell_username = nil,
+    house_martell_username = nil
   )
+    usernames = [
+      house_stark_username,
+      house_lannister_username,
+      house_baratheon_username,
+      house_greyjoy_username,
+      house_tyrell_username,
+      house_martell_username
+    ]
+    user_ids = usernames.map { |username| username.nil? ? nil : get_user_id(username) }
+
     data = Base64.encode64(Marshal.dump(game))
     db.execute('insert into games
       (house_stark, house_lannister, house_baratheon, house_greyjoy, house_tyrell, house_martell, data)
       values (?, ?, ?, ?, ?, ?, ?)',
-      [house_stark_id, house_lannister_id, house_baratheon_id, house_greyjoy_id, house_tyrell_id, house_martell_id, data]
+      [user_ids, data]
     )
-    db.execute('select game_id from games where data=? limit 1', data)[0][0]
+    db.execute('select id from games where data=? limit 1', data)[0][0]
   end
 
   def self.get_game(game_id)
-    row = db.execute('select data from games where game_id=?', game_id)[0]
+    row = db.execute('select data from games where id=?', game_id)[0]
     if row.nil?
-      raise 'No game with game id: ' + game_id.to_s
+      raise 'No game with id: ' + game_id.to_s
     end
     Marshal.load(Base64.decode64(row[0]))
   end
 
   def self.save_game(game_id, game)
     data = Base64.encode64(Marshal.dump(game))
-    db.execute('replace into games (game_id, data) values (?, ?)', [game_id, data])
+    db.execute('replace into games (id, data) values (?, ?)', [game_id, data])
   end
 end
