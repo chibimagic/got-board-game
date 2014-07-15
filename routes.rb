@@ -34,9 +34,7 @@ end
 
 # Get information about your current session
 get '/session' do
-  session_id = session['session_id']
-  username = Storage.get_user_for_session(session_id)
-  { :username => username, :session_id => session_id }.to_json
+  { :username => @username, :session_id => session['session_id'] }.to_json
 end
 
 # Log in
@@ -96,6 +94,9 @@ end
 # Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"}
 post '/games' do
   begin
+    unless @data.has_value?(@username)
+      raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
+    end
     houses = @data.map do |house_class_string, username|
       user = Storage.get_user(username)
       if user.nil?

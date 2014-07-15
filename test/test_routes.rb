@@ -31,7 +31,7 @@ class TestRoutes < MiniTest::Test
     response = post('/games', '')
     assert_equal('JSON input expected', response)
     response = post('/games', {})
-    assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 0', response)
+    assert_equal('Cannot create a game that does not include yourself: a, {}', response)
     response = post('/games', { 'HouseStark' => 'a' })
     assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 1', response)
     response = post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b' })
