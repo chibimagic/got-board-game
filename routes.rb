@@ -89,7 +89,7 @@ end
 
 # List existing games
 get '/games' do
-  Storage.list_games.to_json
+  Storage.list_games(@username).to_json
 end
 
 # Start a new game
