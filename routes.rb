@@ -6,6 +6,7 @@ require_relative 'lib/storage.rb'
 enable :sessions
 set :session_secret, 'got-board-game'
 
+# Routes that don't require authentication
 UNPROTECTED_ROUTES = [
   ['post', '/session'],
   ['post', '/users']
@@ -29,6 +30,13 @@ before do
     rescue RuntimeError => e
       halt(e.message)
     end
+  end
+end
+
+before '/games/:game' do |game_id|
+  game_ids = Storage.list_games(@username)
+  unless game_ids.include?(game_id.to_i)
+    halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
 end
 
