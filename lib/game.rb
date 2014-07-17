@@ -29,6 +29,7 @@ class Game
     :map,
     :game_round,
     :round_phase,
+    :players_turn,
     :wildling_track,
     :iron_throne_track,
     :fiefdoms_track,
@@ -51,6 +52,7 @@ class Game
     map,
     game_round,
     round_phase,
+    players_turn,
     wildling_track,
     iron_throne_track,
     fiefdoms_track,
@@ -65,6 +67,7 @@ class Game
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid game round' unless game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10
     raise 'Invalid round phase' unless ROUND_PHASES.include?(round_phase)
+    raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
     raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
     raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
     raise 'Invalid Fiefdoms Track' unless fiefdoms_track.is_a?(FiefdomsTrack)
@@ -79,6 +82,7 @@ class Game
     @map = map
     @game_round = game_round
     @round_phase = round_phase
+    @players_turn = players_turn
     @wildling_track = wildling_track
     @iron_throne_track = iron_throne_track
     @fiefdoms_track = fiefdoms_track
@@ -108,11 +112,16 @@ class Game
       end
     end
 
+    game_round = 1
+    round_phase = :planning_assign
+    players_turn = house_classes
+
     new(
       houses,
       Map.create_new(houses),
-      1,
-      :planning_assign,
+      game_round,
+      round_phase,
+      players_turn,
       WildlingTrack.create_new,
       IronThroneTrack.create_new(house_classes),
       FiefdomsTrack.create_new(house_classes),
@@ -131,6 +140,7 @@ class Game
       Map.unserialize(data['map']),
       data['game_round'],
       data['round_phase'].to_sym,
+      data['players_turn'].map { |house_class_string| house_class_string.constantize },
       WildlingTrack.unserialize(data['wildling_track']),
       IronThroneTrack.unserialize(data['iron_throne_track']),
       FiefdomsTrack.unserialize(data['fiefdoms_track']),
@@ -149,6 +159,7 @@ class Game
       :map => @map.serialize,
       :game_round => @game_round,
       :round_phase => @round_phase,
+      :players_turn => @players_turn,
       :wildling_track => @wildling_track.serialize,
       :iron_throne_track => @iron_throne_track.serialize,
       :fiefdoms_track => @fiefdoms_track.serialize,
