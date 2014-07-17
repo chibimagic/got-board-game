@@ -92,7 +92,7 @@ class Storage
   def self.list_games(username)
     user_id = get_user_id(username)
     db.execute('select id from games
-      where house_stark=? or house_lannister=? or house_baratheon=? or house_greyjoy =? or house_tyrell=? or house_martell =?',
+      where house_stark=? or house_lannister=? or house_baratheon=? or house_greyjoy=? or house_tyrell=? or house_martell=?',
       user_id, user_id, user_id, user_id, user_id, user_id).flatten
   end
 
