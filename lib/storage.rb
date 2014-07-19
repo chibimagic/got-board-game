@@ -91,9 +91,26 @@ class Storage
 
   def self.list_games(username)
     user_id = get_user_id(username)
-    db.execute('select id from games
+    rows = db.execute('select id, house_stark, house_lannister, house_baratheon, house_greyjoy, house_tyrell, house_martell from games
       where house_stark=? or house_lannister=? or house_baratheon=? or house_greyjoy=? or house_tyrell=? or house_martell=?',
-      user_id, user_id, user_id, user_id, user_id, user_id).flatten
+      user_id, user_id, user_id, user_id, user_id, user_id)
+    games = []
+    rows.map do |row|
+      game_id = row[0]
+      {
+        HouseStark => row[1],
+        HouseLannister => row[2],
+        HouseBaratheon => row[3],
+        HouseGreyjoy => row[4],
+        HouseTyrell => row[5],
+        HouseMartell => row[6]
+      }.each do |k, v|
+        if v == user_id
+          games.push({ :game_id => game_id, :house => k })
+        end
+      end
+    end
+    games
   end
 
   def self.create_game(

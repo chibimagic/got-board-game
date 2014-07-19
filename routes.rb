@@ -34,7 +34,8 @@ before do
 end
 
 before '/games/:game' do |game_id|
-  game_ids = Storage.list_games(@username)
+  games = Storage.list_games(@username)
+  game_ids = games.map { |game| game[:game_id] }
   unless game_ids.include?(game_id.to_i)
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end

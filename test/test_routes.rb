@@ -45,7 +45,7 @@ class TestRoutes < MiniTest::Test
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']
     response = @browser.get('/games/' + game_id.to_s)
-    assert_equal(true, valid_json?(response.body))
+    assert_equal(true, valid_json?(response.body), response.body)
   end
 
   def test_game_access
@@ -59,10 +59,12 @@ class TestRoutes < MiniTest::Test
 
     a_games = JSON.parse(@browser.get('/games').body)
     b_games = JSON.parse(browser2.get('/games').body)
-    assert_includes(a_games, a_game_id)
-    assert_includes(b_games, b_game_id)
-    refute_includes(a_games, b_game_id)
-    refute_includes(b_games, a_game_id)
+    a_game_ids = a_games.map { |game| game['game_id'] }
+    b_game_ids = b_games.map { |game| game['game_id'] }
+    assert_includes(a_game_ids, a_game_id)
+    assert_includes(b_game_ids, b_game_id)
+    refute_includes(a_game_ids, b_game_id)
+    refute_includes(b_game_ids, a_game_id)
 
     response = @browser.get('/games/' + a_game_id.to_s)
     assert_equal(true, valid_json?(response.body))
