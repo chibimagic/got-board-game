@@ -38,6 +38,7 @@ before '/games/:game' do |game_id|
   unless game_ids.include?(game_id.to_i)
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
+  @game = Storage.get_game(game_id)
 end
 
 # Get information about your current session
@@ -127,7 +128,7 @@ end
 
 # See information about an existing game
 get '/games/:game' do |game_id|
-  Storage.get_game(game_id).serialize.to_json
+  @game.serialize.to_json
 end
 
 # Place orders, execute orders, replace orders with Messenger Raven token
