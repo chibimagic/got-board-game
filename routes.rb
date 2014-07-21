@@ -35,11 +35,12 @@ end
 
 before '/games/:game' do |game_id|
   games = Storage.list_games(@username)
-  game_ids = games.map { |game| game[:game_id] }
-  unless game_ids.include?(game_id.to_i)
+  game = games.find { |game| game[:game_id] == game_id }
+  if game.nil?
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
   @game = Storage.get_game(game_id)
+  @house_class = game[:house]
 end
 
 # Get information about your current session
