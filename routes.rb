@@ -35,7 +35,7 @@ end
 
 before '/games/:game' do |game_id|
   games = Storage.list_games(@username)
-  game = games.find { |game| game[:game_id] == game_id }
+  game = games.find { |game| game[:game_id] == game_id.to_i }
   if game.nil?
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
