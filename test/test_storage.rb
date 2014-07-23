@@ -4,8 +4,9 @@ class TestStorage < MiniTest::Test
   end
 
   def setup
-    Storage.db.execute('delete from users');
     Storage.db.execute('delete from games');
+    Storage.db.execute('delete from sessions');
+    Storage.db.execute('delete from users');
   end
 
   def test_user_creation
@@ -51,5 +52,11 @@ class TestStorage < MiniTest::Test
     assert_includes(games, { :game_id => game_id, :house => HouseStark }, 'New game not listed')
     restored_game = Storage.get_game(game_id)
     assert_equal(original_game, restored_game, 'Restored game incorrect')
+  end
+
+  def teardown
+    Storage.db.execute('delete from games');
+    Storage.db.execute('delete from sessions');
+    Storage.db.execute('delete from users');
   end
 end
