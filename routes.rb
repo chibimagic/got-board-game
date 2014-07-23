@@ -92,8 +92,12 @@ post '/users' do
 end
 
 # See information about an existing user
-get '/users/:username' do
-  Storage.get_user(username).to_json
+get '/users/:username' do |username|
+  begin
+    Storage.get_user(username).to_json
+  rescue RuntimeError => e
+    e.message
+  end
 end
 
 # List existing games

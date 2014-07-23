@@ -35,6 +35,16 @@ class TestRoutes < MiniTest::Test
     assert_equal('Incorrect username or password', response.body)
   end
 
+  def test_user_info
+    response = @browser.get('/users/a')
+    assert_equal('{"username":"a","player_name":"a"}', response.body)
+  end
+
+  def test_user_info_invalid
+    response = @browser.get('/users/z')
+    assert_equal('No user with username: z', response.body)
+  end
+
   def test_create_game_invalid
     response = @browser.post('/games', '')
     assert_equal('JSON input expected', response.body)
