@@ -69,6 +69,13 @@ class TestMap < MiniTest::Test
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
 
+  def test_orders
+    h = HouseStark
+    @m.place_token(Winterfell, Footman.new(h))
+    @m.place_token(Winterfell, WeakMarchOrder.new(h))
+    assert_equal({ Winterfell => WeakMarchOrder }, @m.orders)
+  end
+
   def test_orders_in
     assert_equal(true, @m.orders_in?)
     @m.place_token(CastleBlack, Footman.new(HouseStark))

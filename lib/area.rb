@@ -87,6 +87,10 @@ class Area
     @tokens.find { |token| token.is_a?(token_class) } ? true : false
   end
 
+  def get_tokens(token_class)
+    @tokens.find_all { |token| token.is_a?(token_class) }
+  end
+
   def place_token(token)
     if token.is_a?(OrderToken)
       if unit_count == 0

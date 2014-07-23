@@ -295,6 +295,11 @@ class Map
     controlled_areas(house_class).map { |area| area.unit_count }.reject { |unit_count| unit_count < 2 }.sort.reverse
   end
 
+  def orders
+    areas_with_orders = @areas.find_all { |area| area.has_token?(OrderToken) }
+    Hash[areas_with_orders.map { |area| [area.class, area.get_tokens(OrderToken).first.class] }]
+  end
+
   def orders_in?
     @areas.find { |area| area.has_token?(Unit) && !area.has_token?(OrderToken) } ? false : true
   end
