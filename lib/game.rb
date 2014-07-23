@@ -222,6 +222,7 @@ class Game
     @map.place_token(area_class, token)
     house(house_class).remove_token(token)
   end
+  private :place_token
 
   def receive_power_token(house_class)
     token = @power_pool.pool.find { |token| token.house_class == house_class }

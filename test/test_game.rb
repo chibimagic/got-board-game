@@ -137,19 +137,6 @@ class TestGame < MiniTest::Test
     end
   end
 
-  def test_place_units
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    g.place_token(CastleBlack, HouseStark, Footman)
-    assert_raises(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
-  end
-
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_raises(RuntimeError) { g.place_orders(HouseStark, { CastleBlack => MarchOrder }) }
