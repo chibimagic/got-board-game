@@ -33,7 +33,7 @@ before do
   end
 end
 
-before '/games/:game' do |game_id|
+before '/games/:game/?:path?' do |game_id, path|
   games = Storage.list_games(@username)
   game = games.find { |game| game[:game_id] == game_id.to_i }
   if game.nil?
@@ -136,6 +136,13 @@ end
 # Place orders, execute orders, replace orders with Messenger Raven token
 # Body: {"CastleBlack":"WeakMarchOrder","DragonstonePortToShipbreakerBay":"SpecialRaidOrder"}
 post '/games/:game/orders' do |game_id|
+  begin
+    orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
+    @game.place_orders(@house_class, orders)
+    { :game_id => game_id }.to_json
+  rescue RuntimeError => e
+    e.message
+  end
 end
 
 # Muster troops
