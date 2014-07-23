@@ -149,4 +149,12 @@ class TestGame < MiniTest::Test
     g.place_token(CastleBlack, HouseStark, Footman)
     assert_raises(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
   end
+
+  def test_place_orders
+    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    assert_raises(RuntimeError) { g.place_orders(HouseStark, { CastleBlack => MarchOrder }) }
+    assert_raises(RuntimeError) { g.place_orders(HouseLannister, { Winterfell => MarchOrder }) }
+    assert_raises(RuntimeError) { g.place_orders(HouseStark, { Winterfell => MarchOrder }) }
+    refute_raises { g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder }) }
+  end
 end
