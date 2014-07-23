@@ -209,7 +209,7 @@ class Game
 
     orders.each { |area_class, order_token_class| place_token(area_class, house_class, order_token_class) }
 
-    if @round_phase == :planning_assign && @map.orders_in?
+    if @map.orders_in?
       @round_phase = :planning_raven
     end
   end
