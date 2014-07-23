@@ -114,9 +114,6 @@ post '/games' do
     end
     houses = @data.map do |house_class_string, username|
       user = Storage.get_user(username)
-      if user.nil?
-        raise 'Cannot find user with username: ' + username
-      end
       house_class_string.constantize.create_new(user[:player_name])
     end
     g = Game.create_new(houses)
