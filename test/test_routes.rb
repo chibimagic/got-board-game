@@ -28,6 +28,13 @@ class TestRoutes < MiniTest::Test
     assert_equal('Format: {"username":"jdoe","password":"password","player_name":"John"}', response.body)
   end
 
+  def test_login_invalid
+    response = @browser.post('/session', { 'username' => 'a' }.to_json)
+    assert_equal('Format: {"username":"jdoe","password":"password"}', response.body)
+    response = @browser.post('/session', { 'username' => 'a', 'password' => 'a' }.to_json)
+    assert_equal('Incorrect username or password', response.body)
+  end
+
   def test_create_game_invalid
     response = @browser.post('/games', '')
     assert_equal('JSON input expected', response.body)

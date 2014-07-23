@@ -53,7 +53,7 @@ end
 post '/session' do
   begin
     if !@data['username'] || !@data['password']
-      raise 'Format: {"username":"jdoe","password":"password}'
+      raise 'Format: {"username":"jdoe","password":"password"}'
     end
     username = @data['username']
     password = @data['password']
