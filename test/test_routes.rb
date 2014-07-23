@@ -35,6 +35,11 @@ class TestRoutes < MiniTest::Test
     assert_equal('Incorrect username or password', response.body)
   end
 
+  def test_list_users
+    response = @browser.get('/users')
+    assert_equal('["a","b","c","d","e","f"]', response.body)
+  end
+
   def test_user_info
     response = @browser.get('/users/a')
     assert_equal('{"username":"a","player_name":"a"}', response.body)
