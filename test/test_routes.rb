@@ -28,6 +28,12 @@ class TestRoutes < MiniTest::Test
     assert_equal('Format: {"username":"jdoe","password":"password","player_name":"John"}', response.body)
   end
 
+  def test_get_session
+    response = @browser.get('/session')
+    session_info = JSON.parse(response.body)
+    assert_equal('a', session_info['username'])
+  end
+
   def test_login_invalid
     response = @browser.post('/session', { 'username' => 'a' }.to_json)
     assert_equal('Format: {"username":"jdoe","password":"password"}', response.body)
