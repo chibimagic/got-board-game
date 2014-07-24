@@ -43,6 +43,12 @@ before '/games/:game/?:path?' do |game_id, path|
   @house_class = game[:house]
 end
 
+after '/games/:game/:path?' do |game_id, path|
+  if request.post?
+    Storage.save_game(game_id, @game)
+  end
+end
+
 # Get information about your current session
 get '/session' do
   { :username => @username, :session_id => session['session_id'] }.to_json

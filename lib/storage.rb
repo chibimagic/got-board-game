@@ -151,6 +151,6 @@ class Storage
 
   def self.save_game(game_id, game)
     data = Base64.encode64(Marshal.dump(game))
-    db.execute('replace into games (id, data) values (?, ?)', [game_id, data])
+    db.execute('update games set data=? where id=?', [data, game_id])
   end
 end
