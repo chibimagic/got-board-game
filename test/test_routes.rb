@@ -100,6 +100,27 @@ class TestRoutes < MiniTest::Test
     assert_equal(true, valid_json?(response.body))
   end
 
+  def test_game_information
+    response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
+    game_id = JSON.parse(response.body)['game_id']
+    response = @browser.get('/games/' + game_id.to_s)
+    game = JSON.parse(response.body)
+    game['houses'].each do |house|
+      house['tokens'].each do |token|
+        refute_operator(token.keys[0].constantize, :<, OrderToken)
+      end
+    end
+    game['map'].each do |area, tokens|
+      tokens.each do |token|
+        refute_operator(token.keys[0].constantize, :<, OrderToken)
+      end
+    end
+    refute_includes(game, 'wildling_deck')
+    refute_includes(game, 'westers_deck_i')
+    refute_includes(game, 'westers_deck_ii')
+    refute_includes(game, 'westers_deck_iii')
+  end
+
   def test_place_orders
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']
@@ -109,10 +130,5 @@ class TestRoutes < MiniTest::Test
     assert_equal('Order areas do not match controlled areas. Controlled areas: The Shivering Sea, White Harbor, Winterfell. Order areas: Winterfell.', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'TheShiveringSea' => 'WeakMarchOrder', 'WhiteHarbor' => 'MarchOrder', 'Winterfell' => 'DefenseOrder' }.to_json)
     assert_equal(true, valid_json?(response.body), response.body)
-    response = @browser.get('/games/' + game_id.to_s)
-    game = JSON.parse(response.body)
-    assert_includes(game['map']['TheShiveringSea'], { 'WeakMarchOrder' => 'HouseStark' })
-    assert_includes(game['map']['WhiteHarbor'], { 'MarchOrder' => 'HouseStark' })
-    assert_includes(game['map']['Winterfell'], { 'DefenseOrder' => 'HouseStark' })
   end
 end
