@@ -34,6 +34,12 @@ class TestRoutes < MiniTest::Test
     assert_equal('a', session_info['username'])
   end
 
+  def test_session_invalid
+    browser2 = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+    response = browser2.get('/session')
+    assert_match(/^No user with session id: /, response.body)
+  end
+
   def test_login_invalid
     response = @browser.post('/session', { 'username' => 'a' }.to_json)
     assert_equal('Format: {"username":"jdoe","password":"password"}', response.body)

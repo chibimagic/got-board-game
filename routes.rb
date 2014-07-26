@@ -39,11 +39,7 @@ before do
   route = [request.request_method.downcase, request.path_info]
   unless UNPROTECTED_ROUTES.include?(route)
     session_id = session['session_id']
-    begin
-      @username = Storage.get_user_for_session(session_id)
-    rescue RuntimeError => e
-      halt(e.message)
-    end
+    @username = Storage.get_user_for_session(session_id)
   end
 end
 
