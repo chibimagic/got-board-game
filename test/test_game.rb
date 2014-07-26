@@ -144,4 +144,14 @@ class TestGame < MiniTest::Test
     assert_raises(RuntimeError) { g.place_orders(HouseStark, { Winterfell => MarchOrder }) }
     refute_raises { g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder }) }
   end
+
+  def test_orders_in
+    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    assert_equal(:planning_assign, g.round_phase)
+    g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder })
+    g.place_orders(HouseLannister, { TheGoldenSound => WeakMarchOrder, Lannisport => MarchOrder, StoneySept => DefenseOrder })
+    g.place_orders(HouseBaratheon, { ShipbreakerBay => WeakMarchOrder, Dragonstone => MarchOrder, Kingswood => DefenseOrder })
+    assert_equal(:planning_raven, g.round_phase)
+    assert_raises(RuntimeError) { g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder }) }
+  end
 end
