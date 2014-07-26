@@ -94,11 +94,11 @@ class Area
   def place_token(token)
     if token.is_a?(OrderToken)
       if unit_count == 0
-        raise 'Cannot place order because ' + to_s + ' has no units'
+        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
       elsif controlling_house != token.house_class
-        raise token.to_s + ' cannot be placed because ' + controlling_house.to_s + ' controls ' + to_s
+        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
       elsif has_token?(OrderToken)
-        raise to_s + ' already has an order token'
+        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' already has an order token'
       end
     end
     @tokens.push(token)

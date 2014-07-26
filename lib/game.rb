@@ -194,35 +194,23 @@ class Game
   end
   private :house
 
-  def place_orders(house_class, orders)
-    if @round_phase != :planning_assign
-      raise 'Cannot place orders during ' + @round_phase.to_s
-    end
-
-    controlled_area_classes = map.controlled_areas(house_class).map { |area| area.class }
-    order_area_classes = orders.keys
-    if controlled_area_classes.to_set != order_area_classes.to_set || order_area_classes.uniq != order_area_classes
-      controlled_string = 'Controlled areas: ' + controlled_area_classes.map { |area| area.to_s }.join(', ')
-      order_string = 'Order areas: ' + order_area_classes.map { |area| area.to_s }.join(', ')
-      raise 'Order areas do not match controlled areas. ' + controlled_string + '. ' + order_string + '.'
-    end
-
-    orders.each { |area_class, order_token_class| place_token(area_class, house_class, order_token_class) }
-
-    if @map.orders_in?
-      @round_phase = :planning_raven
-    end
-  end
-
   def place_token(area_class, house_class, token_class)
+    if token_class < OrderToken && @round_phase != :planning_assign
+      raise 'Cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
+    end
+
     token = house(house_class).get_token(token_class)
     if !token
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
+
     @map.place_token(area_class, token)
     house(house_class).remove_token(token)
+
+    if @round_phase == :planning_assign && @map.orders_in?
+      @round_phase = :planning_raven
+    end
   end
-  private :place_token
 
   def receive_power_token(house_class)
     token = @power_pool.pool.find { |token| token.house_class == house_class }

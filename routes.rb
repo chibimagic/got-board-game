@@ -158,7 +158,7 @@ end
 post '/games/:game/orders' do |game_id|
   begin
     orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
-    @game.place_orders(@house_class, orders)
+    orders.each { |area_class, order_class| @game.place_token(area_class, @house_class, order_class) }
     { :game_id => game_id }.to_json
   rescue RuntimeError => e
     e.message

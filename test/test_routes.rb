@@ -131,9 +131,9 @@ class TestRoutes < MiniTest::Test
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'CastleBlack' => 'MarchOrder' }.to_json)
-    assert_equal('Order areas do not match controlled areas. Controlled areas: The Shivering Sea, White Harbor, Winterfell. Order areas: Castle Black.', response.body)
-    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'Winterfell' => 'MarchOrder' }.to_json)
-    assert_equal('Order areas do not match controlled areas. Controlled areas: The Shivering Sea, White Harbor, Winterfell. Order areas: Winterfell.', response.body)
+    assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', response.body)
+    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'Lannisport' => 'MarchOrder' }.to_json)
+    assert_equal('Cannot place March Order (House Stark) because Lannisport (3) is controlled by House Lannister', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'TheShiveringSea' => 'WeakMarchOrder', 'WhiteHarbor' => 'MarchOrder', 'Winterfell' => 'DefenseOrder' }.to_json)
     assert_equal(true, valid_json?(response.body), response.body)
   end

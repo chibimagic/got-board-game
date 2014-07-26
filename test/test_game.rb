@@ -137,21 +137,39 @@ class TestGame < MiniTest::Test
     end
   end
 
+  def test_place_units
+    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    g.place_token(CastleBlack, HouseStark, Footman)
+    assert_raises(RuntimeError) { g.place_token(CastleBlack, HouseStark, Footman) }
+  end
+
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    assert_raises(RuntimeError) { g.place_orders(HouseStark, { CastleBlack => MarchOrder }) }
-    assert_raises(RuntimeError) { g.place_orders(HouseLannister, { Winterfell => MarchOrder }) }
-    assert_raises(RuntimeError) { g.place_orders(HouseStark, { Winterfell => MarchOrder }) }
-    refute_raises { g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder }) }
+    assert_raises(RuntimeError) { g.place_token(CastleBlack, HouseStark, MarchOrder) }
+    assert_raises(RuntimeError) { g.place_token(Winterfell, HouseLannister, MarchOrder) }
+    refute_raises { g.place_token(TheShiveringSea, HouseStark, MarchOrder) }
   end
 
   def test_orders_in
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_equal(:planning_assign, g.round_phase)
-    g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder })
-    g.place_orders(HouseLannister, { TheGoldenSound => WeakMarchOrder, Lannisport => MarchOrder, StoneySept => DefenseOrder })
-    g.place_orders(HouseBaratheon, { ShipbreakerBay => WeakMarchOrder, Dragonstone => MarchOrder, Kingswood => DefenseOrder })
+    g.place_token(TheShiveringSea, HouseStark, WeakMarchOrder)
+    g.place_token(WhiteHarbor, HouseStark, MarchOrder)
+    g.place_token(Winterfell, HouseStark, DefenseOrder)
+    g.place_token(TheGoldenSound, HouseLannister, WeakMarchOrder)
+    g.place_token(Lannisport, HouseLannister, MarchOrder)
+    g.place_token(StoneySept, HouseLannister, DefenseOrder)
+    g.place_token(ShipbreakerBay, HouseBaratheon, WeakMarchOrder)
+    g.place_token(Dragonstone, HouseBaratheon, MarchOrder)
+    g.place_token(Kingswood, HouseBaratheon, DefenseOrder)
     assert_equal(:planning_raven, g.round_phase)
-    assert_raises(RuntimeError) { g.place_orders(HouseStark, { TheShiveringSea => WeakMarchOrder, WhiteHarbor => MarchOrder, Winterfell => DefenseOrder }) }
+    assert_raises(RuntimeError) { g.place_token(TheShiveringSea, HouseStark, WeakMarchOrder) }
   end
 end
