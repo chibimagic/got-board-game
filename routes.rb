@@ -13,6 +13,19 @@ UNPROTECTED_ROUTES = [
   ['post', '/users']
 ]
 
+def validate_constants(class_strings, expected_class)
+  begin
+    class_strings.each do |class_string|
+      actual_class = class_string.constantize
+      unless actual_class < expected_class
+        raise NameError.new(actual_class.to_s + ' is not a ' + expected_class.to_s, actual_class.to_s)
+      end
+    end
+  rescue NameError => e
+    raise e.name + ' is not a valid ' + expected_class.to_s
+  end
+end
+
 before do
   if request.post?
     begin
@@ -109,6 +122,7 @@ end
 # Start a new game
 # Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"}
 post '/games' do
+  validate_constants(@data.keys, House)
   unless @data.has_value?(@username)
     raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
   end
@@ -131,10 +145,10 @@ get '/games/:game' do |game_id|
   game_info = @game.serialize
   if game_info[:round_phase] == :planning_assign
     game_info[:houses].each do |house|
-      house[:tokens].delete_if { |token| token.keys[0] < OrderToken }
+      house[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
     end
     game_info[:map].each do |area, tokens|
-      tokens.delete_if { |token| token.keys[0] < OrderToken }
+      tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
     end
   end
   game_info.delete(:wildling_deck)
@@ -147,6 +161,8 @@ end
 # Place orders, execute orders, replace orders with Messenger Raven token
 # Body: {"CastleBlack":"WeakMarchOrder","DragonstonePortToShipbreakerBay":"SpecialRaidOrder"}
 post '/games/:game/orders' do |game_id|
+  validate_constants(@data.keys, Area)
+  validate_constants(@data.values, OrderToken)
   orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
   orders.each { |area_class, order_class| @game.place_token(area_class, @house_class, order_class) }
   { :game_id => game_id }.to_json

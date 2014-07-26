@@ -24,7 +24,7 @@ class InfluenceTrack
   end
 
   def serialize
-    @track
+    @track.map { |house_class| house_class.name }
   end
 
   def ==(o)

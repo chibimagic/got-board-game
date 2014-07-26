@@ -1,7 +1,13 @@
 class Token
+  TITLE = 'Token'
+
   def self.unserialize(data)
     token_class_string = data.keys[0]
     token_class_string.constantize.unserialize(data)
+  end
+
+  def self.to_s
+    self::TITLE
   end
 end
 
@@ -28,7 +34,7 @@ class HouseToken < Token
   end
 
   def serialize
-    { self.class => @house_class }
+    { self.class.name => @house_class.name }
   end
 
   def to_s

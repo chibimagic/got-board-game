@@ -52,7 +52,7 @@ class House
 
   def serialize
     {
-      :house_class => self.class,
+      :house_class => self.class.name,
       :player_name => @player_name,
       :tokens => @tokens.map { |token| token.serialize }
     }
@@ -71,10 +71,6 @@ class House
   def to_s
     name = @player_name.length > 0 ? @player_name : 'no name'
     self.class::TITLE + ' (' + name + ')'
-  end
-
-  def self.as_json(*)
-    self.name
   end
 
   def units

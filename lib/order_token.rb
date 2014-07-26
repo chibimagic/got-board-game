@@ -1,4 +1,5 @@
 class OrderToken < HouseToken
+  TITLE = 'Order Token'
   SPECIAL = false
   BONUS = 0
 

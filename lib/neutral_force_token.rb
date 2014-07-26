@@ -16,7 +16,7 @@ class NeutralForceToken < Token
   end
 
   def serialize
-    { self.class => [@area_class, @strength] }
+    { self.class.name => [@area_class.name, @strength] }
   end
 
   def ==(o)

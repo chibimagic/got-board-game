@@ -23,7 +23,7 @@ class Deck
   end
 
   def serialize
-    @cards.map { |card| card.class }
+    @cards.map { |card| card.class.name }
   end
 
   def ==(o)

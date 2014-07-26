@@ -130,6 +130,14 @@ class TestRoutes < MiniTest::Test
   def test_place_orders
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']
+    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'AreaThatDoesntExist' => 'MarchOrder' }.to_json)
+    assert_equal('AreaThatDoesntExist is not a valid Area', response.body)
+    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'CastleBlack' => 'OrderTokenThatDoesntExist' }.to_json)
+    assert_equal('OrderTokenThatDoesntExist is not a valid Order Token', response.body)
+    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'MarchOrder' => 'CastleBlack' }.to_json)
+    assert_equal('March Order is not a valid Area', response.body)
+    response = @browser.post('/games/' + game_id.to_s + '/orders', { 'CastleBlack' => 'HouseStark' }.to_json)
+    assert_equal('House Stark is not a valid Order Token', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'CastleBlack' => 'MarchOrder' }.to_json)
     assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'Lannisport' => 'MarchOrder' }.to_json)

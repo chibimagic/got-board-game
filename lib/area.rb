@@ -1,7 +1,7 @@
 class Area
   attr_reader :tokens
 
-  TITLE = ''
+  TITLE = 'Area'
   CONNECTION_COUNT = 0
   STRONGHOLD = false
   CASTLE = false
@@ -39,10 +39,6 @@ class Area
 
   def to_s
     self.class::TITLE + ' (' + @tokens.count.to_s + ')'
-  end
-
-  def self.as_json(*)
-    self.name
   end
 
   def connection_count
