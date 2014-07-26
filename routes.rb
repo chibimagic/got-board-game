@@ -5,6 +5,7 @@ require_relative 'lib/storage.rb'
 
 enable :sessions
 set :session_secret, 'got-board-game'
+set :show_exceptions, false
 
 # Routes that don't require authentication
 UNPROTECTED_ROUTES = [
@@ -47,6 +48,12 @@ after '/games/:game/:path?' do |game_id, path|
   if request.post?
     Storage.save_game(game_id, @game)
   end
+end
+
+error do
+  e = env['sinatra.error']
+  headers 'Content-Type' => 'text/plain'
+  body e.message + "\n" + e.backtrace.select { |line| line.include?('got-board-game') }.join("\n")
 end
 
 # Get information about your current session
