@@ -194,7 +194,7 @@ class Game
   end
   private :house
 
-  def place_token(area_class, house_class, token_class)
+  def place_token(house_class, area_class, token_class)
     if token_class < OrderToken && @round_phase != :planning_assign
       raise 'Cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
     end

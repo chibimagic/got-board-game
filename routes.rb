@@ -160,7 +160,7 @@ post '/games/:game/orders' do |game_id|
   validate_constants(@data.keys, Area)
   validate_constants(@data.values, OrderToken)
   orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
-  orders.each { |area_class, order_class| @game.place_token(area_class, @house_class, order_class) }
+  orders.each { |area_class, order_class| @game.place_token(@house_class, area_class, order_class) }
   { :game_id => game_id }.to_json
 end
 
