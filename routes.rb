@@ -53,7 +53,7 @@ end
 error do
   e = env['sinatra.error']
   headers 'Content-Type' => 'text/plain'
-  body e.message + "\n" + e.backtrace.select { |line| line.include?('got-board-game') }.join("\n")
+  body e.message
 end
 
 # Get information about your current session
@@ -64,21 +64,17 @@ end
 # Log in
 # Body: {"username":"jdoe","password":"password"}
 post '/session' do
-  begin
-    if !@data['username'] || !@data['password']
-      raise 'Format: {"username":"jdoe","password":"password"}'
-    end
-    username = @data['username']
-    password = @data['password']
-    session_id = session['session_id']
-    if Storage.correct_password?(username, password)
-      Storage.create_session(username, session_id)
-      { :username => username, :session_id => session_id }.to_json
-    else
-      raise 'Incorrect username or password'
-    end
-  rescue RuntimeError => e
-    e.message
+  if !@data['username'] || !@data['password']
+    raise 'Format: {"username":"jdoe","password":"password"}'
+  end
+  username = @data['username']
+  password = @data['password']
+  session_id = session['session_id']
+  if Storage.correct_password?(username, password)
+    Storage.create_session(username, session_id)
+    { :username => username, :session_id => session_id }.to_json
+  else
+    raise 'Incorrect username or password'
   end
 end
 
@@ -90,27 +86,19 @@ end
 # Create a user
 # Body: {"username":"jdoe","password":"password","player_name":"John"}
 post '/users' do
-  begin
-    if !@data['username'] || !@data['password'] || !@data['player_name']
-      raise 'Format: {"username":"jdoe","password":"password","player_name":"John"}'
-    end
-    username = @data['username']
-    password = @data['password']
-    player_name = @data['player_name']
-    Storage.create_user(username, password, player_name)
-    { :username => username, :player_name => player_name }.to_json
-  rescue RuntimeError => e
-    e.message
+  if !@data['username'] || !@data['password'] || !@data['player_name']
+    raise 'Format: {"username":"jdoe","password":"password","player_name":"John"}'
   end
+  username = @data['username']
+  password = @data['password']
+  player_name = @data['player_name']
+  Storage.create_user(username, password, player_name)
+  { :username => username, :player_name => player_name }.to_json
 end
 
 # See information about an existing user
 get '/users/:username' do |username|
-  begin
-    Storage.get_user(username).to_json
-  rescue RuntimeError => e
-    e.message
-  end
+  Storage.get_user(username).to_json
 end
 
 # List existing games
@@ -121,25 +109,21 @@ end
 # Start a new game
 # Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"}
 post '/games' do
-  begin
-    unless @data.has_value?(@username)
-      raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
-    end
-    houses = @data.map do |house_class_string, username|
-      user = Storage.get_user(username)
-      house_class_string.constantize.create_new(user[:player_name])
-    end
-    g = Game.create_new(houses)
-
-    houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
-    house_usernames = houses.map do |house_class|
-      username = @data.fetch(house_class.name, nil)
-    end
-    game_id = Storage.create_game(g, *house_usernames)
-    { :game_id => game_id }.to_json
-  rescue RuntimeError => e
-    e.message
+  unless @data.has_value?(@username)
+    raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
   end
+  houses = @data.map do |house_class_string, username|
+    user = Storage.get_user(username)
+    house_class_string.constantize.create_new(user[:player_name])
+  end
+  g = Game.create_new(houses)
+
+  houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
+  house_usernames = houses.map do |house_class|
+    username = @data.fetch(house_class.name, nil)
+  end
+  game_id = Storage.create_game(g, *house_usernames)
+  { :game_id => game_id }.to_json
 end
 
 # See information about an existing game
@@ -163,13 +147,9 @@ end
 # Place orders, execute orders, replace orders with Messenger Raven token
 # Body: {"CastleBlack":"WeakMarchOrder","DragonstonePortToShipbreakerBay":"SpecialRaidOrder"}
 post '/games/:game/orders' do |game_id|
-  begin
-    orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
-    orders.each { |area_class, order_class| @game.place_token(area_class, @house_class, order_class) }
-    { :game_id => game_id }.to_json
-  rescue RuntimeError => e
-    e.message
-  end
+  orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
+  orders.each { |area_class, order_class| @game.place_token(area_class, @house_class, order_class) }
+  { :game_id => game_id }.to_json
 end
 
 # Muster troops
