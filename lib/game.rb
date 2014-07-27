@@ -1,4 +1,5 @@
 require 'rails'
+require_relative 'utility.rb'
 require_relative 'token.rb'
 require_relative 'card.rb'
 require_relative 'deck.rb'
@@ -195,13 +196,23 @@ class Game
   private :house
 
   def place_token(house_class, area_class, token_class)
-    if token_class < OrderToken && @round_phase != :planning_assign
-      raise 'Cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
-    end
-
     token = house(house_class).get_token(token_class)
     if !token
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
+    end
+
+    if token.is_a?(OrderToken)
+      if @round_phase != :planning_assign
+        raise 'Cannot place ' + token.to_s + ' during ' + @round_phase.to_s
+      end
+
+      if token.special
+        special_allowed = kings_court_track.special_orders_allowed(house_class)
+        special_used = map.special_orders_placed(house_class)
+        if special_allowed >= special_used
+          raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
+        end
+      end
     end
 
     @map.place_token(area_class, token)

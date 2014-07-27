@@ -165,6 +165,14 @@ class TestGame < MiniTest::Test
     refute_raises { g.place_token(HouseStark, TheShiveringSea, MarchOrder) }
   end
 
+  def test_special_orders
+    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    assert_equal(1, g.kings_court_track.special_orders_allowed(HouseBaratheon))
+    refute_raises { g.place_token(HouseBaratheon, ShipbreakerBay, MarchOrder) }
+    e = assert_raises(RuntimeError) { g.place_token(HouseBaratheon, Dragonstone, SpecialMarchOrder) }
+    assert_equal('House Baratheon can only place 1 special order', e.message)
+  end
+
   def test_orders_in
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_equal(:planning_assign, g.round_phase)
@@ -178,7 +186,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
     assert_equal(:planning_raven, g.round_phase)
-    e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder) }
-    assert_equal('Cannot place March Order during planning_raven', e.message)
+    e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
+    assert_equal('Cannot place March Order (House Stark) during planning_raven', e.message)
   end
 end
