@@ -182,12 +182,15 @@ class TestArea < MiniTest::Test
   def test_place_token
     a = CastleBlack.create_new
 
-    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
 
     a.place_token(Footman.new(HouseStark))
-    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister)) }
+    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister)) }
+    assert_equal('Cannot place March Order (House Lannister) because Castle Black (1) is controlled by House Stark', e.message)
 
     a.place_token(MarchOrder.new(HouseStark))
-    assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    assert_equal('Cannot place March Order (House Stark) because Castle Black (2) already has an order token', e.message)
   end
 end

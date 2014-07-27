@@ -10,7 +10,7 @@ class UsableDominanceToken < DominanceToken
 
   def use
     if @used
-      raise 'This token has already been used'
+      raise to_s + ' has already been used'
     end
 
     @used = true

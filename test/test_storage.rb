@@ -26,21 +26,25 @@ class TestStorage < MiniTest::Test
   end
 
   def test_nil_user
-    assert_raises(RuntimeError) { Storage.get_user(random_string) }
+    e = assert_raises(RuntimeError) { Storage.get_user(random_string) }
+    assert_match(/^No user with username: /, e.message)
   end
 
   def test_correct_password_invalid_username
-    assert_raises(RuntimeError) { Storage.correct_password?(random_string, random_string) }
+    e = assert_raises(RuntimeError) { Storage.correct_password?(random_string, random_string) }
+    assert_match(/^No user with username: /, e.message)
   end
 
   def test_duplicate_username
     username = random_string
     Storage.create_user(username, random_string, random_string)
-    assert_raises(RuntimeError) { Storage.create_user(username, random_string, random_string) }
+    e = assert_raises(RuntimeError) { Storage.create_user(username, random_string, random_string) }
+    assert_match(/^Username is taken: /, e.message)
   end
 
   def test_get_game_invalid_game_id
-    assert_raises(RuntimeError) { Storage.get_game(random_string) }
+    e = assert_raises(RuntimeError) { Storage.get_game(random_string) }
+    assert_match(/^No game with id: /, e.message)
   end
 
   def test_game_create_get

@@ -14,11 +14,12 @@ class TestDominanceToken < MiniTest::Test
   def test_usable_token_reuse
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
     token_classes.each do |token_class|
-      assert_raises(RuntimeError) {
+      e = assert_raises(RuntimeError) {
         t = token_class.new
         t.use
         t.use
       }
+      assert_match(/ has already been used$/, e.message)
     end
   end
 end

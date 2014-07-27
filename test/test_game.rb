@@ -1,14 +1,19 @@
 class TestGame < MiniTest::Test
   def test_new_invalid
-    assert_raises(ArgumentError) { Game.new }
-    assert_raises(ArgumentError) { Game.new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]) }
+    e = assert_raises(ArgumentError) { Game.new }
+    assert_equal('wrong number of arguments (0 for 14)', e.message)
+    e = assert_raises(ArgumentError) { Game.new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]) }
+    assert_equal('wrong number of arguments (1 for 14)', e.message)
   end
 
   def test_new_game_invalid
     # Game must be initialized with players
-    assert_raises(ArgumentError) { Game.create_new }
-    assert_raises(RuntimeError) { Game.create_new({}) }
-    assert_raises(RuntimeError) { Game.create_new([]) }
+    e = assert_raises(ArgumentError) { Game.create_new }
+    assert_equal('wrong number of arguments (0 for 1)', e.message)
+    e = assert_raises(RuntimeError) { Game.create_new({}) }
+    assert_equal('Need an array of houses', e.message)
+    e = assert_raises(RuntimeError) { Game.create_new([]) }
+    assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 0', e.message)
   end
 
   def test_game_setup
@@ -147,13 +152,16 @@ class TestGame < MiniTest::Test
     g.place_token(HouseStark, CastleBlack, Footman)
     g.place_token(HouseStark, CastleBlack, Footman)
     g.place_token(HouseStark, CastleBlack, Footman)
-    assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, Footman) }
+    e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, Footman) }
+    assert_equal('House Stark does not have an available Footman to place in Castle Black', e.message)
   end
 
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, MarchOrder) }
-    assert_raises(RuntimeError) { g.place_token(HouseLannister, Winterfell, MarchOrder) }
+    e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, MarchOrder) }
+    assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
+    e = assert_raises(RuntimeError) { g.place_token(HouseLannister, Winterfell, MarchOrder) }
+    assert_equal('Cannot place March Order (House Lannister) because Winterfell (3) is controlled by House Stark', e.message)
     refute_raises { g.place_token(HouseStark, TheShiveringSea, MarchOrder) }
   end
 
@@ -170,6 +178,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
     assert_equal(:planning_raven, g.round_phase)
-    assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder) }
+    e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder) }
+    assert_equal('Cannot place March Order during planning_raven', e.message)
   end
 end
