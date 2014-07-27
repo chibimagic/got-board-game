@@ -1,9 +1,9 @@
 class TestGame < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
-    assert_equal('wrong number of arguments (0 for 14)', e.message)
+    assert_equal('wrong number of arguments (0 for 16)', e.message)
     e = assert_raises(ArgumentError) { Game.new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]) }
-    assert_equal('wrong number of arguments (1 for 14)', e.message)
+    assert_equal('wrong number of arguments (1 for 16)', e.message)
   end
 
   def test_new_game_invalid
@@ -30,6 +30,8 @@ class TestGame < MiniTest::Test
     assert_equal(1, game.game_round)
     assert_equal(:planning_assign, game.round_phase)
     assert_equal([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell], game.players_turn)
+    assert_equal(false, game.valyrian_steel_blade_token.used)
+    assert_equal(false, game.messenger_raven_token.used)
 
     expected_units_remaining = {
       HouseStark => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },

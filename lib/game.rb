@@ -35,6 +35,8 @@ class Game
     :iron_throne_track,
     :fiefdoms_track,
     :kings_court_track,
+    :valyrian_steel_blade_token,
+    :messenger_raven_token,
     :power_pool,
     :wildling_deck,
     :westeros_deck_i,
@@ -58,6 +60,8 @@ class Game
     iron_throne_track,
     fiefdoms_track,
     kings_court_track,
+    valyrian_steel_blade_token,
+    messenger_raven_token,
     power_pool,
     wildling_deck,
     westeros_deck_i,
@@ -73,6 +77,8 @@ class Game
     raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
     raise 'Invalid Fiefdoms Track' unless fiefdoms_track.is_a?(FiefdomsTrack)
     raise 'Invalid King\'s Court Track' unless kings_court_track.is_a?(KingsCourtTrack)
+    raise 'Invalid Valyrian Steel Blade token' unless valyrian_steel_blade_token.is_a?(ValyrianSteelBladeToken)
+    raise 'Invalid Messenger Raven token' unless messenger_raven_token.is_a?(MessengerRavenToken)
     raise 'Invalid Power Pool' unless power_pool.is_a?(PowerPool)
     raise 'Invalid Wildling Deck' unless wildling_deck.is_a?(WildlingDeck)
     raise 'Invalid Westeros Deck I' unless westeros_deck_i.is_a?(WesterosDeckI)
@@ -88,6 +94,8 @@ class Game
     @iron_throne_track = iron_throne_track
     @fiefdoms_track = fiefdoms_track
     @kings_court_track = kings_court_track
+    @valyrian_steel_blade_token = valyrian_steel_blade_token
+    @messenger_raven_token = messenger_raven_token
     @power_pool = power_pool
     @wildling_deck = wildling_deck
     @westeros_deck_i = westeros_deck_i
@@ -127,6 +135,8 @@ class Game
       IronThroneTrack.create_new(house_classes),
       FiefdomsTrack.create_new(house_classes),
       KingsCourtTrack.create_new(house_classes),
+      ValyrianSteelBladeToken.create_new,
+      MessengerRavenToken.create_new,
       PowerPool.create_new(house_classes),
       WildlingDeck.create_new,
       WesterosDeckI.create_new,
@@ -146,6 +156,8 @@ class Game
       IronThroneTrack.unserialize(data['iron_throne_track']),
       FiefdomsTrack.unserialize(data['fiefdoms_track']),
       KingsCourtTrack.unserialize(data['kings_court_track']),
+      ValyrianSteelBladeToken.unserialize(data['valyrian_steel_blade_token']),
+      MessengerRavenToken.unserialize(data['messenger_raven_token']),
       PowerPool.unserialize(data['power_pool']),
       WildlingDeck.unserialize(data['wildling_deck']),
       WesterosDeckI.unserialize(data['westeros_deck_i']),
@@ -165,6 +177,8 @@ class Game
       :iron_throne_track => @iron_throne_track.serialize,
       :fiefdoms_track => @fiefdoms_track.serialize,
       :kings_court_track => @kings_court_track.serialize,
+      :valyrian_steel_blade_token => @valyrian_steel_blade_token.serialize,
+      :messenger_raven_token => @messenger_raven_token.serialize,
       :power_pool => @power_pool.serialize,
       :wildling_deck => @wildling_deck.serialize,
       :westeros_deck_i => @westeros_deck_i.serialize,
@@ -183,6 +197,8 @@ class Game
       @iron_throne_track == o.iron_throne_track &&
       @fiefdoms_track == o.fiefdoms_track &&
       @kings_court_track == o.kings_court_track &&
+      @valyrian_steel_blade_token == o.valyrian_steel_blade_token &&
+      @messenger_raven_token == o.messenger_raven_token &&
       @power_pool == o.power_pool &&
       @wildling_deck == o.wildling_deck &&
       @westeros_deck_i == o.westeros_deck_i &&
