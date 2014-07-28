@@ -1,4 +1,7 @@
 class DominanceToken < Token
+  def to_s
+    self.class::TITLE + ' token'
+  end
 end
 
 class UsableDominanceToken < DominanceToken
@@ -41,10 +44,13 @@ class UsableDominanceToken < DominanceToken
 end
 
 class IronThroneToken < DominanceToken
+  TITLE = 'Iron Throne'
 end
 
 class ValyrianSteelBladeToken < UsableDominanceToken
+  TITLE = 'Valyrian Steel Blade'
 end
 
 class MessengerRavenToken < UsableDominanceToken
+  TITLE = 'Messenger Raven'
 end
