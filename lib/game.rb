@@ -250,7 +250,7 @@ class Game
 
   def receive_power_token(house_class)
     token = @power_pool.remove_token(house_class)
-    house.receive_token(token)
+    house(house_class).receive_token(token)
   end
 
   def discard_power_token(house_class)
