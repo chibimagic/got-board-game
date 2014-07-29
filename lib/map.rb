@@ -227,12 +227,8 @@ class Map
     houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
-          unit = house.get_token(starting_unit_class)
-          if !unit
-            raise house.class.to_s + ' does not have an available ' + starting_unit_class.to_s + ' to place in ' + area_class.to_s
-          end
+          unit = house.remove_token(starting_unit_class)
           areas.find { |area| area.class == area_class }.place_token(unit)
-          house.remove_token(unit)
         end
       end
       areas.find { |area| area.class == house.class::HOME_AREA }.place_token(GarrisonToken.new(house.class))
@@ -283,12 +279,12 @@ class Map
     @areas.find_all { |area| area.controlling_house == house_class }
   end
 
-  def validate_place_token(area_class, token)
-    area(area_class).validate_place_token(token)
+  def validate_place_token(house_class, area_class, token_class)
+    area(area_class).validate_place_token(house_class, token_class)
   end
 
   def place_token(area_class, token)
-    validate_place_token(area_class, token)
+    validate_place_token(token.house_class, area_class, token.class)
     area(area_class).place_token(token)
   end
 

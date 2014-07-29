@@ -87,20 +87,20 @@ class Area
     @tokens.find_all { |token| token.is_a?(token_class) }
   end
 
-  def validate_place_token(token)
-    if token.is_a?(OrderToken)
+  def validate_place_token(house_class, token_class)
+    if token_class < OrderToken
       if unit_count == 0
-        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
-      elsif controlling_house != token.house_class
-        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
+        raise house_class.to_s + ' cannot place ' + token_class.to_s + ' because ' + to_s + ' has no units'
+      elsif controlling_house != house_class
+        raise house_class.to_s + ' cannot place ' + token_class.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
       elsif has_token?(OrderToken)
-        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' already has an order token'
+        raise house_class.to_s + ' cannot place ' + token_class.to_s + ' because ' + to_s + ' already has an order token'
       end
     end
   end
 
   def place_token(token)
-    validate_place_token(token)
+    validate_place_token(token.house_class, token.class)
     @tokens.push(token)
   end
 

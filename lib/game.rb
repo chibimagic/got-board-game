@@ -234,33 +234,23 @@ class Game
         end
       end
     end
+
+    @map.validate_place_token(house_class, area_class, token_class)
   end
 
   def place_token(house_class, area_class, token_class)
     validate_place_token(house_class, area_class, token_class)
-    token = house(house_class).get_token(token_class)
-    @map.validate_place_token(area_class, token)
-
+    token = house(house_class).remove_token(token_class)
     @map.place_token(area_class, token)
-    house(house_class).remove_token(token)
 
     if @round_phase == :planning_assign && @map.orders_in?
       @round_phase = :planning_raven
     end
   end
 
-  def validate_receive_power_token(house_class)
-    if @power_pool.pool.find { |token| token.house_class == house_class }.nil?
-      raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
-    end
-  end
-
   def receive_power_token(house_class)
-    validate_receive_power_token(house_class)
-
-    token = @power_pool.pool.find { |token| token.house_class == house_class }
-    @power_pool.remove_token(token)
-    house.power_tokens.push(token)
+    token = @power_pool.remove_token(house_class)
+    house.receive_token(token)
   end
 
   def discard_power_token(house_class)
