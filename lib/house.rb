@@ -99,7 +99,7 @@ class House
 
   def remove_token(token_class)
     if !has_token?(token_class)
-      raise to_s + ' does not have any available ' + token_class.to_s
+      raise to_s + ' does not have an available ' + token_class.to_s
     end
 
     token = get_token(token_class)

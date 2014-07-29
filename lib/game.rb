@@ -235,16 +235,14 @@ class Game
   end
 
   def place_token(house_class, area_class, token_class)
-    if !house(house_class).has_token?(token_class)
-      raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
-    end
+    token = house(house_class).remove_token(token_class)
 
-    if token_class < OrderToken
+    if token.is_a?(OrderToken)
       unless @round_phase == :planning_assign || @round_phase == :planning_raven && house_class == @kings_court_track.token_holder_class
-        raise house_class.to_s + ' cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
+        raise 'Cannot place ' + token.to_s + ' during ' + @round_phase.to_s
       end
 
-      if token_class.special
+      if token.special
         special_allowed = @kings_court_track.special_orders_allowed(house_class)
         special_used = @map.special_orders_placed(house_class)
         if special_used >= special_allowed
@@ -253,7 +251,6 @@ class Game
       end
     end
 
-    token = house(house_class).remove_token(token_class)
     begin
       @map.place_token(area_class, token)
     rescue => e

@@ -155,7 +155,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseStark, CastleBlack, Footman)
     g.place_token(HouseStark, CastleBlack, Footman)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, Footman) }
-    assert_equal('House Stark does not have an available Footman to place in Castle Black', e.message)
+    assert_equal('House Stark (no name) does not have an available Footman', e.message)
   end
 
   def test_place_orders
@@ -190,7 +190,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
     assert_equal(:planning_raven, g.round_phase)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
-    assert_equal('House Stark cannot place March Order during planning_raven', e.message)
+    assert_equal('Cannot place March Order (House Stark) during planning_raven', e.message)
   end
 
   def test_replace_order
@@ -213,7 +213,7 @@ class TestGame < MiniTest::Test
     e = assert_raises(RuntimeError) { g.replace_order(Winterfell, WeakMarchOrder) }
     assert_equal('Only the holder of the Messenger Raven token may replace an order', e.message)
     e = assert_raises(RuntimeError) { g.replace_order(Lannisport, WeakMarchOrder) }
-    assert_equal('House Lannister does not have an available March Order to place in Lannisport', e.message)
+    assert_equal('House Lannister (no name) does not have an available March Order', e.message)
 
     refute_raises { g.replace_order(Lannisport, RaidOrder) }
 
