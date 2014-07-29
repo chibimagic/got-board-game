@@ -10,11 +10,10 @@ class TestArea < MiniTest::Test
     assert_equal(a1, a2)
     refute_equal(a1, a3)
 
-    t = Footman.new(HouseStark)
-    a1.place_token(t)
+    a1.place_token(Footman.new(HouseStark))
     refute_equal(a1, a2)
 
-    a1.remove_token(t)
+    a1.remove_token(Footman)
     assert_equal(a1, a2)
   end
 
@@ -133,17 +132,15 @@ class TestArea < MiniTest::Test
 
   def test_house_control
     area = CastleBlack.create_new
-    stark_unit = Footman.new(HouseStark)
-    lannister_unit = Footman.new(HouseLannister)
     assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
 
-    area.place_token(stark_unit)
+    area.place_token(Footman.new(HouseStark))
     assert_equal(HouseStark, area.controlling_house, 'Area should be controlled by House Stark')
 
-    area.remove_token(stark_unit)
+    area.remove_token(Footman)
     assert_equal(nil, area.controlling_house, 'Area should revert to uncontrolled')
 
-    area.place_token(lannister_unit)
+    area.place_token(Footman.new(HouseLannister))
     assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
   end
 

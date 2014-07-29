@@ -283,13 +283,17 @@ class Map
     area(area_class).validate_place_token(house_class, token_class)
   end
 
+  def get_tokens(area_class, token_class)
+    area(area_class).get_tokens(token_class)
+  end
+
   def place_token(area_class, token)
     validate_place_token(token.house_class, area_class, token.class)
     area(area_class).place_token(token)
   end
 
-  def remove_token(area_class, token)
-    area(area_class).remove_token(token)
+  def remove_token(area_class, token_class)
+    area(area_class).remove_token(token_class)
   end
 
   def armies(house_class)

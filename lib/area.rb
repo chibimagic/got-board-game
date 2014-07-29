@@ -104,7 +104,8 @@ class Area
     @tokens.push(token)
   end
 
-  def remove_token(token)
+  def remove_token(token_class)
+    token = get_tokens(token_class).first
     @tokens.delete_at(@tokens.index(token))
   end
 end

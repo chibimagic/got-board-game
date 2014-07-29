@@ -15,11 +15,10 @@ class TestMap < MiniTest::Test
     m2 = Map.create_new
     assert_equal(m1, m2)
 
-    t = Footman.new(HouseStark)
-    m1.place_token(CastleBlack, t)
+    m1.place_token(CastleBlack, Footman.new(HouseStark))
     refute_equal(m1, m2)
 
-    m1.remove_token(CastleBlack, t)
+    m1.remove_token(CastleBlack, Footman)
     assert_equal(m1, m2)
   end
 
