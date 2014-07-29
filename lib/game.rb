@@ -103,7 +103,7 @@ class Game
     @westeros_deck_iii = westeros_deck_iii
   end
 
-  def self.validate_create_new(houses)
+  def self.create_new(houses)
     if !houses.is_a?(Array) || !houses.all? { |house| house.is_a?(House) }
       raise 'Need an array of houses'
     end
@@ -120,11 +120,6 @@ class Game
         raise 'Cannot choose ' + house_class.to_s + ' with ' + house_classes.length.to_s + ' players'
       end
     end
-  end
-
-  def self.create_new(houses)
-    self.validate_create_new(houses)
-    house_classes = houses.map { |house| house.class }
 
     game_round = 1
     round_phase = :planning_assign
@@ -216,7 +211,7 @@ class Game
   end
   private :house
 
-  def validate_replace_order(area_class, new_order_class)
+  def replace_order(area_class, new_order_class)
     if @round_phase != :planning_raven
       raise 'Cannot replace order during ' + @round_phase.to_s
     end
@@ -231,21 +226,19 @@ class Game
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
 
-    @messenger_raven_token.validate_use
-  end
-
-  def replace_order(area_class, new_order_class)
-    validate_replace_order(area_class, new_order_class)
-    old_order_token = @map.area(area_class).get_tokens(OrderToken).first
-    validate_place_token(old_order_token.house_class, area_class, new_order_class)
-
     @messenger_raven_token.use
     token = @map.remove_token(area_class, OrderToken)
+    begin
+      place_token(token.house_class, area_class, new_order_class)
+    rescue => e
+      @messenger_raven_token.reset
+      @map.place_token(area_class, token)
+      raise e
+    end
     house(token.house_class).receive_token(token)
-    place_token(token.house_class, area_class, new_order_class)
   end
 
-  def validate_place_token(house_class, area_class, token_class)
+  def place_token(house_class, area_class, token_class)
     if !house(house_class).has_token?(token_class)
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
@@ -263,13 +256,14 @@ class Game
         end
       end
     end
-  end
 
-  def place_token(house_class, area_class, token_class)
-    validate_place_token(house_class, area_class, token_class)
-    @map.validate_place_token(house_class, area_class, token_class)
     token = house(house_class).remove_token(token_class)
-    @map.place_token(area_class, token)
+    begin
+      @map.place_token(area_class, token)
+    rescue => e
+      house(house_class).receive_token(token)
+      raise e
+    end
 
     if @round_phase == :planning_assign && @map.orders_in?
       @round_phase = :planning_raven

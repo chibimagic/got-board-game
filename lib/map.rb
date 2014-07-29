@@ -278,16 +278,11 @@ class Map
     @areas.find_all { |area| area.controlling_house == house_class }
   end
 
-  def validate_place_token(house_class, area_class, token_class)
-    area(area_class).validate_place_token(house_class, token_class)
-  end
-
   def get_tokens(area_class, token_class)
     area(area_class).get_tokens(token_class)
   end
 
   def place_token(area_class, token)
-    validate_place_token(token.house_class, area_class, token.class)
     area(area_class).place_token(token)
   end
 

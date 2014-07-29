@@ -161,9 +161,9 @@ class TestGame < MiniTest::Test
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, MarchOrder) }
-    assert_equal('House Stark cannot place March Order because Castle Black (0) has no units', e.message)
+    assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
     e = assert_raises(RuntimeError) { g.place_token(HouseLannister, Winterfell, MarchOrder) }
-    assert_equal('House Lannister cannot place March Order because Winterfell (3) is controlled by House Stark', e.message)
+    assert_equal('Cannot place March Order (House Lannister) because Winterfell (3) is controlled by House Stark', e.message)
     refute_raises { g.place_token(HouseStark, TheShiveringSea, MarchOrder) }
   end
 

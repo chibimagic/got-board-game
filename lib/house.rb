@@ -97,14 +97,11 @@ class House
     @tokens.push(token)
   end
 
-  def validate_remove_token(token_class)
+  def remove_token(token_class)
     if !has_token?(token_class)
       raise to_s + ' does not have any available ' + token_class.to_s
     end
-  end
 
-  def remove_token(token_class)
-    validate_remove_token(token_class)
     token = get_token(token_class)
     @tokens.delete_at(@tokens.index(token))
   end

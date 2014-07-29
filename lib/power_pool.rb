@@ -33,15 +33,12 @@ class PowerPool
       @pool == o.pool
   end
 
-  def validate_remove_token(house_class)
-    if @pool.find { |token| token.house_class == house_class }.nil?
+  def remove_token(house_class)
+    token = @pool.find { |token| token.house_class == house_class }
+    if token.nil?
       raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
     end
-  end
 
-  def remove_token(house_class)
-    validate_remove_token(house_class)
-    token = @pool.find { |power_token| power_token.house_class == house_class }
     @pool.delete_at(@pool.index(token))
   end
 end
