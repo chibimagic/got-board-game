@@ -102,6 +102,10 @@ class Area
   end
 
   def remove_token(token_class)
+    unless has_token?(token_class)
+      raise 'No ' + token_class.to_s + ' in ' + to_s
+    end
+
     token = get_tokens(token_class).first
     @tokens.delete_at(@tokens.index(token))
   end

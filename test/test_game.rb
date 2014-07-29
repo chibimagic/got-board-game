@@ -209,7 +209,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
 
     e = assert_raises(RuntimeError) { g.replace_order(CastleBlack, WeakMarchOrder) }
-    assert_equal('There is no order on Castle Black to replace', e.message)
+    assert_equal('No Order Token in Castle Black (0)', e.message)
     e = assert_raises(RuntimeError) { g.replace_order(Winterfell, WeakMarchOrder) }
     assert_equal('Only the holder of the Messenger Raven token may replace an order', e.message)
     e = assert_raises(RuntimeError) { g.replace_order(Lannisport, WeakMarchOrder) }

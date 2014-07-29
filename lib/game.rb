@@ -216,19 +216,15 @@ class Game
       raise 'Cannot replace order during ' + @round_phase.to_s
     end
 
-    t = @map.get_tokens(area_class, OrderToken).first
-    if t.nil?
-      raise 'There is no order on ' + area_class.to_s + ' to replace'
-    end
+    token = @map.remove_token(area_class, OrderToken)
 
     messenger_raven_house_class = @kings_court_track.token_holder_class
-    if t.house_class != messenger_raven_house_class
+    if token.house_class != messenger_raven_house_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
 
-    @messenger_raven_token.use
-    token = @map.remove_token(area_class, OrderToken)
     begin
+      @messenger_raven_token.use
       place_token(token.house_class, area_class, new_order_class)
     rescue => e
       @messenger_raven_token.reset
