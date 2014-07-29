@@ -216,13 +216,42 @@ class Game
   end
   private :house
 
+  def validate_replace_order(area_class, new_order_class)
+    if @round_phase != :planning_raven
+      raise 'Cannot replace order during ' + @round_phase.to_s
+    end
+
+    t = @map.get_tokens(area_class, OrderToken).first
+    if t.nil?
+      raise 'There is no order on ' + area_class.to_s + ' to replace'
+    end
+
+    messenger_raven_house_class = @kings_court_track.token_holder_class
+    if t.house_class != messenger_raven_house_class
+      raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
+    end
+
+    @messenger_raven_token.validate_use
+  end
+
+  def replace_order(area_class, new_order_class)
+    validate_replace_order(area_class, new_order_class)
+    old_order_token = @map.area(area_class).get_tokens(OrderToken).first
+    validate_place_token(old_order_token.house_class, area_class, new_order_class)
+
+    @messenger_raven_token.use
+    token = @map.remove_token(area_class, OrderToken)
+    house(token.house_class).receive_token(token)
+    place_token(token.house_class, area_class, new_order_class)
+  end
+
   def validate_place_token(house_class, area_class, token_class)
     if !house(house_class).has_token?(token_class)
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
 
     if token_class < OrderToken
-      if @round_phase != :planning_assign
+      unless @round_phase == :planning_assign || @round_phase == :planning_raven && house_class == @kings_court_track.token_holder_class
         raise house_class.to_s + ' cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
       end
 
@@ -234,12 +263,11 @@ class Game
         end
       end
     end
-
-    @map.validate_place_token(house_class, area_class, token_class)
   end
 
   def place_token(house_class, area_class, token_class)
     validate_place_token(house_class, area_class, token_class)
+    @map.validate_place_token(house_class, area_class, token_class)
     token = house(house_class).remove_token(token_class)
     @map.place_token(area_class, token)
 

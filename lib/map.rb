@@ -253,7 +253,6 @@ class Map
   def area(area_class)
     @areas.find { |area| area.class == area_class }
   end
-  private :area
 
   def connections
     self.class::CONNECTIONS

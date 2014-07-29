@@ -32,6 +32,10 @@ class InfluenceTrack
       @track == o.track
   end
 
+  def token_holder_class
+    @track[0]
+  end
+
   # Returns 1-based index
   def position(house_class)
     @track.find_index(house_class) + 1
