@@ -87,7 +87,7 @@ class Area
     @tokens.find_all { |token| token.is_a?(token_class) }
   end
 
-  def place_token(token)
+  def validate_place_token(token)
     if token.is_a?(OrderToken)
       if unit_count == 0
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
@@ -97,6 +97,10 @@ class Area
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' already has an order token'
       end
     end
+  end
+
+  def place_token(token)
+    validate_place_token(token)
     @tokens.push(token)
   end
 

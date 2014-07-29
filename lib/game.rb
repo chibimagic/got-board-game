@@ -103,7 +103,7 @@ class Game
     @westeros_deck_iii = westeros_deck_iii
   end
 
-  def self.create_new(houses)
+  def self.validate_create_new(houses)
     if !houses.is_a?(Array) || !houses.all? { |house| house.is_a?(House) }
       raise 'Need an array of houses'
     end
@@ -120,6 +120,11 @@ class Game
         raise 'Cannot choose ' + house_class.to_s + ' with ' + house_classes.length.to_s + ' players'
       end
     end
+  end
+
+  def self.create_new(houses)
+    self.validate_create_new(houses)
+    house_classes = houses.map { |house| house.class }
 
     game_round = 1
     round_phase = :planning_assign
@@ -211,18 +216,17 @@ class Game
   end
   private :house
 
-  def place_token(house_class, area_class, token_class)
-    token = house(house_class).get_token(token_class)
-    if !token
+  def validate_place_token(house_class, area_class, token_class)
+    if !house(house_class).has_token?(token_class)
       raise house_class.to_s + ' does not have an available ' + token_class.to_s + ' to place in ' + area_class.to_s
     end
 
-    if token.is_a?(OrderToken)
+    if token_class < OrderToken
       if @round_phase != :planning_assign
-        raise 'Cannot place ' + token.to_s + ' during ' + @round_phase.to_s
+        raise house_class.to_s + ' cannot place ' + token_class.to_s + ' during ' + @round_phase.to_s
       end
 
-      if token.special
+      if token_class.special
         special_allowed = @kings_court_track.special_orders_allowed(house_class)
         special_used = @map.special_orders_placed(house_class)
         if special_allowed >= special_used
@@ -230,6 +234,12 @@ class Game
         end
       end
     end
+  end
+
+  def place_token(house_class, area_class, token_class)
+    validate_place_token(house_class, area_class, token_class)
+    token = house(house_class).get_token(token_class)
+    @map.validate_place_token(area_class, token)
 
     @map.place_token(area_class, token)
     house(house_class).remove_token(token)
@@ -239,11 +249,16 @@ class Game
     end
   end
 
-  def receive_power_token(house_class)
-    token = @power_pool.pool.find { |token| token.house_class == house_class }
-    if !token
+  def validate_receive_power_token(house_class)
+    if @power_pool.pool.find { |token| token.house_class == house_class }.nil?
       raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
     end
+  end
+
+  def receive_power_token(house_class)
+    validate_receive_power_token(house_class)
+
+    token = @power_pool.pool.find { |token| token.house_class == house_class }
     @power_pool.remove_token(token)
     house.power_tokens.push(token)
   end

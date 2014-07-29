@@ -3,6 +3,10 @@ class OrderToken < HouseToken
   SPECIAL = false
   BONUS = 0
 
+  def self.special
+    self::SPECIAL
+  end
+
   def special
     self.class::SPECIAL
   end

@@ -85,6 +85,10 @@ class House
     @tokens.find_all { |token| token.is_a?(OrderToken) }
   end
 
+  def has_token?(token_class)
+    @tokens.find { |token| token.is_a?(token_class) } ? true : false
+  end
+
   def get_token(token_class)
     @tokens.find { |token| token.class == token_class }
   end

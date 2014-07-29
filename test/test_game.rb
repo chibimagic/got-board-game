@@ -189,6 +189,6 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
     assert_equal(:planning_raven, g.round_phase)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
-    assert_equal('Cannot place March Order (House Stark) during planning_raven', e.message)
+    assert_equal('House Stark cannot place March Order during planning_raven', e.message)
   end
 end
