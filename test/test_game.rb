@@ -171,6 +171,7 @@ class TestGame < MiniTest::Test
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_equal(1, g.kings_court_track.special_orders_allowed(HouseBaratheon))
     refute_raises { g.place_token(HouseBaratheon, ShipbreakerBay, MarchOrder) }
+    refute_raises { g.place_token(HouseBaratheon, Dragonstone, SpecialDefenseOrder) }
     e = assert_raises(RuntimeError) { g.place_token(HouseBaratheon, Dragonstone, SpecialMarchOrder) }
     assert_equal('House Baratheon can only place 1 special order', e.message)
   end

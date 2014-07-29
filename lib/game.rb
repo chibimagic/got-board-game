@@ -229,7 +229,7 @@ class Game
       if token_class.special
         special_allowed = @kings_court_track.special_orders_allowed(house_class)
         special_used = @map.special_orders_placed(house_class)
-        if special_allowed >= special_used
+        if special_used >= special_allowed
           raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
         end
       end
