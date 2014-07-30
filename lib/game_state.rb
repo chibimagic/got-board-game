@@ -1,100 +1,83 @@
 class GameState
-  attr_reader \
-    :round,
-    :phase,
-    :step
+  attr_reader :round
 
-  PHASES = [
-    :westeros,
-    :planning,
-    :action
+  GAME_PERIODS = [
+    [:westeros, 'Westeros', nil],
+    [:assign_orders, 'Planning', 'Assign Orders'],
+    [:messenger_raven, 'Planning', 'Messenger Raven'],
+    [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
+    [:resolve_march_orders, 'Action', 'Resolve March Orders'],
+    [:resolve_consolidate_power_orders, 'Action', 'Resolve Conslidate Power Orders'],
+    [:clean_up, 'Action', 'Clean Up']
   ]
-
-  STEPS = {
-    :westeros => [
-    ],
-    :planning => [
-      :assign_orders,
-      :messenger_raven
-    ],
-    :action => [
-      :resolve_raid_orders,
-      :resolve_march_orders,
-      :resolve_consolidate_power_orders,
-      :clean_up
-    ]
-  }
 
   def initialize(
     round,
-    phase,
-    step
+    game_period
   )
     raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
-    raise 'Invalid phase' unless PHASES.include?(phase)
-    raise 'Invalid step' unless STEPS.fetch(phase).include?(step)
+    raise 'Invalid game period' + game_period.to_s unless GAME_PERIODS.any? { |period| period[0] == game_period }
 
     @round = round
-    @phase = phase
-    @step = step
+    @game_period = game_period
   end
 
   def self.create_new
     round = 1
-    phase = :planning
-    step = :assign_orders
+    game_period = :assign_orders
 
-    new(round, phase, step)
+    new(round, game_period)
   end
 
   def self.unserialize(data)
     round = data['round']
-    phase = data['phase'].to_sym
-    step = data['step'].to_sym
+    game_period = data['game_period'].to_sym
 
-    new(round, phase, step)
+    new(round, game_period)
   end
 
   def serialize
     {
       :round => @round,
-      :phase => @phase,
-      :step => @step
+      :game_period => @game_period
     }
   end
 
   def ==(o)
     self.class == o.class &&
       @round == o.round &&
-      @phase == o.phase &&
-      @step == o.step
+      @game_period == o.game_period
   end
 
   def to_s
-    string = 'Round ' + @round.to_s + ', ' + symbol_to_string(@phase) + ' phase'
-    unless @step.nil?
-      string += ', ' + symbol_to_string(@step) + ' step'
+    string = 'Round ' + @round.to_s + ', ' + phase + ' phase'
+    unless step.nil?
+      string += ', ' + step + ' step'
     end
   end
 
-  def symbol_to_string(symbol)
-    symbol.to_s.sub(/_/, ' ').titlecase
+  def period_data(game_period)
+    GAME_PERIODS.find { |period| period[0] == game_period }
   end
-  private :symbol_to_string
+
+  def game_period
+    period_data(@game_period)[0]
+  end
+
+  def phase
+    period_data(@game_period)[1]
+  end
+
+  def step
+    period_data(@game_period)[2]
+  end
 
   def next_step
-    current_steps = STEPS.fetch(@phase)
-    current_step_index = current_steps.index(@step)
-    if current_steps.nil? || current_step_index + 1 == current_steps.length
-      current_phase_index = PHASES.index(@phase)
-      if current_phase_index + 1 == PHASES.length
-        @phase = PHASES[0]
-      else
-        @phase = PHASES[current_phase_index + 1]
-      end
-      @step = STEPS.fetch(@phase).first
+    period_index = GAME_PERIODS.index { |period| period[0] == @game_period }
+    if period_index + 1 == GAME_PERIODS.length
+      @game_period = GAME_PERIODS[0][0]
     else
-      @step = current_steps[current_step_index + 1]
+      @game_period = GAME_PERIODS[period_index + 1][0]
     end
   end
 end

@@ -196,7 +196,7 @@ class Game
   private :house
 
   def replace_order(area_class, new_order_class)
-    if @game_state.step != :messenger_raven
+    if @game_state.game_period != :messenger_raven
       raise 'Cannot replace order during ' + @game_state.to_s
     end
 
@@ -244,7 +244,7 @@ class Game
     token = house(house_class).remove_token(token_class)
 
     if token.is_a?(OrderToken)
-      unless @game_state.step == :assign_orders || @game_state.step == :messenger_raven && house_class == @kings_court_track.token_holder_class
+      unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
         raise 'Cannot place ' + token.to_s + ' during ' + @game_state.to_s
       end
 
@@ -264,7 +264,7 @@ class Game
       raise e
     end
 
-    if @game_state.step == :assign_orders && @map.orders_in?
+    if @game_state.game_period == :assign_orders && @map.orders_in?
       @game_state.next_step
     end
   end

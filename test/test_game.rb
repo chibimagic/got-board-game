@@ -28,8 +28,9 @@ class TestGame < MiniTest::Test
     game = Game.create_new(houses)
     assert_equal(6, game.houses.length)
     assert_equal(1, game.game_state.round)
-    assert_equal(:planning, game.game_state.phase)
-    assert_equal(:assign_orders, game.game_state.step)
+    assert_equal(:assign_orders, game.game_state.game_period)
+    assert_equal('Planning', game.game_state.phase)
+    assert_equal('Assign Orders', game.game_state.step)
     assert_equal([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell], game.players_turn)
     assert_equal(false, game.valyrian_steel_blade_token.used)
     assert_equal(false, game.messenger_raven_token.used)
@@ -179,7 +180,7 @@ class TestGame < MiniTest::Test
 
   def test_orders_in
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    assert_equal(:assign_orders, g.game_state.step)
+    assert_equal('Assign Orders', g.game_state.step)
     g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
     g.place_token(HouseStark, WhiteHarbor, MarchOrder)
     g.place_token(HouseStark, Winterfell, DefenseOrder)
@@ -189,7 +190,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
     g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal('Messenger Raven', g.game_state.step)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
     assert_match(/^Cannot place March Order \(House Stark\) during .* Planning phase, Messenger Raven step$/, e.message)
   end
@@ -234,18 +235,18 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
 
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal(:messenger_raven, g.game_state.game_period)
     card = g.look_at_wildling_deck
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal(:messenger_raven, g.game_state.game_period)
     e = assert_raises(RuntimeError) { g.look_at_wildling_deck }
     assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal(:messenger_raven, g.game_state.game_period)
     e = assert_raises(RuntimeError) { g.skip_messenger_raven }
     assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal(:messenger_raven, g.game_state.game_period)
     e = assert_raises(RuntimeError) { g.replace_order(Lannisport, RaidOrder) }
     assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, g.game_state.step)
+    assert_equal(:messenger_raven, g.game_state.game_period)
     refute_raises { g.replace_wildling_card_top(card) }
   end
 end
