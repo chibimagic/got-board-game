@@ -221,17 +221,17 @@ class Map
     end
 
     NeutralForceTokens.new(houses.count).get_tokens.each do |token|
-      areas.find { |area| area.class == token.area_class }.place_token(token)
+      areas.find { |area| area.class == token.area_class }.receive_token(token)
     end
 
     houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
           unit = house.remove_token(starting_unit_class)
-          areas.find { |area| area.class == area_class }.place_token(unit)
+          areas.find { |area| area.class == area_class }.receive_token(unit)
         end
       end
-      areas.find { |area| area.class == house.class::HOME_AREA }.place_token(GarrisonToken.new(house.class))
+      areas.find { |area| area.class == house.class::HOME_AREA }.receive_token(GarrisonToken.new(house.class))
     end
     new(areas)
   end

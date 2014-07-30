@@ -10,7 +10,7 @@ class TestArea < MiniTest::Test
     assert_equal(a1, a2)
     refute_equal(a1, a3)
 
-    a1.place_token(Footman.new(HouseStark))
+    a1.receive_token(Footman.new(HouseStark))
     refute_equal(a1, a2)
 
     a1.remove_token(Footman)
@@ -134,28 +134,28 @@ class TestArea < MiniTest::Test
     area = CastleBlack.create_new
     assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
 
-    area.place_token(Footman.new(HouseStark))
+    area.receive_token(Footman.new(HouseStark))
     assert_equal(HouseStark, area.controlling_house, 'Area should be controlled by House Stark')
 
     area.remove_token(Footman)
     assert_equal(nil, area.controlling_house, 'Area should revert to uncontrolled')
 
-    area.place_token(Footman.new(HouseLannister))
+    area.receive_token(Footman.new(HouseLannister))
     assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
   end
 
   def test_unit_count
     area = Winterfell.create_new
     assert_equal(0, area.unit_count, 'Area should start with no units')
-    area.place_token(Footman.new(HouseStark))
+    area.receive_token(Footman.new(HouseStark))
     assert_equal(1, area.unit_count, 'Footman should count has 1 unit')
-    area.place_token(Knight.new(HouseStark))
+    area.receive_token(Knight.new(HouseStark))
     assert_equal(2, area.unit_count, 'Knight should count as 1 unit')
-    area.place_token(GarrisonToken.new(HouseStark))
+    area.receive_token(GarrisonToken.new(HouseStark))
     assert_equal(2, area.unit_count, 'Garrison token should not count as unit')
-    area.place_token(PowerToken.new(HouseStark))
+    area.receive_token(PowerToken.new(HouseStark))
     assert_equal(2, area.unit_count, 'Power token should not count as unit')
-    area.place_token(MarchOrder.new(HouseStark))
+    area.receive_token(MarchOrder.new(HouseStark))
     assert_equal(2, area.unit_count, 'Orders should not count as unit')
   end
 
@@ -166,28 +166,28 @@ class TestArea < MiniTest::Test
     assert_equal(false, a.has_token?(MarchOrder))
     assert_equal(false, a.has_token?(GarrisonToken))
 
-    a.place_token(Footman.new(HouseStark))
+    a.receive_token(Footman.new(HouseStark))
     assert_equal(true, a.has_token?(Footman))
-    a.place_token(PowerToken.new(HouseStark))
+    a.receive_token(PowerToken.new(HouseStark))
     assert_equal(true, a.has_token?(PowerToken))
-    a.place_token(MarchOrder.new(HouseStark))
+    a.receive_token(MarchOrder.new(HouseStark))
     assert_equal(true, a.has_token?(MarchOrder))
-    a.place_token(GarrisonToken.new(HouseStark))
+    a.receive_token(GarrisonToken.new(HouseStark))
     assert_equal(true, a.has_token?(GarrisonToken))
   end
 
-  def test_place_token
+  def test_receive_token
     a = CastleBlack.create_new
 
-    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    e = assert_raises(RuntimeError) { a.receive_token(MarchOrder.new(HouseStark)) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
 
-    a.place_token(Footman.new(HouseStark))
-    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseLannister)) }
+    a.receive_token(Footman.new(HouseStark))
+    e = assert_raises(RuntimeError) { a.receive_token(MarchOrder.new(HouseLannister)) }
     assert_equal('Cannot place March Order (House Lannister) because Castle Black (1) is controlled by House Stark', e.message)
 
-    a.place_token(MarchOrder.new(HouseStark))
-    e = assert_raises(RuntimeError) { a.place_token(MarchOrder.new(HouseStark)) }
+    a.receive_token(MarchOrder.new(HouseStark))
+    e = assert_raises(RuntimeError) { a.receive_token(MarchOrder.new(HouseStark)) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (2) already has an order token', e.message)
   end
 end

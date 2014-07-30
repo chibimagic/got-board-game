@@ -212,7 +212,7 @@ class Game
       place_token(token.house_class, area_class, new_order_class)
     rescue => e
       @messenger_raven_token.reset
-      @map.area(area_class).place_token(token)
+      @map.area(area_class).receive_token(token)
       raise e
     end
     house(token.house_class).receive_token(token)
@@ -258,7 +258,7 @@ class Game
     end
 
     begin
-      @map.area(area_class).place_token(token)
+      @map.area(area_class).receive_token(token)
     rescue => e
       house(house_class).receive_token(token)
       raise e
