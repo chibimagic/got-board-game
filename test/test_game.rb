@@ -146,20 +146,6 @@ class TestGame < MiniTest::Test
     end
   end
 
-  def test_place_units
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    g.place_token(HouseStark, CastleBlack, Footman)
-    e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, Footman) }
-    assert_equal('House Stark (no name) has no Footman', e.message)
-  end
-
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, MarchOrder) }
