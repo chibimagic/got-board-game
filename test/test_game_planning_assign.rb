@@ -1,4 +1,4 @@
-class TestGameOrders < MiniTest::Test
+class TestGamePlanningAssign < MiniTest::Test
   def setup
     @g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
   end
@@ -52,31 +52,5 @@ class TestGameOrders < MiniTest::Test
 
     e = assert_raises(RuntimeError) { @g.replace_order(Lannisport, RaidOrder) }
     assert_match(/^Cannot replace order during .* Resolve Raid Orders step$/, e.message)
-  end
-
-  def test_use_messenger_raven
-    @g.place_order(HouseStark, TheShiveringSea, WeakMarchOrder)
-    @g.place_order(HouseStark, WhiteHarbor, MarchOrder)
-    @g.place_order(HouseStark, Winterfell, DefenseOrder)
-    @g.place_order(HouseLannister, TheGoldenSound, WeakMarchOrder)
-    @g.place_order(HouseLannister, Lannisport, MarchOrder)
-    @g.place_order(HouseLannister, StoneySept, DefenseOrder)
-    @g.place_order(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
-    @g.place_order(HouseBaratheon, Dragonstone, MarchOrder)
-    @g.place_order(HouseBaratheon, Kingswood, DefenseOrder)
-
-    assert_equal(:messenger_raven, @g.game_state.game_period)
-    card = @g.look_at_wildling_deck
-    assert_equal(:messenger_raven, @g.game_state.game_period)
-    e = assert_raises(RuntimeError) { @g.look_at_wildling_deck }
-    assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, @g.game_state.game_period)
-    e = assert_raises(RuntimeError) { @g.skip_messenger_raven }
-    assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, @g.game_state.game_period)
-    e = assert_raises(RuntimeError) { @g.replace_order(Lannisport, RaidOrder) }
-    assert_equal('Messenger Raven token has already been used', e.message)
-    assert_equal(:messenger_raven, @g.game_state.game_period)
-    refute_raises { @g.replace_wildling_card_top(card) }
   end
 end
