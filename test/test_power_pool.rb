@@ -36,4 +36,11 @@ class TestPowerPool < MiniTest::Test
     p = PowerPool.create_new([h1, h2, h3, h4, h5, h6])
     assert_equal(90, p.pool.count, 'Wrong number of tokens for 3 houses')
   end
+
+  def test_token_removal
+    p = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    15.times { p.remove_token(HouseStark) }
+    e = assert_raises(RuntimeError) { p.remove_token(HouseStark) }
+    assert_equal('House Stark does not have any available power tokens in the Power Pool', e.message)
+  end
 end
