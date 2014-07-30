@@ -236,6 +236,7 @@ class Game
   end
 
   def skip_messenger_raven
+    @messenger_raven_token.use
     @game_state.next_step
   end
 
