@@ -203,6 +203,33 @@ class Game
   end
   private :validate_game_state
 
+  def place_order(house_class, area_class, order_class)
+    order = house(house_class).remove_token(order_class)
+
+    unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
+      raise 'Cannot place order during ' + @game_state.to_s
+    end
+
+    if order.special
+      special_allowed = @kings_court_track.special_orders_allowed(house_class)
+      special_used = @map.special_orders_placed(house_class)
+      if special_used >= special_allowed
+        raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
+      end
+    end
+
+    begin
+      @map.area(area_class).receive_token(order)
+    rescue => e
+      house(house_class).receive_token(order)
+      raise e
+    end
+
+    if @game_state.game_period == :assign_orders && @map.orders_in?
+      @game_state.next_step
+    end
+  end
+
   def replace_order(area_class, new_order_class)
     validate_game_state(:messenger_raven, 'replace order')
 
@@ -251,33 +278,6 @@ class Game
 
     @messenger_raven_token.use
     @game_state.next_step
-  end
-
-  def place_order(house_class, area_class, order_class)
-    order = house(house_class).remove_token(order_class)
-
-    unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
-      raise 'Cannot place order during ' + @game_state.to_s
-    end
-
-    if order.special
-      special_allowed = @kings_court_track.special_orders_allowed(house_class)
-      special_used = @map.special_orders_placed(house_class)
-      if special_used >= special_allowed
-        raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
-      end
-    end
-
-    begin
-      @map.area(area_class).receive_token(order)
-    rescue => e
-      house(house_class).receive_token(order)
-      raise e
-    end
-
-    if @game_state.game_period == :assign_orders && @map.orders_in?
-      @game_state.next_step
-    end
   end
 
   def receive_power_token(house_class)
