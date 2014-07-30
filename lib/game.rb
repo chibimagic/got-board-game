@@ -241,12 +241,17 @@ class Game
 
     begin
       @messenger_raven_token.use
-      place_order(token.house_class, area_class, new_order_class)
+      begin
+        place_order(token.house_class, area_class, new_order_class)
+      rescue => e
+        @messenger_raven_token.reset
+        raise e
+      end
     rescue => e
-      @messenger_raven_token.reset
       @map.area(area_class).receive_token(token)
       raise e
     end
+
     house(token.house_class).receive_token(token)
 
     @game_state.next_step
