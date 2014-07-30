@@ -45,10 +45,10 @@ class TestGame < MiniTest::Test
     }
     expected_units_remaining.each do |house_class, units_remaining|
       house = houses.find { |house| house.class == house_class }
-      assert_equal(units_remaining[:footmen], house.units.count{ |unit| unit.is_a?(Footman) })
-      assert_equal(units_remaining[:knights], house.units.count{ |unit| unit.is_a?(Knight) })
-      assert_equal(units_remaining[:ships], house.units.count{ |unit| unit.is_a?(Ship) })
-      assert_equal(units_remaining[:siege_engines], house.units.count{ |unit| unit.is_a?(SiegeEngine) })
+      assert_equal(units_remaining[:footmen], house.count_tokens(Footman))
+      assert_equal(units_remaining[:knights], house.count_tokens(Knight))
+      assert_equal(units_remaining[:ships], house.count_tokens(Ship))
+      assert_equal(units_remaining[:siege_engines], house.count_tokens(SiegeEngine))
     end
 
     # All houses except House Stark begin at supply = 2
@@ -80,7 +80,7 @@ class TestGame < MiniTest::Test
 
     assert_equal(90, game.power_pool.pool.count, 'Wrong number of tokens in power pool')
     game.houses.each do |house|
-      assert_equal(5, house.power_tokens.count, house.to_s + ' has wrong number of power tokens')
+      assert_equal(5, house.count_tokens(PowerToken), house.to_s + ' has wrong number of power tokens')
     end
 
     # Garrison tokens
@@ -157,7 +157,7 @@ class TestGame < MiniTest::Test
     g.place_token(HouseStark, CastleBlack, Footman)
     g.place_token(HouseStark, CastleBlack, Footman)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, Footman) }
-    assert_equal('House Stark (no name) does not have an available Footman', e.message)
+    assert_equal('House Stark (no name) has no Footman', e.message)
   end
 
   def test_place_orders
@@ -211,11 +211,11 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
 
     e = assert_raises(RuntimeError) { g.replace_order(CastleBlack, WeakMarchOrder) }
-    assert_equal('No Order Token in Castle Black (0)', e.message)
+    assert_equal('Castle Black (0) has no Order Token', e.message)
     e = assert_raises(RuntimeError) { g.replace_order(Winterfell, WeakMarchOrder) }
     assert_equal('Only the holder of the Messenger Raven token may replace an order', e.message)
     e = assert_raises(RuntimeError) { g.replace_order(Lannisport, WeakMarchOrder) }
-    assert_equal('House Lannister (no name) does not have an available March Order', e.message)
+    assert_equal('House Lannister (no name) has no March Order', e.message)
 
     refute_raises { g.replace_order(Lannisport, RaidOrder) }
 

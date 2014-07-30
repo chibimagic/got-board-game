@@ -10,6 +10,7 @@ require_relative 'wildling_deck.rb'
 require_relative 'westeros_card.rb'
 require_relative 'westeros_deck.rb'
 require_relative 'dominance_token.rb'
+require_relative 'token_holder.rb'
 require_relative 'area.rb'
 require_relative 'map.rb'
 require_relative 'wildling_track.rb'
@@ -275,7 +276,7 @@ class Game
   end
 
   def discard_power_token(house_class)
-    token = house(house_class).power_tokens.pop
+    token = house(house_class).remove_token(PowerToken)
     @power_pool.pool.push(token)
   end
 end

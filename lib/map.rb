@@ -279,7 +279,7 @@ class Map
   end
 
   def armies(house_class)
-    controlled_areas(house_class).map { |area| area.unit_count }.reject { |unit_count| unit_count < 2 }.sort.reverse
+    controlled_areas(house_class).map { |area| area.count_tokens(Unit) }.reject { |count| count < 2 }.sort.reverse
   end
 
   def special_orders_placed(house_class)

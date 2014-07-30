@@ -146,17 +146,17 @@ class TestArea < MiniTest::Test
 
   def test_unit_count
     area = Winterfell.create_new
-    assert_equal(0, area.unit_count, 'Area should start with no units')
+    assert_equal(0, area.count_tokens(Unit), 'Area should start with no units')
     area.receive_token(Footman.new(HouseStark))
-    assert_equal(1, area.unit_count, 'Footman should count has 1 unit')
+    assert_equal(1, area.count_tokens(Unit), 'Footman should count has 1 unit')
     area.receive_token(Knight.new(HouseStark))
-    assert_equal(2, area.unit_count, 'Knight should count as 1 unit')
+    assert_equal(2, area.count_tokens(Unit), 'Knight should count as 1 unit')
     area.receive_token(GarrisonToken.new(HouseStark))
-    assert_equal(2, area.unit_count, 'Garrison token should not count as unit')
+    assert_equal(2, area.count_tokens(Unit), 'Garrison token should not count as unit')
     area.receive_token(PowerToken.new(HouseStark))
-    assert_equal(2, area.unit_count, 'Power token should not count as unit')
+    assert_equal(2, area.count_tokens(Unit), 'Power token should not count as unit')
     area.receive_token(MarchOrder.new(HouseStark))
-    assert_equal(2, area.unit_count, 'Orders should not count as unit')
+    assert_equal(2, area.count_tokens(Unit), 'Orders should not count as unit')
   end
 
   def test_token_existence

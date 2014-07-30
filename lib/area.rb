@@ -1,5 +1,5 @@
 class Area
-  attr_reader :tokens
+  include TokenHolder
 
   TITLE = 'Area'
   CONNECTION_COUNT = 0
@@ -75,21 +75,9 @@ class Area
     end
   end
 
-  def unit_count
-    @tokens.count { |token| token.is_a?(Unit) }
-  end
-
-  def has_token?(token_class)
-    @tokens.find { |token| token.is_a?(token_class) } ? true : false
-  end
-
-  def get_tokens(token_class)
-    @tokens.find_all { |token| token.is_a?(token_class) }
-  end
-
   def receive_token(token)
     if token.is_a?(OrderToken)
-      if unit_count == 0
+      if count_tokens(Unit) == 0
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
       elsif controlling_house != token.house_class
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
@@ -98,16 +86,7 @@ class Area
       end
     end
 
-    @tokens.push(token)
-  end
-
-  def remove_token(token_class)
-    unless has_token?(token_class)
-      raise 'No ' + token_class.to_s + ' in ' + to_s
-    end
-
-    token = get_tokens(token_class).first
-    @tokens.delete_at(@tokens.index(token))
+    TokenHolder.instance_method(:receive_token).bind(self).call(token)
   end
 end
 

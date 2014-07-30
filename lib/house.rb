@@ -1,5 +1,7 @@
 class House
-  attr_reader :player_name, :tokens
+  include TokenHolder
+
+  attr_reader :player_name
 
   TITLE = ''
   MINIMUM_PLAYERS = 3
@@ -71,39 +73,6 @@ class House
   def to_s
     name = @player_name.length > 0 ? @player_name : 'no name'
     self.class::TITLE + ' (' + name + ')'
-  end
-
-  def units
-    @tokens.find_all { |token| token.is_a?(Unit) }
-  end
-
-  def power_tokens
-    @tokens.find_all { |token| token.is_a?(PowerToken) }
-  end
-
-  def order_tokens
-    @tokens.find_all { |token| token.is_a?(OrderToken) }
-  end
-
-  def has_token?(token_class)
-    @tokens.find { |token| token.is_a?(token_class) } ? true : false
-  end
-
-  def get_token(token_class)
-    @tokens.find { |token| token.class == token_class }
-  end
-
-  def receive_token(token)
-    @tokens.push(token)
-  end
-
-  def remove_token(token_class)
-    if !has_token?(token_class)
-      raise to_s + ' does not have an available ' + token_class.to_s
-    end
-
-    token = get_token(token_class)
-    @tokens.delete_at(@tokens.index(token))
   end
 end
 
