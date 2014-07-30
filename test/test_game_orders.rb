@@ -3,14 +3,6 @@ class TestGameOrders < MiniTest::Test
     @g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
   end
 
-  def test_place_orders
-    e = assert_raises(RuntimeError) { @g.place_order(HouseStark, CastleBlack, MarchOrder) }
-    assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
-    e = assert_raises(RuntimeError) { @g.place_order(HouseLannister, Winterfell, MarchOrder) }
-    assert_equal('Cannot place March Order (House Lannister) because Winterfell (3) is controlled by House Stark', e.message)
-    refute_raises { @g.place_order(HouseStark, TheShiveringSea, MarchOrder) }
-  end
-
   def test_special_orders
     assert_equal(1, @g.kings_court_track.special_orders_allowed(HouseBaratheon))
     refute_raises { @g.place_order(HouseBaratheon, ShipbreakerBay, MarchOrder) }
