@@ -200,7 +200,7 @@ class Game
       raise 'Cannot replace order during ' + @game_state.to_s
     end
 
-    token = @map.remove_token(area_class, OrderToken)
+    token = @map.area(area_class).remove_token(OrderToken)
 
     messenger_raven_house_class = @kings_court_track.token_holder_class
     if token.house_class != messenger_raven_house_class
@@ -212,7 +212,7 @@ class Game
       place_token(token.house_class, area_class, new_order_class)
     rescue => e
       @messenger_raven_token.reset
-      @map.place_token(area_class, token)
+      @map.area(area_class).place_token(token)
       raise e
     end
     house(token.house_class).receive_token(token)
@@ -258,7 +258,7 @@ class Game
     end
 
     begin
-      @map.place_token(area_class, token)
+      @map.area(area_class).place_token(token)
     rescue => e
       house(house_class).receive_token(token)
       raise e

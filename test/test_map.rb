@@ -15,10 +15,10 @@ class TestMap < MiniTest::Test
     m2 = Map.create_new
     assert_equal(m1, m2)
 
-    m1.place_token(CastleBlack, Footman.new(HouseStark))
+    m1.area(CastleBlack).place_token(Footman.new(HouseStark))
     refute_equal(m1, m2)
 
-    m1.remove_token(CastleBlack, Footman)
+    m1.area(CastleBlack).remove_token(Footman)
     assert_equal(m1, m2)
   end
 
@@ -55,31 +55,31 @@ class TestMap < MiniTest::Test
   def test_army_count
     h1 = HouseStark
     h2 = HouseLannister
-    @m.place_token(CastleBlack, Footman.new(h1))
-    @m.place_token(Winterfell, SiegeEngine.new(h1))
-    @m.place_token(Winterfell, Knight.new(h1))
-    @m.place_token(Winterfell, Footman.new(h1))
-    @m.place_token(Karhold, Knight.new(h1))
-    @m.place_token(Karhold, Knight.new(h1))
-    @m.place_token(Lannisport, Knight.new(h2))
-    @m.place_token(Lannisport, Knight.new(h2))
-    @m.place_token(StoneySept, Knight.new(h2))
+    @m.area(CastleBlack).place_token(Footman.new(h1))
+    @m.area(Winterfell).place_token(SiegeEngine.new(h1))
+    @m.area(Winterfell).place_token(Knight.new(h1))
+    @m.area(Winterfell).place_token(Footman.new(h1))
+    @m.area(Karhold).place_token(Knight.new(h1))
+    @m.area(Karhold).place_token(Knight.new(h1))
+    @m.area(Lannisport).place_token(Knight.new(h2))
+    @m.area(Lannisport).place_token(Knight.new(h2))
+    @m.area(StoneySept).place_token(Knight.new(h2))
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
 
   def test_orders
     h = HouseStark
-    @m.place_token(Winterfell, Footman.new(h))
-    @m.place_token(Winterfell, WeakMarchOrder.new(h))
+    @m.area(Winterfell).place_token(Footman.new(h))
+    @m.area(Winterfell).place_token(WeakMarchOrder.new(h))
     assert_equal({ Winterfell => WeakMarchOrder }, @m.orders)
   end
 
   def test_orders_in
     assert_equal(true, @m.orders_in?)
-    @m.place_token(CastleBlack, Footman.new(HouseStark))
+    @m.area(CastleBlack).place_token(Footman.new(HouseStark))
     assert_equal(false, @m.orders_in?)
-    @m.place_token(CastleBlack, MarchOrder.new(HouseStark))
+    @m.area(CastleBlack).place_token(MarchOrder.new(HouseStark))
     assert_equal(true, @m.orders_in?)
   end
 end

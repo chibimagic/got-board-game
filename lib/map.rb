@@ -278,18 +278,6 @@ class Map
     @areas.find_all { |area| area.controlling_house == house_class }
   end
 
-  def get_tokens(area_class, token_class)
-    area(area_class).get_tokens(token_class)
-  end
-
-  def place_token(area_class, token)
-    area(area_class).place_token(token)
-  end
-
-  def remove_token(area_class, token_class)
-    area(area_class).remove_token(token_class)
-  end
-
   def armies(house_class)
     controlled_areas(house_class).map { |area| area.unit_count }.reject { |unit_count| unit_count < 2 }.sort.reverse
   end
