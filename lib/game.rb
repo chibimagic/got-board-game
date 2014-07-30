@@ -203,8 +203,7 @@ class Game
 
     token = @map.area(area_class).remove_token(OrderToken)
 
-    messenger_raven_house_class = @kings_court_track.token_holder_class
-    if token.house_class != messenger_raven_house_class
+    if token.house_class != @kings_court_track.token_holder_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
 
