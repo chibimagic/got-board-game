@@ -196,10 +196,15 @@ class Game
   end
   private :house
 
-  def replace_order(area_class, new_order_class)
-    if @game_state.game_period != :messenger_raven
-      raise 'Cannot replace order during ' + @game_state.to_s
+  def validate_game_state(expected_game_period, action_string)
+    unless @game_state.game_period == expected_game_period
+      raise 'Cannot ' + action_string + ' during ' + @game_state.to_s
     end
+  end
+  private :validate_game_state
+
+  def replace_order(area_class, new_order_class)
+    validate_game_state(:messenger_raven, 'replace order')
 
     token = @map.area(area_class).remove_token(OrderToken)
 
@@ -221,21 +226,29 @@ class Game
   end
 
   def look_at_wildling_deck
+    validate_game_state(:messenger_raven, 'look at wildling deck')
+
     @messenger_raven_token.use
     @wildling_deck.draw_from_top
   end
 
   def replace_wildling_card_top(card)
+    validate_game_state(:messenger_raven, 'replace card at top of wildling deck')
+
     @wildling_deck.place_at_top(card)
     @game_state.next_step
   end
 
   def replace_wildling_card_bottom(card)
+    validate_game_state(:messenger_raven, 'replace card at bottom of wildling deck')
+
     @wildling_deck.place_at_bottom(card)
     @game_state.next_step
   end
 
   def skip_messenger_raven
+    validate_game_state(:messenger_raven, 'skip messenger raven step')
+
     @messenger_raven_token.use
     @game_state.next_step
   end
