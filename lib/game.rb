@@ -216,6 +216,27 @@ class Game
       raise e
     end
     house(token.house_class).receive_token(token)
+
+    @game_state.next_step
+  end
+
+  def look_at_wildling_deck
+    @messenger_raven_token.use
+    @wildling_deck.draw_from_top
+  end
+
+  def replace_wildling_card_top(card)
+    @wildling_deck.place_at_top(card)
+    @game_state.next_step
+  end
+
+  def replace_wildling_card_bottom(card)
+    @wildling_deck.place_at_bottom(card)
+    @game_state.next_step
+  end
+
+  def skip_messenger_raven
+    @game_state.next_step
   end
 
   def place_token(house_class, area_class, token_class)
