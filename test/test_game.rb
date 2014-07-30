@@ -148,53 +148,53 @@ class TestGame < MiniTest::Test
 
   def test_place_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    e = assert_raises(RuntimeError) { g.place_token(HouseStark, CastleBlack, MarchOrder) }
+    e = assert_raises(RuntimeError) { g.place_order(HouseStark, CastleBlack, MarchOrder) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
-    e = assert_raises(RuntimeError) { g.place_token(HouseLannister, Winterfell, MarchOrder) }
+    e = assert_raises(RuntimeError) { g.place_order(HouseLannister, Winterfell, MarchOrder) }
     assert_equal('Cannot place March Order (House Lannister) because Winterfell (3) is controlled by House Stark', e.message)
-    refute_raises { g.place_token(HouseStark, TheShiveringSea, MarchOrder) }
+    refute_raises { g.place_order(HouseStark, TheShiveringSea, MarchOrder) }
   end
 
   def test_special_orders
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_equal(1, g.kings_court_track.special_orders_allowed(HouseBaratheon))
-    refute_raises { g.place_token(HouseBaratheon, ShipbreakerBay, MarchOrder) }
-    refute_raises { g.place_token(HouseBaratheon, Dragonstone, SpecialDefenseOrder) }
-    e = assert_raises(RuntimeError) { g.place_token(HouseBaratheon, Dragonstone, SpecialMarchOrder) }
+    refute_raises { g.place_order(HouseBaratheon, ShipbreakerBay, MarchOrder) }
+    refute_raises { g.place_order(HouseBaratheon, Dragonstone, SpecialDefenseOrder) }
+    e = assert_raises(RuntimeError) { g.place_order(HouseBaratheon, Dragonstone, SpecialMarchOrder) }
     assert_equal('House Baratheon can only place 1 special order', e.message)
   end
 
   def test_orders_in
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     assert_equal('Assign Orders', g.game_state.step)
-    g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
-    g.place_token(HouseStark, WhiteHarbor, MarchOrder)
-    g.place_token(HouseStark, Winterfell, DefenseOrder)
-    g.place_token(HouseLannister, TheGoldenSound, WeakMarchOrder)
-    g.place_token(HouseLannister, Lannisport, MarchOrder)
-    g.place_token(HouseLannister, StoneySept, DefenseOrder)
-    g.place_token(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
-    g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
-    g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
+    g.place_order(HouseStark, TheShiveringSea, WeakMarchOrder)
+    g.place_order(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order(HouseStark, Winterfell, DefenseOrder)
+    g.place_order(HouseLannister, TheGoldenSound, WeakMarchOrder)
+    g.place_order(HouseLannister, Lannisport, MarchOrder)
+    g.place_order(HouseLannister, StoneySept, DefenseOrder)
+    g.place_order(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
+    g.place_order(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order(HouseBaratheon, Kingswood, DefenseOrder)
     assert_equal('Messenger Raven', g.game_state.step)
-    e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
-    assert_match(/^Cannot place March Order \(House Stark\) during .* Planning phase, Messenger Raven step$/, e.message)
+    e = assert_raises(RuntimeError) { g.place_order(HouseStark, TheShiveringSea, SpecialMarchOrder) }
+    assert_match(/^Cannot place order during .* Planning phase, Messenger Raven step$/, e.message)
   end
 
   def test_replace_order
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     e = assert_raises(RuntimeError) { g.replace_order(CastleBlack, WeakMarchOrder) }
-    assert_match(/^Cannot replace order during .* Assign Orders step$/, e.message)
+    assert_match(/^Cannot replace order during .* Planning phase, Assign Orders step$/, e.message)
 
-    g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
-    g.place_token(HouseStark, WhiteHarbor, MarchOrder)
-    g.place_token(HouseStark, Winterfell, DefenseOrder)
-    g.place_token(HouseLannister, TheGoldenSound, WeakMarchOrder)
-    g.place_token(HouseLannister, Lannisport, MarchOrder)
-    g.place_token(HouseLannister, StoneySept, DefenseOrder)
-    g.place_token(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
-    g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
-    g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
+    g.place_order(HouseStark, TheShiveringSea, WeakMarchOrder)
+    g.place_order(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order(HouseStark, Winterfell, DefenseOrder)
+    g.place_order(HouseLannister, TheGoldenSound, WeakMarchOrder)
+    g.place_order(HouseLannister, Lannisport, MarchOrder)
+    g.place_order(HouseLannister, StoneySept, DefenseOrder)
+    g.place_order(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
+    g.place_order(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order(HouseBaratheon, Kingswood, DefenseOrder)
 
     e = assert_raises(RuntimeError) { g.replace_order(CastleBlack, WeakMarchOrder) }
     assert_equal('Castle Black (0) has no Order Token', e.message)
@@ -211,15 +211,15 @@ class TestGame < MiniTest::Test
 
   def test_use_messenger_raven
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
-    g.place_token(HouseStark, WhiteHarbor, MarchOrder)
-    g.place_token(HouseStark, Winterfell, DefenseOrder)
-    g.place_token(HouseLannister, TheGoldenSound, WeakMarchOrder)
-    g.place_token(HouseLannister, Lannisport, MarchOrder)
-    g.place_token(HouseLannister, StoneySept, DefenseOrder)
-    g.place_token(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
-    g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
-    g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
+    g.place_order(HouseStark, TheShiveringSea, WeakMarchOrder)
+    g.place_order(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order(HouseStark, Winterfell, DefenseOrder)
+    g.place_order(HouseLannister, TheGoldenSound, WeakMarchOrder)
+    g.place_order(HouseLannister, Lannisport, MarchOrder)
+    g.place_order(HouseLannister, StoneySept, DefenseOrder)
+    g.place_order(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
+    g.place_order(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order(HouseBaratheon, Kingswood, DefenseOrder)
 
     assert_equal(:messenger_raven, g.game_state.game_period)
     card = g.look_at_wildling_deck

@@ -210,7 +210,7 @@ class Game
 
     begin
       @messenger_raven_token.use
-      place_token(token.house_class, area_class, new_order_class)
+      place_order(token.house_class, area_class, new_order_class)
     rescue => e
       @messenger_raven_token.reset
       @map.area(area_class).receive_token(token)
@@ -241,27 +241,25 @@ class Game
     @game_state.next_step
   end
 
-  def place_token(house_class, area_class, token_class)
-    token = house(house_class).remove_token(token_class)
+  def place_order(house_class, area_class, order_class)
+    order = house(house_class).remove_token(order_class)
 
-    if token.is_a?(OrderToken)
-      unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
-        raise 'Cannot place ' + token.to_s + ' during ' + @game_state.to_s
-      end
+    unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
+      raise 'Cannot place order during ' + @game_state.to_s
+    end
 
-      if token.special
-        special_allowed = @kings_court_track.special_orders_allowed(house_class)
-        special_used = @map.special_orders_placed(house_class)
-        if special_used >= special_allowed
-          raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
-        end
+    if order.special
+      special_allowed = @kings_court_track.special_orders_allowed(house_class)
+      special_used = @map.special_orders_placed(house_class)
+      if special_used >= special_allowed
+        raise house_class.to_s + ' can only place ' + special_allowed.to_s + ' special ' + Utility.singular_plural(special_allowed, 'order', 'orders')
       end
     end
 
     begin
-      @map.area(area_class).receive_token(token)
+      @map.area(area_class).receive_token(order)
     rescue => e
-      house(house_class).receive_token(token)
+      house(house_class).receive_token(order)
       raise e
     end
 
