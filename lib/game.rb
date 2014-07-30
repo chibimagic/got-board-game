@@ -23,13 +23,13 @@ require_relative 'garrison_token.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
 require_relative 'houses.rb'
+require_relative 'game_state.rb'
 
 class Game
   attr_reader \
     :houses,
     :map,
-    :game_round,
-    :round_phase,
+    :game_state,
     :players_turn,
     :wildling_track,
     :iron_throne_track,
@@ -43,18 +43,10 @@ class Game
     :westeros_deck_ii,
     :westeros_deck_iii
 
-  ROUND_PHASES = [
-    :westeros,
-    :planning_assign,
-    :planning_raven,
-    :action
-  ]
-
   def initialize(
     houses,
     map,
-    game_round,
-    round_phase,
+    game_state,
     players_turn,
     wildling_track,
     iron_throne_track,
@@ -70,8 +62,7 @@ class Game
   )
     raise 'Invalid houses' unless houses.is_a?(Array) && houses.all? { |house| house.is_a?(House) }
     raise 'Invalid Map' unless map.is_a?(Map)
-    raise 'Invalid game round' unless game_round.is_a?(Integer) && 1 <= game_round && game_round <= 10
-    raise 'Invalid round phase' unless ROUND_PHASES.include?(round_phase)
+    raise 'Invalid game state' unless game_state.is_a?(GameState)
     raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
     raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
     raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
@@ -87,8 +78,7 @@ class Game
 
     @houses = houses
     @map = map
-    @game_round = game_round
-    @round_phase = round_phase
+    @game_state = game_state
     @players_turn = players_turn
     @wildling_track = wildling_track
     @iron_throne_track = iron_throne_track
@@ -121,15 +111,12 @@ class Game
       end
     end
 
-    game_round = 1
-    round_phase = :planning_assign
     players_turn = house_classes
 
     new(
       houses,
       Map.create_new(houses),
-      game_round,
-      round_phase,
+      GameState.create_new,
       players_turn,
       WildlingTrack.create_new,
       IronThroneTrack.create_new(house_classes),
@@ -149,8 +136,7 @@ class Game
     new(
       data['houses'].map { |house| House.unserialize(house) },
       Map.unserialize(data['map']),
-      data['game_round'],
-      data['round_phase'].to_sym,
+      GameState.unserialize(data['game_state']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
       WildlingTrack.unserialize(data['wildling_track']),
       IronThroneTrack.unserialize(data['iron_throne_track']),
@@ -170,8 +156,7 @@ class Game
     {
       :houses => @houses.map { |house| house.serialize },
       :map => @map.serialize,
-      :game_round => @game_round,
-      :round_phase => @round_phase,
+      :game_state => @game_state.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },
       :wildling_track => @wildling_track.serialize,
       :iron_throne_track => @iron_throne_track.serialize,
@@ -191,8 +176,7 @@ class Game
     self.class == o.class &&
       @houses == o.houses &&
       @map == o.map &&
-      @game_round == o.game_round &&
-      @round_phase == o.round_phase &&
+      @game_state == o.game_state &&
       @wildling_track == o.wildling_track &&
       @iron_throne_track == o.iron_throne_track &&
       @fiefdoms_track == o.fiefdoms_track &&
@@ -212,8 +196,8 @@ class Game
   private :house
 
   def replace_order(area_class, new_order_class)
-    if @round_phase != :planning_raven
-      raise 'Cannot replace order during ' + @round_phase.to_s
+    if @game_state.step != :messenger_raven
+      raise 'Cannot replace order during ' + @game_state.to_s
     end
 
     token = @map.remove_token(area_class, OrderToken)
@@ -238,8 +222,8 @@ class Game
     token = house(house_class).remove_token(token_class)
 
     if token.is_a?(OrderToken)
-      unless @round_phase == :planning_assign || @round_phase == :planning_raven && house_class == @kings_court_track.token_holder_class
-        raise 'Cannot place ' + token.to_s + ' during ' + @round_phase.to_s
+      unless @game_state.step == :assign_orders || @game_state.step == :messenger_raven && house_class == @kings_court_track.token_holder_class
+        raise 'Cannot place ' + token.to_s + ' during ' + @game_state.to_s
       end
 
       if token.special
@@ -258,8 +242,8 @@ class Game
       raise e
     end
 
-    if @round_phase == :planning_assign && @map.orders_in?
-      @round_phase = :planning_raven
+    if @game_state.step == :assign_orders && @map.orders_in?
+      @game_state.next_step
     end
   end
 

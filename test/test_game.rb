@@ -1,9 +1,9 @@
 class TestGame < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
-    assert_equal('wrong number of arguments (0 for 16)', e.message)
+    assert_equal('wrong number of arguments (0 for 15)', e.message)
     e = assert_raises(ArgumentError) { Game.new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]) }
-    assert_equal('wrong number of arguments (1 for 16)', e.message)
+    assert_equal('wrong number of arguments (1 for 15)', e.message)
   end
 
   def test_new_game_invalid
@@ -27,8 +27,9 @@ class TestGame < MiniTest::Test
     ]
     game = Game.create_new(houses)
     assert_equal(6, game.houses.length)
-    assert_equal(1, game.game_round)
-    assert_equal(:planning_assign, game.round_phase)
+    assert_equal(1, game.game_state.round)
+    assert_equal(:planning, game.game_state.phase)
+    assert_equal(:assign_orders, game.game_state.step)
     assert_equal([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell], game.players_turn)
     assert_equal(false, game.valyrian_steel_blade_token.used)
     assert_equal(false, game.messenger_raven_token.used)
@@ -178,7 +179,7 @@ class TestGame < MiniTest::Test
 
   def test_orders_in
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    assert_equal(:planning_assign, g.round_phase)
+    assert_equal(:assign_orders, g.game_state.step)
     g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
     g.place_token(HouseStark, WhiteHarbor, MarchOrder)
     g.place_token(HouseStark, Winterfell, DefenseOrder)
@@ -188,15 +189,15 @@ class TestGame < MiniTest::Test
     g.place_token(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
     g.place_token(HouseBaratheon, Dragonstone, MarchOrder)
     g.place_token(HouseBaratheon, Kingswood, DefenseOrder)
-    assert_equal(:planning_raven, g.round_phase)
+    assert_equal(:messenger_raven, g.game_state.step)
     e = assert_raises(RuntimeError) { g.place_token(HouseStark, TheShiveringSea, SpecialMarchOrder) }
-    assert_equal('Cannot place March Order (House Stark) during planning_raven', e.message)
+    assert_match(/^Cannot place March Order \(House Stark\) during .* Planning phase, Messenger Raven step$/, e.message)
   end
 
   def test_replace_order
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
     e = assert_raises(RuntimeError) { g.replace_order(CastleBlack, WeakMarchOrder) }
-    assert_equal('Cannot replace order during planning_assign', e.message)
+    assert_match(/^Cannot replace order during .* Assign Orders step$/, e.message)
 
     g.place_token(HouseStark, TheShiveringSea, WeakMarchOrder)
     g.place_token(HouseStark, WhiteHarbor, MarchOrder)

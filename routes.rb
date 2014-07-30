@@ -139,7 +139,7 @@ end
 # See information about an existing game
 get '/games/:game' do |game_id|
   game_info = @game.serialize
-  if game_info[:round_phase] == :planning_assign
+  if game_info[:game_state][:step] == :assign_orders
     game_info[:houses].each do |house|
       house[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
     end
