@@ -16,15 +16,11 @@ class NeutralForceTokens
     Yronwood => { 3 => nil, 4 => 3, 5 => 3 }
   }
 
-  def initialize(player_count)
-    @player_count = player_count
-  end
-
-  def get_tokens
+  def self.get_tokens(player_count)
     tokens = []
-    self.class::TOKENS.each do |area_class, counts|
-      if counts.has_key?(@player_count)
-        strength = counts.fetch(@player_count)
+    self::TOKENS.each do |area_class, counts|
+      if counts.has_key?(player_count)
+        strength = counts.fetch(player_count)
         tokens.push(NeutralForceToken.new(area_class, strength))
       end
     end

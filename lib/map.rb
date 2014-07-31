@@ -222,7 +222,7 @@ class Map
       areas.push(area_class.create_new)
     end
 
-    NeutralForceTokens.new(houses.count).get_tokens.each do |token|
+    NeutralForceTokens.get_tokens(houses.count).each do |token|
       areas.find { |area| area.class == token.area_class }.receive_token!(token)
     end
 

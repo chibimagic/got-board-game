@@ -60,7 +60,7 @@ class TestNeutralForceToken < MiniTest::Test
       }
     ]
     data.each do |datum|
-      tokens = NeutralForceTokens.new(datum[:players]).get_tokens
+      tokens = NeutralForceTokens.get_tokens(datum[:players])
       datum[:tokens].each do |area_class, strength|
         token = tokens.find { |token| token.area_class == area_class }
         refute_nil(token, datum[:players].to_s + ' player game should have token for ' + area_class.to_s)
