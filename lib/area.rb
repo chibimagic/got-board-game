@@ -75,7 +75,12 @@ class Area
     end
   end
 
+  # Mask TokenHolder.receive_token
   def receive_token(token)
+    raise 'Call :receive_token! instead'
+  end
+
+  def receive_token!(token)
     if token.is_a?(OrderToken)
       if count_tokens(Unit) == 0
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'

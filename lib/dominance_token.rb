@@ -30,7 +30,7 @@ class UsableDominanceToken < DominanceToken
       @used == o.used
   end
 
-  def use
+  def use!
     if @used
       raise to_s + ' has already been used'
     end

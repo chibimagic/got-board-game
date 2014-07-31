@@ -12,10 +12,10 @@ class TestPowerPool < MiniTest::Test
     p3 = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy])
     assert_equal(p1, p2)
 
-    p1.remove_token(HouseStark)
+    p1.remove_token!(HouseStark)
     refute_equal(p1, p2)
 
-    p2.remove_token(HouseStark)
+    p2.remove_token!(HouseStark)
     assert_equal(p1, p2)
   end
 
@@ -39,8 +39,8 @@ class TestPowerPool < MiniTest::Test
 
   def test_token_removal
     p = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
-    15.times { p.remove_token(HouseStark) }
-    e = assert_raises(RuntimeError) { p.remove_token(HouseStark) }
+    15.times { p.remove_token!(HouseStark) }
+    e = assert_raises(RuntimeError) { p.remove_token!(HouseStark) }
     assert_equal('House Stark does not have any available power tokens in the Power Pool', e.message)
   end
 end

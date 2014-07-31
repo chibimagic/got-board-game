@@ -196,15 +196,15 @@ class Game
   end
   private :house
 
-  def validate_game_state(expected_game_period, action_string)
+  def validate_game_state!(expected_game_period, action_string)
     unless @game_state.game_period == expected_game_period
       raise 'Cannot ' + action_string + ' during ' + @game_state.to_s
     end
   end
-  private :validate_game_state
+  private :validate_game_state!
 
-  def place_order(house_class, area_class, order_class)
-    order = house(house_class).remove_token(order_class)
+  def place_order!(house_class, area_class, order_class)
+    order = house(house_class).remove_token!(order_class)
 
     unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
       raise 'Cannot place order during ' + @game_state.to_s
@@ -219,7 +219,7 @@ class Game
     end
 
     begin
-      @map.area(area_class).receive_token(order)
+      @map.area(area_class).receive_token!(order)
     rescue => e
       house(house_class).receive_token(order)
       raise e
@@ -230,25 +230,25 @@ class Game
     end
   end
 
-  def replace_order(area_class, new_order_class)
-    validate_game_state(:messenger_raven, 'replace order')
+  def replace_order!(area_class, new_order_class)
+    validate_game_state!(:messenger_raven, 'replace order')
 
-    token = @map.area(area_class).remove_token(OrderToken)
+    token = @map.area(area_class).remove_token!(OrderToken)
 
     if token.house_class != @kings_court_track.token_holder_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
 
     begin
-      @messenger_raven_token.use
+      @messenger_raven_token.use!
       begin
-        place_order(token.house_class, area_class, new_order_class)
+        place_order!(token.house_class, area_class, new_order_class)
       rescue => e
         @messenger_raven_token.reset
         raise e
       end
     rescue => e
-      @map.area(area_class).receive_token(token)
+      @map.area(area_class).receive_token!(token)
       raise e
     end
 
@@ -258,40 +258,40 @@ class Game
   end
 
   def look_at_wildling_deck
-    validate_game_state(:messenger_raven, 'look at wildling deck')
+    validate_game_state!(:messenger_raven, 'look at wildling deck')
 
-    @messenger_raven_token.use
+    @messenger_raven_token.use!
     @wildling_deck.draw_from_top
   end
 
   def replace_wildling_card_top(card)
-    validate_game_state(:messenger_raven, 'replace card at top of wildling deck')
+    validate_game_state!(:messenger_raven, 'replace card at top of wildling deck')
 
     @wildling_deck.place_at_top(card)
     @game_state.next_step
   end
 
   def replace_wildling_card_bottom(card)
-    validate_game_state(:messenger_raven, 'replace card at bottom of wildling deck')
+    validate_game_state!(:messenger_raven, 'replace card at bottom of wildling deck')
 
     @wildling_deck.place_at_bottom(card)
     @game_state.next_step
   end
 
   def skip_messenger_raven
-    validate_game_state(:messenger_raven, 'skip messenger raven step')
+    validate_game_state!(:messenger_raven, 'skip messenger raven step')
 
-    @messenger_raven_token.use
+    @messenger_raven_token.use!
     @game_state.next_step
   end
 
   def receive_power_token(house_class)
-    token = @power_pool.remove_token(house_class)
+    token = @power_pool.remove_token!(house_class)
     house(house_class).receive_token(token)
   end
 
   def discard_power_token(house_class)
-    token = house(house_class).remove_token(PowerToken)
+    token = house(house_class).remove_token!(PowerToken)
     @power_pool.pool.push(token)
   end
 end

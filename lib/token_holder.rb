@@ -17,7 +17,7 @@ module TokenHolder
     @tokens.push(token)
   end
 
-  def remove_token(token_class)
+  def remove_token!(token_class)
     unless has_token?(token_class)
       raise to_s + ' has no ' + token_class.to_s
     end

@@ -33,7 +33,7 @@ class PowerPool
       @pool == o.pool
   end
 
-  def remove_token(house_class)
+  def remove_token!(house_class)
     token = @pool.find { |token| token.house_class == house_class }
     if token.nil?
       raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
