@@ -8,6 +8,8 @@ class UsableDominanceToken < DominanceToken
   attr_reader :used
 
   def initialize(used)
+    raise 'Invalid used' unless [true, false].include?(used)
+
     @used = used
   end
 
