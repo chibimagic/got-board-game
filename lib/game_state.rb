@@ -7,7 +7,7 @@ class GameState
     [:messenger_raven, 'Planning', 'Messenger Raven'],
     [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
     [:resolve_march_orders, 'Action', 'Resolve March Orders'],
-    [:resolve_consolidate_power_orders, 'Action', 'Resolve Conslidate Power Orders'],
+    [:resolve_consolidate_power_orders, 'Action', 'Resolve Consolidate Power Orders'],
     [:clean_up, 'Action', 'Clean Up']
   ]
 
@@ -75,6 +75,7 @@ class GameState
   def next_step
     period_index = GAME_PERIODS.index { |period| period[0] == @game_period }
     if period_index + 1 == GAME_PERIODS.length
+      @round += 1
       @game_period = GAME_PERIODS[0][0]
     else
       @game_period = GAME_PERIODS[period_index + 1][0]
