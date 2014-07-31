@@ -17,28 +17,21 @@ class Storage
     db.execute <<-EOT
       create table if not exists sessions (
         id integer primary key,
-        user_id integer,
-        session_id unique,
-        foreign key(user_id) references users(id)
+        user_id integer references users(id),
+        session_id unique
       )
     EOT
 
     db.execute <<-EOT
       create table if not exists games (
         id integer primary key,
-        house_stark not null,
-        house_lannister not null,
-        house_baratheon not null,
-        house_greyjoy,
-        house_tyrell,
-        house_martell,
-        data blob not null,
-        foreign key(house_stark) references users(id),
-        foreign key(house_lannister) references users(id),
-        foreign key(house_baratheon) references users(id),
-        foreign key(house_greyjoy) references users(id),
-        foreign key(house_tyrell) references users(id),
-        foreign key(house_martell) references users(id)
+        house_stark integer not null references users(id),
+        house_lannister integer not null references users(id),
+        house_baratheon integer not null references users(id),
+        house_greyjoy integer references users(id),
+        house_tyrell integer references users(id),
+        house_martell integer references users(id),
+        data blob not null
       )
     EOT
     db
