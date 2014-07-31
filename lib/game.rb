@@ -27,7 +27,7 @@ require_relative 'houses.rb'
 require_relative 'game_state.rb'
 
 class Game
-  attr_reader \
+  attr_accessor \
     :houses,
     :map,
     :game_state,
@@ -194,7 +194,6 @@ class Game
   def house(house_class)
     @houses.find { |house| house.class == house_class }
   end
-  private :house
 
   def validate_game_state!(expected_game_period, action_string)
     unless @game_state.game_period == expected_game_period
@@ -285,13 +284,65 @@ class Game
     @game_state.next_step
   end
 
-  def receive_power_token(house_class)
-    token = @power_pool.remove_token!(house_class)
-    house(house_class).receive_token(token)
-  end
+  def execute_raid_order!(order_area_class, target_area_class = nil)
+    validate_game_state!(:resolve_raid_orders, 'execute raid order')
 
-  def discard_power_token(house_class)
-    token = house(house_class).remove_token!(PowerToken)
-    @power_pool.receive_token(token)
+    unless order_area_class < Area
+      raise 'Must execute raid order from area, not ' + order_area_class.to_s
+    end
+    unless target_area_class.nil? || target_area_class < Area
+      raise 'Must target area or nil with raid order, not ' + target_area_class.to_s
+    end
+
+    if order_area_class < PortArea
+      connected_areas = [order_area_class::SEA_AREA]
+    elsif order_area_class < LandArea
+      connected_areas = @map.connected_areas(order_area_class)
+    elsif order_area_class < SeaArea
+      connected_areas = @map.connected_areas(order_area_class)
+      connected_port = @map.class::AREAS.find { |area| area < PortArea && area::SEA_AREA == order_area_class }
+      unless connected_port.nil?
+        connected_areas.push(connected_port)
+      end
+    else
+      raise order_area_class.to_s + ' is not a valid area'
+    end
+    unless target_area_class.nil? || connected_areas.include?(target_area_class)
+      raise 'Cannot raid from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
+    end
+
+    raid_order = @map.area(order_area_class).remove_token!(OrderToken)
+    raiding_house_class = raid_order.house_class
+    unless target_area_class.nil?
+      begin
+        raided_order = @map.area(target_area_class).remove_token!(OrderToken)
+        raided_house_class = raided_order.house_class
+        begin
+          if raiding_house_class == raided_house_class
+            raise 'Cannot raid your own orders'
+          end
+          raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
+          unless raidable_order_classes.any? { |raidable_order_class| raided_order.is_a?(raidable_order_class) }
+            raise 'Cannot raid ' + raided_order.to_s
+          end
+          if raided_order.is_a?(ConsolidatePowerOrder)
+            if @power_pool.has_token?(raiding_house_class)
+              token = @power_pool.remove_token!(raiding_house_class)
+              house(raiding_house_class).receive_token(token)
+            end
+            if house(raided_house_class).has_token?(PowerToken)
+              token = house(raided_house_class).remove_token!(PowerToken)
+              @power_pool.receive_token(token)
+            end
+          end
+        rescue => e
+          @map.area(target_area_class).receive_token!(raided_order)
+          raise e
+        end
+      rescue => e
+        @map.area(order_area_class).receive_token!(raid_order)
+        raise e
+      end
+    end
   end
 end
