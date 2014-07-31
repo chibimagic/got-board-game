@@ -1,13 +1,4 @@
 class TestRoutes < MiniTest::Test
-  def valid_json?(json)
-    begin
-      JSON.parse(json)
-      return true
-    rescue JSON::ParserError
-      return false
-    end
-  end
-
   def setup
     @browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
     usernames = ['a', 'b', 'c', 'd', 'e', 'f']
@@ -101,7 +92,7 @@ class TestRoutes < MiniTest::Test
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']
     response = @browser.get('/games/' + game_id.to_s)
-    assert_equal(true, valid_json?(response.body), response.body)
+    assert_equal(true, Utility.valid_json?(response.body))
   end
 
   def test_game_access
@@ -123,13 +114,13 @@ class TestRoutes < MiniTest::Test
     refute_includes(b_game_ids, a_game_id)
 
     response = @browser.get('/games/' + a_game_id.to_s)
-    assert_equal(true, valid_json?(response.body))
+    assert_equal(true, Utility.valid_json?(response.body))
     response = browser2.get('/games/' + a_game_id.to_s)
     assert_equal('b does not have access to ' + a_game_id.to_s, response.body)
     response = @browser.get('/games/' + b_game_id.to_s)
     assert_equal('a does not have access to ' + b_game_id.to_s, response.body)
     response = browser2.get('/games/' + b_game_id.to_s)
-    assert_equal(true, valid_json?(response.body))
+    assert_equal(true, Utility.valid_json?(response.body))
   end
 
   def test_game_information
@@ -169,6 +160,6 @@ class TestRoutes < MiniTest::Test
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'Lannisport' => 'MarchOrder' }.to_json)
     assert_equal('Cannot place March Order (House Stark) because Lannisport (3) is controlled by House Lannister', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'TheShiveringSea' => 'WeakMarchOrder', 'WhiteHarbor' => 'MarchOrder', 'Winterfell' => 'DefenseOrder' }.to_json)
-    assert_equal(true, valid_json?(response.body), response.body)
+    assert_equal(true, Utility.valid_json?(response.body))
   end
 end
