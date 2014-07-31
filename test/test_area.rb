@@ -176,6 +176,12 @@ class TestArea < MiniTest::Test
     assert_equal(true, a.has_token?(GarrisonToken))
   end
 
+  def test_receive_token_override
+    a = CastleBlack.create_new
+    e = assert_raises(RuntimeError) { a.receive_token(MarchOrder.new(HouseStark)) }
+    assert_equal('Call :receive_token! instead', e.message)
+  end
+
   def test_receive_token
     a = CastleBlack.create_new
 
