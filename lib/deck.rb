@@ -42,12 +42,6 @@ module DrawFromTopDeck
   end
 end
 
-module DropFromBottomDeck
-  def draw_from_bottom
-    @cards.pop
-  end
-end
-
 module PlaceAtTopDeck
   def place_at_top(card)
     @cards.unshift(card)
