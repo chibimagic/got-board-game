@@ -75,6 +75,10 @@ class Area
     end
   end
 
+  def get_tokens(token_class)
+    @tokens.find_all { |token| token.is_a?(token_class) }
+  end
+
   # Mask TokenHolder.receive_token
   def receive_token(token)
     raise 'Call :receive_token! instead'

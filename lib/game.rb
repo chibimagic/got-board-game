@@ -292,6 +292,6 @@ class Game
 
   def discard_power_token(house_class)
     token = house(house_class).remove_token!(PowerToken)
-    @power_pool.tokens.push(token)
+    @power_pool.receive_token(token)
   end
 end

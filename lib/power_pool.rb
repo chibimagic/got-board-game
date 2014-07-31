@@ -1,5 +1,5 @@
 class PowerPool
-  attr_reader :tokens
+  include TokenHolder
 
   def initialize(tokens)
     raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(PowerToken) }
@@ -33,12 +33,11 @@ class PowerPool
       @tokens == o.tokens
   end
 
-  def remove_token!(house_class)
-    token = @tokens.find { |token| token.house_class == house_class }
-    if token.nil?
-      raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
-    end
+  def to_s
+    'Power Pool'
+  end
 
-    @tokens.delete_at(@tokens.index(token))
+  def get_tokens(house_class)
+    @tokens.find_all { |token| token.house_class == house_class }
   end
 end

@@ -42,11 +42,11 @@ class TestGamePlanningAssign < MiniTest::Test
     @g.place_order!(HouseBaratheon, Kingswood, DefenseOrder)
 
     e = assert_raises(RuntimeError) { @g.replace_order!(CastleBlack, WeakMarchOrder) }
-    assert_equal('Castle Black (0) has no Order Token', e.message)
+    assert_equal('Castle Black (0) has no tokens matching Order Token', e.message)
     e = assert_raises(RuntimeError) { @g.replace_order!(Winterfell, WeakMarchOrder) }
     assert_equal('Only the holder of the Messenger Raven token may replace an order', e.message)
     e = assert_raises(RuntimeError) { @g.replace_order!(Lannisport, WeakMarchOrder) }
-    assert_equal('House Lannister (no name) has no March Order', e.message)
+    assert_equal('House Lannister (no name) has no tokens matching March Order', e.message)
 
     refute_raises { @g.replace_order!(Lannisport, RaidOrder) }
 

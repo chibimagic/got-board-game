@@ -74,6 +74,10 @@ class House
     name = @player_name.length > 0 ? @player_name : 'no name'
     self.class::TITLE + ' (' + name + ')'
   end
+
+  def get_tokens(token_class)
+    @tokens.find_all { |token| token.is_a?(token_class) }
+  end
 end
 
 # This represents the house for neutral house tokens
