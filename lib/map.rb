@@ -1,4 +1,6 @@
 class Map
+  include Enumerable
+
   attr_reader :areas
 
   AREAS = [
@@ -248,6 +250,11 @@ class Map
   def ==(o)
     self.class == o.class &&
       @areas == o.areas
+  end
+
+  # Fulfill Enumerable
+  def each(&block)
+    @areas.each(&block)
   end
 
   def area(area_class)

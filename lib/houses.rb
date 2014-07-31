@@ -10,9 +10,8 @@ class Houses
     HouseMartell
   ]
 
+  # Fulfill Enumerable
   def each(&block)
-    self.class::HOUSES.each do |house_class|
-      block.call(house_class)
-    end
+    self.class::HOUSES.each(&block)
   end
 end
