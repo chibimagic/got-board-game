@@ -81,11 +81,13 @@ class Area
   end
 
   def receive_token!(token)
+    if has_token?(Token) && controlling_house != token.house_class
+      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
+    end
+
     if token.is_a?(OrderToken)
       if count_tokens(Unit) == 0
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
-      elsif controlling_house != token.house_class
-        raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
       elsif has_token?(OrderToken)
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' already has an order token'
       end
