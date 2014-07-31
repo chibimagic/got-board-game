@@ -5,6 +5,8 @@ require 'base64'
 class Storage
   def self.db
     db = SQLite3::Database.new('games.db')
+    db.execute('pragma foreign_keys = on;')
+
     db.execute <<-EOT
       create table if not exists users (
         id integer primary key,
