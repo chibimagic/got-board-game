@@ -10,7 +10,7 @@ module TokenHolder
   end
 
   def get_tokens(criteria)
-    raise 'Implement this'
+    raise 'To use TokenHolder, implement get_tokens'
   end
 
   def receive_token(token)
