@@ -1,44 +1,44 @@
 class PowerPool
-  attr_reader :pool
+  attr_reader :tokens
 
-  def initialize(pool)
-    raise 'Invalid pool' unless pool.is_a?(Array) && pool.all? { |token| token.is_a?(PowerToken) }
+  def initialize(tokens)
+    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(PowerToken) }
 
-    @pool = pool
+    @tokens = tokens
   end
 
   def self.create_new(house_classes)
-    pool = []
+    tokens = []
     house_classes.each do |house_class|
-      15.times { pool.push(PowerToken.new(house_class)) }
+      15.times { tokens.push(PowerToken.new(house_class)) }
     end
-    new(pool)
+    new(tokens)
   end
 
   def self.unserialize(data)
-    pool = []
+    tokens = []
     data.each do |house_class_string, power_token_count|
-      power_token_count.times { pool.push(PowerToken.new(house_class_string.constantize)) }
+      power_token_count.times { tokens.push(PowerToken.new(house_class_string.constantize)) }
     end
-    new(pool)
+    new(tokens)
   end
 
   def serialize
-    houses = @pool.map { |power_token| power_token.house_class }.uniq
-    Hash[houses.map { |house_class| [house_class.name, @pool.count { |power_token| power_token.house_class == house_class }] }]
+    houses = @tokens.map { |power_token| power_token.house_class }.uniq
+    Hash[houses.map { |house_class| [house_class.name, @tokens.count { |power_token| power_token.house_class == house_class }] }]
   end
 
   def ==(o)
     self.class == o.class &&
-      @pool == o.pool
+      @tokens == o.tokens
   end
 
   def remove_token!(house_class)
-    token = @pool.find { |token| token.house_class == house_class }
+    token = @tokens.find { |token| token.house_class == house_class }
     if token.nil?
       raise house_class.to_s + ' does not have any available power tokens in the Power Pool'
     end
 
-    @pool.delete_at(@pool.index(token))
+    @tokens.delete_at(@tokens.index(token))
   end
 end
