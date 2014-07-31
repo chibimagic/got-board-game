@@ -19,7 +19,7 @@ class Storage
     db.execute <<-EOT
       create table if not exists sessions (
         id integer primary key,
-        user_id integer references users(id),
+        user_id integer references users(id) on delete cascade,
         session_id unique
       )
     EOT
@@ -63,6 +63,11 @@ class Storage
     user_id = get_user_id(username)
     row = db.execute('select username, player_name from users where id=?', user_id)[0]
     { :username => row[0], :player_name => row[1] }
+  end
+
+  def self.delete_user(username)
+    user_id = get_user_id(username)
+    row = db.execute('delete from users where id=?', user_id)
   end
 
   def self.correct_password?(username, password)

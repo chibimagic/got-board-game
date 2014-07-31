@@ -62,6 +62,26 @@ class TestRoutes < MiniTest::Test
     assert_equal('No user with username: z', response.body)
   end
 
+  def test_create_delete_user
+    browser2 = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+    response = browser2.post('/users', { 'username' => 'my_username', 'password' => 'my_password', 'player_name' => 'my_player_name' }.to_json)
+    parsed = JSON.parse(response.body)
+    assert_equal(2, parsed.keys.count)
+    assert_equal('my_username', parsed['username'])
+    assert_equal('my_player_name', parsed['player_name'])
+
+    browser2.post('/session', { 'username' => 'my_username', 'password' => 'my_password' }.to_json)
+
+    response = browser2.delete('/users/my_username')
+    assert_equal(200, response.status)
+    assert_equal('', response.body)
+  end
+
+  def test_delete_other_user
+    response = @browser.delete('/users/f')
+    assert_equal('Cannot delete another user', response.body)
+  end
+
   def test_create_game_invalid
     response = @browser.post('/games', '')
     assert_equal('JSON input expected', response.body)

@@ -110,6 +110,15 @@ get '/users/:username' do |username|
   Storage.get_user(username).to_json
 end
 
+# Delete a user
+delete '/users/:username' do |username|
+  unless @username == username
+    raise 'Cannot delete another user'
+  end
+
+  Storage.delete_user(username)
+end
+
 # List existing games
 get '/games' do
   Storage.list_games(@username).to_json
