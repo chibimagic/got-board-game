@@ -367,4 +367,33 @@ class Game
       end
     end
   end
+
+  def determine_winner
+    victory_points = houses.map { |house| @map.victory_points(house.class) }
+    candidate_house_classes = @map.houses_with_victory_points(victory_points.max)
+    if candidate_house_classes.count == 1
+      return candidate_house_classes.first
+    end
+
+    stronghold_counts = candidate_house_classes.map { |house_class| @map.strongholds_controlled(house_class) }
+    candidate_house_classes = candidate_house_classes.find_all { |house_class| @map.strongholds_controlled(house_class) == stronghold_counts.max }
+    if candidate_house_classes.count == 1
+      return candidate_house_classes.first
+    end
+
+    supply_counts = candidate_house_classes.map { |house_class| @map.supply_level(house_class) }
+    candidate_house_classes = candidate_house_classes.find_all { |house_class| @map.supply_level(house_class) == supply_counts.max }
+    if candidate_house_classes.count == 1
+      return candidate_house_classes.first
+    end
+
+    power_counts = candidate_house_classes.map { |house_class| house(house_class).count_tokens(PowerToken) }
+    candidate_house_classes = candidate_house_classes.find_all { |house_class| house(house_class).count_tokens(PowerToken) == power_counts.max }
+    if candidate_house_classes.count == 1
+      return candidate_house_classes.first
+    end
+
+    iron_throne_positions = candidate_house_classes.map { |house_class| IronThroneTrack.position(house_class) }
+    candidate_house_classes.find { |house_class| IronThroneTrack.position(house_class) == iron_throne_positions.min }
+  end
 end

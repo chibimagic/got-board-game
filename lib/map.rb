@@ -309,4 +309,16 @@ class Map
   def houses_with_supply(supply)
     Game::HOUSE_CLASSES.find_all { |house_class| supply_level(house_class) == supply }
   end
+
+  def strongholds_controlled(house_class)
+    controlled_areas(house_class).count { |area| area.has_stronghold? }
+  end
+
+  def victory_points(house_class)
+    controlled_areas(house_class).count { |area| area.has_castle? || area.has_stronghold? }
+  end
+
+  def houses_with_victory_points(points)
+    Game::HOUSE_CLASSES.find_all { |house_class| victory_points(house_class) == points }
+  end
 end
