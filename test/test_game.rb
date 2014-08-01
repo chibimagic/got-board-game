@@ -70,7 +70,7 @@ class TestGame < MiniTest::Test
     end
 
     # All houses start with 3 controlled areas
-    Game::HOUSES.each do |house_class|
+    Game::HOUSE_CLASSES.each do |house_class|
       assert_equal(3, game.map.controlled_areas(house_class).count, house_class.to_s + ' controls wrong number of areas')
     end
 

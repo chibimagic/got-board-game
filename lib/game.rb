@@ -43,7 +43,7 @@ class Game
     :westeros_deck_ii,
     :westeros_deck_iii
 
-  HOUSES = [
+  HOUSE_CLASSES = [
     HouseStark,
     HouseLannister,
     HouseBaratheon,
