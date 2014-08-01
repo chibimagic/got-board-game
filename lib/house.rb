@@ -17,10 +17,10 @@ class House
   def self.create_new(player_name = '')
     tokens = []
 
-    10.times { tokens.push(Footman.new(self)) }
-    5.times { tokens.push(Knight.new(self)) }
-    6.times { tokens.push(Ship.new(self)) }
-    2.times { tokens.push(SiegeEngine.new(self)) }
+    10.times { tokens.push(Footman.create_new(self)) }
+    5.times { tokens.push(Knight.create_new(self)) }
+    6.times { tokens.push(Ship.create_new(self)) }
+    2.times { tokens.push(SiegeEngine.create_new(self)) }
 
     5.times { tokens.push(PowerToken.new(self)) }
 
@@ -47,7 +47,7 @@ class House
   def self.unserialize(data)
     house_class = data['house_class'].constantize
     player_name = data['player_name']
-    tokens = data['tokens'].map { |token_data| HouseToken.unserialize(token_data) }
+    tokens = data['tokens'].map { |token_data| Token.unserialize(token_data) }
 
     house_class.new(player_name, tokens)
   end

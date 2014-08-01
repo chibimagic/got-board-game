@@ -9,9 +9,9 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_step
     g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    g.map.area(CastleBlack).receive_token!(Footman.new(HouseLannister))
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.new(HouseStark))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(RaidOrder.new(HouseStark))
     g.game_state.next_step
 
@@ -51,9 +51,9 @@ class TestGameActionRaid < MiniTest::Test
     ]
     data.each do |datum|
       g = raid_ready_game
-      g.map.area(datum[:from]).receive_token!(Footman.new(HouseStark))
+      g.map.area(datum[:from]).receive_token!(Footman.create_new(HouseStark))
       g.map.area(datum[:from]).receive_token!(RaidOrder.new(HouseStark))
-      g.map.area(datum[:to]).receive_token!(Footman.new(HouseLannister))
+      g.map.area(datum[:to]).receive_token!(Footman.create_new(HouseLannister))
       g.map.area(datum[:to]).receive_token!(SupportOrder.new(HouseLannister))
       if datum[:should_work]
         refute_raises(datum[:why]) { g.execute_raid_order!(datum[:from], datum[:to]) }
@@ -76,11 +76,11 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_ineligible
     g = raid_ready_game
-    g.map.area(CastleBlack).receive_token!(Footman.new(HouseStark))
-    g.map.area(Karhold).receive_token!(Footman.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.new(HouseLannister))
-    g.map.area(BayOfIce).receive_token!(Footman.new(HouseLannister))
-    g.map.area(TheShiveringSea).receive_token!(Footman.new(HouseLannister))
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(Karhold).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(BayOfIce).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(TheShiveringSea).receive_token!(Footman.create_new(HouseLannister))
 
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
     g.map.area(Karhold).receive_token!(DefenseOrder.new(HouseLannister))
@@ -105,11 +105,11 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_no_effect
     g = raid_ready_game
-    g.map.area(CastleBlack).receive_token!(Footman.new(HouseLannister))
-    g.map.area(Karhold).receive_token!(Footman.new(HouseStark))
-    g.map.area(Winterfell).receive_token!(Footman.new(HouseStark))
-    g.map.area(BayOfIce).receive_token!(Footman.new(HouseStark))
-    g.map.area(TheShiveringSea).receive_token!(Footman.new(HouseStark))
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(Karhold).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(BayOfIce).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(TheShiveringSea).receive_token!(Footman.create_new(HouseStark))
 
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
     g.map.area(Karhold).receive_token!(RaidOrder.new(HouseStark))
@@ -134,8 +134,8 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_own_order
     g = raid_ready_game
-    g.map.area(CastleBlack).receive_token!(Footman.new(HouseStark))
-    g.map.area(Winterfell).receive_token!(Footman.new(HouseStark))
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
 
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
     g.map.area(Winterfell).receive_token!(SpecialSupportOrder.new(HouseStark))
@@ -166,9 +166,9 @@ class TestGameActionRaid < MiniTest::Test
     ]
     data.each do |datum|
       g = raid_ready_game
-      g.map.area(CastleBlack).receive_token!(Footman.new(HouseLannister))
+      g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
       g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-      g.map.area(Winterfell).receive_token!(Footman.new(HouseStark))
+      g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
       g.map.area(Winterfell).receive_token!(datum[:raided_order].new(HouseStark))
       if datum[:should_work]
         refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
@@ -184,9 +184,9 @@ class TestGameActionRaid < MiniTest::Test
     raiding_player_initial_power_token_count = g.house(HouseLannister).count_tokens(PowerToken)
     raided_player_initial_power_token_count = g.house(HouseStark).count_tokens(PowerToken)
 
-    g.map.area(CastleBlack).receive_token!(Footman.new(HouseLannister))
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.new(HouseStark))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(ConsolidatePowerOrder.new(HouseStark))
 
     g.execute_raid_order!(CastleBlack, Winterfell)

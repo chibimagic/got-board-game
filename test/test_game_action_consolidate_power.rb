@@ -9,7 +9,7 @@ class TestGameActionConsolidatePower < MiniTest::Test
       g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
       power_before = g.house(HouseStark).count_tokens(PowerToken)
       g.map = Map.create_new([])
-      g.map.area(datum[:area]).receive_token!(Footman.new(HouseStark))
+      g.map.area(datum[:area]).receive_token!(Footman.create_new(HouseStark))
       g.map.area(datum[:area]).receive_token!(ConsolidatePowerOrder.new(HouseStark))
       4.times { g.game_state.next_step }
       g.execute_consolidate_power_order!(datum[:area])
