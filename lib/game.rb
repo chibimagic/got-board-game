@@ -393,7 +393,7 @@ class Game
       return candidate_house_classes.first
     end
 
-    iron_throne_positions = candidate_house_classes.map { |house_class| IronThroneTrack.position(house_class) }
-    candidate_house_classes.find { |house_class| IronThroneTrack.position(house_class) == iron_throne_positions.min }
+    iron_throne_positions = candidate_house_classes.map { |house_class| @iron_throne_track.position(house_class) }
+    candidate_house_classes.find { |house_class| @iron_throne_track.position(house_class) == iron_throne_positions.min }
   end
 end
