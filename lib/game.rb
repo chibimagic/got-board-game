@@ -23,7 +23,6 @@ require_relative 'order_token.rb'
 require_relative 'garrison_token.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
-require_relative 'houses.rb'
 require_relative 'game_state.rb'
 
 class Game
@@ -43,6 +42,15 @@ class Game
     :westeros_deck_i,
     :westeros_deck_ii,
     :westeros_deck_iii
+
+  HOUSES = [
+    HouseStark,
+    HouseLannister,
+    HouseBaratheon,
+    HouseGreyjoy,
+    HouseTyrell,
+    HouseMartell
+  ]
 
   def initialize(
     houses,

@@ -307,6 +307,6 @@ class Map
   end
 
   def houses_with_supply(supply)
-    Houses.new.find_all { |house| supply_level(house) == supply }
+    Game::HOUSES.find_all { |house| supply_level(house) == supply }
   end
 end
