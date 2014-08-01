@@ -345,4 +345,18 @@ class Game
       end
     end
   end
+
+  def execute_consolidate_power_order!(order_area_class)
+    validate_game_state!(:resolve_consolidate_power_orders, 'execute consolidate power order')
+
+    consolidate_power_order = @map.area(order_area_class).remove_token!(OrderToken)
+    house_class = consolidate_power_order.house_class
+    count = 1 + @map.area(order_area_class).power
+    count.times do
+      if @power_pool.has_token?(house_class)
+        token = @power_pool.remove_token!(house_class)
+        house(house_class).receive_token(token)
+      end
+    end
+  end
 end
