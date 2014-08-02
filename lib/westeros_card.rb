@@ -26,7 +26,7 @@ end
 class DarkWingsDarkWords < WesterosCard
   TITLE = 'Dark Wings, Dark Words'
   ADVANCE_WILDLINGS = true
-  TEXT = 'The holder of the Messenger Raven chooses whether a) everyone bigs on the three Influence tracks b) everyone collects one Power token for every power icon present in areas they control, or c) this card has no effect.'
+  TEXT = 'The holder of the Messenger Raven chooses whether a) everyone bids on the three Influence tracks b) everyone collects one Power token for every power icon present in areas they control, or c) this card has no effect.'
 end
 
 class FeastForCrows < WesterosCard
