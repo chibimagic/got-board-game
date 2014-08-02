@@ -30,6 +30,10 @@ class WildlingTrack
     @strength = [@strength + 2, 12].min
   end
 
+  def attacks?
+    @strength == 12
+  end
+
   def nights_watch_victory
     @strength = 0
   end

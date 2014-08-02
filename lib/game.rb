@@ -58,7 +58,10 @@ class Game
   ]
 
   GAME_PERIODS = [
-    [:westeros, 'Westeros', nil],
+    [:resolve_westeros_deck_i, 'Westeros', 'Resolve Westeros Deck I'],
+    [:resolve_westeros_deck_ii, 'Westeros', 'Resolve Westeros Deck II'],
+    [:resolve_westeros_deck_iii, 'Westeros', 'Resolve Westeros Deck III'],
+    [:wildling_attack, 'Westeros', 'Wildling Attack'],
     [:assign_orders, 'Planning', 'Assign Orders'],
     [:messenger_raven, 'Planning', 'Messenger Raven'],
     [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
@@ -311,11 +314,7 @@ class Game
 
   def game_period_string
     period_info = GAME_PERIODS.find { |period_info| period_info[0] == game_period }
-    string = period_info[1] + ' phase'
-    unless period_info[2].nil?
-      string += ', ' + period_info[2] + ' step'
-    end
-    string
+    period_info[1] + ' phase, ' + period_info[2] + ' step'
   end
 
   def validate_game_state!(expected_game_period, action_string)
@@ -361,6 +360,22 @@ class Game
           :clean_up
         end
       change_game_period(next_game_period)
+    end
+  end
+
+  def westeros_setup
+    @round += 1
+    decks = [@westeros_deck_i, @westeros_deck_ii, @westeros_deck_iii]
+    decks.each do |deck|
+      deck.draw
+      if deck.active_card.advance_wildlings
+        @wildling_track.increase
+      end
+    end
+    change_game_period(:resolve_westeros_deck_i)
+
+    if @wildling_track.attacks?
+      add_game_period(:wildling_attack)
     end
   end
 
@@ -653,7 +668,7 @@ class Game
     if @round == 10
       determine_winner
     else
-      change_game_period(:westeros)
+      westeros_setup
     end
   end
 

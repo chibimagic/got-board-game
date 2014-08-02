@@ -12,6 +12,10 @@ class WesterosCard < Card
   def text
     self.class::TEXT
   end
+
+  def advance_wildlings
+    self.class::ADVANCE_WILDLINGS
+  end
 end
 
 class AThroneOfBlades < WesterosCard
