@@ -200,16 +200,6 @@ class Map
     [TheNarrowSea, TheShiveringSea],
   ]
 
-  ARMIES_ALLOWED = {
-    0 => [2, 2],
-    1 => [3, 2],
-    2 => [3, 2, 2],
-    3 => [3, 2, 2, 2],
-    4 => [3, 3, 2, 2],
-    5 => [4, 3, 2, 2],
-    6 => [4, 3, 2, 2, 2]
-  }
-
   def initialize(areas)
     raise 'Invalid areas' unless areas.is_a?(Array) && areas.all? { |area| area.is_a?(Area) }
 
@@ -302,12 +292,8 @@ class Map
     @areas.find { |area| area.has_token?(Unit) && !area.has_token?(OrderToken) } ? false : true
   end
 
-  def supply_level(house_class)
+  def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
-  end
-
-  def houses_with_supply(supply)
-    Game::HOUSE_CLASSES.find_all { |house_class| supply_level(house_class) == supply }
   end
 
   def strongholds_controlled(house_class)
