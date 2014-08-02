@@ -329,8 +329,8 @@ class Game
           if raiding_house_class == raided_house_class
             raise 'Cannot raid your own orders'
           end
-          raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
-          unless raidable_order_classes.any? { |raidable_order_class| raided_order.is_a?(raidable_order_class) }
+          normal_raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
+          unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
             raise 'Cannot raid ' + raided_order.to_s
           end
           if raided_order.is_a?(ConsolidatePowerOrder)

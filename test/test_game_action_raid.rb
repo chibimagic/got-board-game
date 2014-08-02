@@ -179,6 +179,15 @@ class TestGameActionRaid < MiniTest::Test
     end
   end
 
+  def test_raid_special
+    g = raid_ready_game
+    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(CastleBlack).receive_token!(SpecialRaidOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive_token!(DefenseOrder.new(HouseStark))
+    refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
+  end
+
   def test_raid_power_token
     g = raid_ready_game
     raiding_player_initial_power_token_count = g.house(HouseLannister).count_tokens(PowerToken)
