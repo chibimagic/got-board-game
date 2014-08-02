@@ -2,6 +2,7 @@ class WesterosCard < Card
   TITLE = ''
   TEXT = ''
   ADVANCE_WILDLINGS = false
+  RESTRICTION = nil
 
   def title
     self.class::TITLE
@@ -33,6 +34,7 @@ class FeastForCrows < WesterosCard
   TITLE = 'Feast for Crows'
   TEXT = 'Consolidate Power Orders cannot be played during this Planning Phase.'
   ADVANCE_WILDLINGS = true
+  RESTRICTION = :no_consolidate_power
 end
 
 class GameOfThrones < WesterosCard
@@ -60,18 +62,21 @@ class RainsOfAutumn < WesterosCard
   TITLE = 'Rains of Autum'
   TEXT = 'March +1 Orders cannot be played this Planning Phase.'
   ADVANCE_WILDLINGS = true
+  RESTRICTION = :no_march_special
 end
 
 class SeaOfStorms < WesterosCard
   TITLE = 'Sea of Storms'
   TEXT = 'Raid Orders cannot be played during this Planning Phase.'
   ADVANCE_WILDLINGS = true
+  RESTRICTION = :no_raid
 end
 
 class StormOfSwords < WesterosCard
   TITLE = 'Storm of Swords'
   TEXT = 'Defense Orders cannot be played during this Planning Phase.'
   ADVANCE_WILDLINGS = true
+  RESTRICTION = :no_defense
 end
 
 class Supply < WesterosCard
@@ -83,6 +88,7 @@ class WebOfLies < WesterosCard
   TITLE = 'Web of Lies'
   TEXT = 'Support Orders cannot be placed during this Planning Phase.'
   ADVANCE_WILDLINGS = true
+  RESTRICTION = :no_support
 end
 
 class WildlingsAttack < WesterosCard
