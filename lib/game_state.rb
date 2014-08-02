@@ -27,7 +27,7 @@ class GameState
     order_retriction
   )
     raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
-    raise 'Invalid game period' + game_period.to_s unless GAME_PERIODS.any? { |period| period[0] == game_period }
+    raise 'Invalid game period' unless GAME_PERIODS.any? { |period| period[0] == game_period }
     raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
 
     @round = round
