@@ -65,7 +65,7 @@ end
 class SeaOfStorms < WesterosCard
   TITLE = 'Sea of Storms'
   ADVANCE_WILDLINGS = true
-  TEXT = 'Raid Orders cannot be palyed during this Planning Phase.'
+  TEXT = 'Raid Orders cannot be played during this Planning Phase.'
 end
 
 class StormOfSwords < WesterosCard
