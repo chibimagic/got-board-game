@@ -14,8 +14,8 @@ end
 
 class AThroneOfBlades < WesterosCard
   TITLE = 'A Throne of Blades'
-  ADVANCE_WILDLINGS = true
   TEXT = 'The holder of the Iron Throne token chooses whether a) everyone updates their Supply, then reconcile armies b) everyone musters units, or c) this card has no effect.'
+  ADVANCE_WILDLINGS = true
 end
 
 class ClashOfKings < WesterosCard
@@ -25,14 +25,14 @@ end
 
 class DarkWingsDarkWords < WesterosCard
   TITLE = 'Dark Wings, Dark Words'
-  ADVANCE_WILDLINGS = true
   TEXT = 'The holder of the Messenger Raven chooses whether a) everyone bids on the three Influence tracks b) everyone collects one Power token for every power icon present in areas they control, or c) this card has no effect.'
+  ADVANCE_WILDLINGS = true
 end
 
 class FeastForCrows < WesterosCard
   TITLE = 'Feast for Crows'
-  ADVANCE_WILDLINGS = true
   TEXT = 'Consolidate Power Orders cannot be played during this Planning Phase.'
+  ADVANCE_WILDLINGS = true
 end
 
 class GameOfThrones < WesterosCard
@@ -42,8 +42,8 @@ end
 
 class LastDaysOfSummer < WesterosCard
   TITLE = 'Last Days of Summer'
-  ADVANCE_WILDLINGS = true
   TEXT = 'Nothing happens.'
+  ADVANCE_WILDLINGS = true
 end
 
 class Mustering < WesterosCard
@@ -58,20 +58,20 @@ end
 
 class RainsOfAutumn < WesterosCard
   TITLE = 'Rains of Autum'
-  ADVANCE_WILDLINGS = true
   TEXT = 'March +1 Orders cannot be played this Planning Phase.'
+  ADVANCE_WILDLINGS = true
 end
 
 class SeaOfStorms < WesterosCard
   TITLE = 'Sea of Storms'
-  ADVANCE_WILDLINGS = true
   TEXT = 'Raid Orders cannot be played during this Planning Phase.'
+  ADVANCE_WILDLINGS = true
 end
 
 class StormOfSwords < WesterosCard
   TITLE = 'Storm of Swords'
-  ADVANCE_WILDLINGS = true
   TEXT = 'Defense Orders cannot be played during this Planning Phase.'
+  ADVANCE_WILDLINGS = true
 end
 
 class Supply < WesterosCard
@@ -81,8 +81,8 @@ end
 
 class WebOfLies < WesterosCard
   TITLE = 'Web of Lies'
-  ADVANCE_WILDLINGS = true
   TEXT = 'Support Orders cannot be placed during this Planning Phase.'
+  ADVANCE_WILDLINGS = true
 end
 
 class WildlingsAttack < WesterosCard
