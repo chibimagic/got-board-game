@@ -368,6 +368,67 @@ class Game
     end
   end
 
+  # areas_to_units: { CastleBlack => [Footman], Karhold => [Knight, SiegeEngine], Winterfell => [Footman] }
+  def execute_march_order!(order_area_class, areas_to_units, establish_control)
+    validate_game_state!(:resolve_march_orders, 'execute march order')
+    march_order = @map.area(order_area_class).remove_token!(OrderToken)
+
+    # Verify units
+    marched_units = areas_to_units.values.flatten
+    existing_units = @map.area(order_area_class).get_tokens(Unit)
+    if marched_units.to_set != existing_units.to_set
+      raise 'Marched units (' + marched_units.to_s + ') must match existing units in ' + order_area_class.to_s + ' (' + existing_units.to_s + ')'
+    end
+
+    # Verify areas
+    areas_to_units.keys.each do |target_area_class|
+      unless order_area_class == target_area_class ||
+        @map.connected?(order_area_class, target_area_class) ||
+        @map.connected_via_ship_transport?(march_order.house_class, order_area_class, target_area_class)
+        raise 'Cannot march from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
+      end
+    end
+
+    # Verify combat count
+    combat_trigger_areas = areas_to_units.keys.find_all { |area_class| @map.area(area_class).enemy_controlled?(march_order.house_class) }
+    if combat_trigger_areas.length > 1
+      raise 'Cannot march into more than one area containing units of another House: ' + combat_trigger_areas.to_s
+    end
+
+    # Verify establish control
+    if areas_to_units.has_key?(order_area_class) && !areas_to_units.fetch(order_area_class).empty?
+      unless establish_control.nil?
+        raise 'Cannot specify Establish Control when not vacating ' + order_area_class.to_s
+      end
+    else
+      unless [true, false].include?(establish_control)
+        raise 'Must specify Establish Control when vacating ' + order_area_class.to_s
+      end
+    end
+
+    # Execute non-combat movement first
+    attacking_units = []
+    areas_to_units.each do |target_area_class, units|
+      units.each do |unit_class|
+        unit = @map.area(order_area_class).remove_token!(unit_class)
+        if combat_trigger_areas.include?(target_area_class)
+          attacking_units.push(unit)
+        else
+          @map.area(target_area_class).receive_token(unit)
+        end
+      end
+    end
+
+    if establish_control
+      power_token = house(order_house_class).remove_token!(PowerToken)
+      @map.area(order_area_class).receive_token(power_token)
+    end
+
+    unless combat_trigger_areas.empty?
+      # initiate_combat(order_area_class, combat_trigger_areas.first, attacking_units, march_order)
+    end
+  end
+
   def execute_consolidate_power_order!(order_area_class)
     validate_game_state!(:resolve_consolidate_power_orders, 'execute consolidate power order')
 
