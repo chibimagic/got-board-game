@@ -220,11 +220,11 @@ class Game
   private :validate_game_state!
 
   def place_order!(house_class, area_class, order_class)
-    order = house(house_class).remove_token!(order_class)
-
     unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
       raise 'Cannot place order during ' + @game_state.to_s
     end
+
+    order = house(house_class).remove_token!(order_class)
 
     if order.special
       special_allowed = @kings_court_track.special_orders_allowed(house_class)
