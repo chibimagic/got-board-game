@@ -368,6 +368,21 @@ class Game
     end
   end
 
+  def clean_up!
+    @map.each do |area|
+      if area.has_token?(SupportOrder)
+        token = area.remove_token!(SupportOrder)
+        house(token.house_class).receive_token(token)
+      elsif area.has_token?(DefenseOrder)
+        token = area.remove_token!(DefenseOrder)
+        house(token.house_class).receive_token(token)
+      end
+      area.get_tokens(Unit).each { |unit| unit.reset }
+    end
+    @messenger_raven_token.reset
+    @valyrian_steel_blade_token.reset
+  end
+
   def determine_winner
     victory_points = houses.map { |house| @map.victory_points(house.class) }
     candidate_house_classes = @map.houses_with_victory_points(victory_points.max)
