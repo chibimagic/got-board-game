@@ -328,6 +328,10 @@ class Map
     @areas.any? { |area| area.has_token?(order_class) && area.controlling_house_class == house_class }
   end
 
+  def musterable_areas(house_class)
+    controlled_areas(house_class).map { |area| [area.class, area.mustering_points] }.to_h
+  end
+
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end

@@ -32,6 +32,7 @@ class Game
     :map,
     :round,
     :game_period,
+    :musterable_areas,
     :order_restriction,
     :combat,
     :players_turn,
@@ -80,6 +81,7 @@ class Game
     map,
     round,
     game_period,
+    musterable_areas,
     order_restriction,
     combat,
     players_turn,
@@ -100,6 +102,7 @@ class Game
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
     raise 'Invalid game period' unless GAME_PERIODS.any? { |period| period[0] == game_period }
+    raise 'Invalid musterable areas' unless musterable_areas.is_a?(Hash) && musterable_areas.all? { |area, points| area < Area && (0..2).include?(points) }
     raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
     raise 'Invalid Combat' unless combat.is_a?(Combat) || combat.nil?
     raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
@@ -120,6 +123,7 @@ class Game
     @map = map
     @round = round
     @game_period = game_period
+    @musterable_areas = musterable_areas
     @order_restriction = order_restriction
     @combat = combat
     @players_turn = players_turn
@@ -154,6 +158,7 @@ class Game
     houses = house_classes.map { |house_class| house_class.create_new }
     round = 1
     game_period = :assign_orders
+    musterable_areas = {}
     order_restriction = nil
     combat = nil
     players_turn = house_classes
@@ -163,6 +168,7 @@ class Game
       Map.create_new(houses),
       round,
       game_period,
+      musterable_areas,
       order_restriction,
       combat,
       players_turn,
@@ -187,6 +193,7 @@ class Game
       Map.unserialize(data['map']),
       data['round'],
       data['game_period'].to_sym,
+      data['musterable_areas'],
       data['order_restriction'].nil? ? nil : data['order_restriction'].to_sym,
       Combat.unserialize(data['combat']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
@@ -211,6 +218,7 @@ class Game
       :map => @map.serialize,
       :round => @round,
       :game_period => @game_period,
+      :musterable_areas => @musterable_areas,
       :order_restriction => @order_restriction,
       :combat => @combat.nil? ? nil : @combat.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },
@@ -235,6 +243,7 @@ class Game
       @map == o.map &&
       @round == o.round &&
       @game_period == o.game_period &&
+      @musterable_areas == o.musterable_areas &&
       @order_restriction == o.order_restriction
       @combat == o.combat &&
       @wildling_track == o.wildling_track &&
@@ -329,6 +338,46 @@ class Game
       current_period_index = GAME_PERIODS.find_index { |period| period[0] == @game_period }
       self.game_period = GAME_PERIODS[current_period_index + 1][0]
     end
+  end
+
+  def muster_unit!(area_class, source_unit_class, final_unit_class, to_area_class)
+    unless @musterable_areas.include?(area_class)
+      raise 'Cannot muster from ' + area_class.to_s
+    end
+
+    unless source_unit_class < Footman || source_unit_class.nil?
+      raise 'Cannot upgrade from ' + source_unit_class.to_s
+    end
+
+    unless final_unit_class < Unit
+      raise 'Cannot muster ' + final_unit_class.to_s
+    end
+
+    unless [Footman, Knight, SiegeEngine].include?(final_unit_class) && to_area_class == area_class ||
+      final_unit_class == Ship && @map.connected?(area_class, to_area_class)
+      raise 'Cannot muster ' + final_unit_class.to_s + ' in ' + to_area_class.to_s
+    end
+
+    point_cost = source_unit_class.nil? ? final_unit_class::MUSTERING_COST : 1
+    points_available = @musterable_areas.fetch(area_class)
+    unless points_available >= point_cost
+      raise 'Cannot use ' + point_cost.to_s + ' ' + Utility.singular_plural(point_cost.to_s, 'point', 'points') + ' with only ' + points_available.to_s + ' ' + Utility.singular_plural(points_available, 'point', 'points') + ' available'
+    end
+
+    house_class = area_class.controlling_house_class
+    unless source_unit_class.nil?
+      unit = @map.area(area_class).remove_token!(source_unit_class)
+      house(house_class).receive_token(unit)
+    end
+
+    unit = house(house_class).remove_token!(final_unit_class)
+    @map.area(to_area_class).receive_token(unit)
+
+    @musterable_areas[area_class] -= point_cost
+  end
+
+  def finish_mustering
+    @musterable_areas = {}
   end
 
   def place_order!(house_class, area_class, order_class)
