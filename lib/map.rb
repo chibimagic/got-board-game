@@ -64,7 +64,7 @@ class Map
     StormsEndPortToShipbreakerBay,
     SunspearPortToEastSummerSea,
     WhiteHarborPortToTheNarrowSea,
-    WinterfellPortToBayOIce,
+    WinterfellPortToBayOfIce,
   ]
 
   CONNECTIONS = [

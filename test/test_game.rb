@@ -69,9 +69,10 @@ class TestGame < MiniTest::Test
       assert_equal(house_class::STARTING_POSITIONS[SupplyTrack], game.supply_track.level(house_class))
     end
 
-    # All houses start with 3 controlled areas
+    # All houses start with 3 controlled areas, except House Greyjoy
     Game::HOUSE_CLASSES.each do |house_class|
-      assert_equal(3, game.map.controlled_areas(house_class).count, house_class.to_s + ' controls wrong number of areas')
+      expected_controlled_areas = house_class == HouseGreyjoy ? 4 : 3
+      assert_equal(expected_controlled_areas, game.map.controlled_areas(house_class).count, house_class.to_s + ' controls wrong number of areas')
     end
 
     # Neutral tokens in a 6 player game

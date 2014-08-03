@@ -102,9 +102,23 @@ class Area
 end
 
 class SeaArea < Area
+  def receive_token!(token)
+    if [Footman, Knight, SiegeEngine].any? { |unit_class| token.is_a?(unit_class) }
+      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a sea area'
+    end
+
+    super(token)
+  end
 end
 
 class LandArea < Area
+  def receive_token!(token)
+    if token.is_a?(Ship)
+      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a land area'
+    end
+
+    super(token)
+  end
 end
 
 class PortArea < Area
@@ -114,6 +128,14 @@ class PortArea < Area
 
   def sea
     self.class::SEA_AREA
+  end
+
+  def receive_token!(token)
+    if [Footman, Knight, SiegeEngine].any? { |unit_class| token.is_a?(unit_class) }
+      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a port area'
+    end
+
+    super(token)
   end
 end
 
@@ -468,7 +490,7 @@ class WhiteHarborPortToTheNarrowSea < PortArea
   SEA_AREA = TheNarrowSea
 end
 
-class WinterfellPortToBayOIce < PortArea
+class WinterfellPortToBayOfIce < PortArea
   TITLE = 'Winterfell Port (Bay of Ice)'
   LAND_AREA = Winterfell
   SEA_AREA = BayOfIce

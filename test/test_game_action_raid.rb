@@ -51,9 +51,11 @@ class TestGameActionRaid < MiniTest::Test
     ]
     data.each do |datum|
       g = raid_ready_game
-      g.map.area(datum[:from]).receive_token!(Footman.create_new(HouseStark))
+      token_class = datum[:from] < LandArea ? Footman : Ship
+      g.map.area(datum[:from]).receive_token!(token_class.create_new(HouseStark))
       g.map.area(datum[:from]).receive_token!(RaidOrder.new(HouseStark))
-      g.map.area(datum[:to]).receive_token!(Footman.create_new(HouseLannister))
+      token_class = datum[:to] < LandArea ? Footman : Ship
+      g.map.area(datum[:to]).receive_token!(token_class.create_new(HouseLannister))
       g.map.area(datum[:to]).receive_token!(SupportOrder.new(HouseLannister))
       if datum[:should_work]
         refute_raises(datum[:why]) { g.execute_raid_order!(datum[:from], datum[:to]) }
@@ -79,8 +81,8 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Karhold).receive_token!(Footman.create_new(HouseLannister))
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(BayOfIce).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(TheShiveringSea).receive_token!(Footman.create_new(HouseLannister))
+    g.map.area(BayOfIce).receive_token!(Ship.create_new(HouseLannister))
+    g.map.area(TheShiveringSea).receive_token!(Ship.create_new(HouseLannister))
 
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
     g.map.area(Karhold).receive_token!(DefenseOrder.new(HouseLannister))
@@ -108,8 +110,8 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
     g.map.area(Karhold).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(BayOfIce).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(TheShiveringSea).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(BayOfIce).receive_token!(Ship.create_new(HouseStark))
+    g.map.area(TheShiveringSea).receive_token!(Ship.create_new(HouseStark))
 
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
     g.map.area(Karhold).receive_token!(RaidOrder.new(HouseStark))

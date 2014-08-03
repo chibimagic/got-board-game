@@ -148,7 +148,8 @@ class HouseGreyjoy < House
   MINIMUM_PLAYERS = 4
 
   STARTING_UNITS = {
-    Pyke => [Knight, Footman, Ship],
+    Pyke => [Knight, Footman],
+    PykePortToIronmansBay => [Ship],
     GreywaterWatch => [Footman],
     IronmansBay => [Ship]
   }

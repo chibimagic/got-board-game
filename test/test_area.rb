@@ -182,7 +182,7 @@ class TestArea < MiniTest::Test
     assert_equal('Call :receive_token! instead', e.message)
   end
 
-  def test_receive_token
+  def test_receive_token_area
     a = CastleBlack.create_new
 
     e = assert_raises(RuntimeError) { a.receive_token!(MarchOrder.new(HouseStark)) }
@@ -195,5 +195,33 @@ class TestArea < MiniTest::Test
     a.receive_token!(MarchOrder.new(HouseStark))
     e = assert_raises(RuntimeError) { a.receive_token!(MarchOrder.new(HouseStark)) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (2) already has an order token', e.message)
+  end
+
+  def test_receive_token_area_type
+    l = Winterfell.create_new
+    s = BayOfIce.create_new
+    p = WinterfellPortToBayOfIce.create_new
+
+    refute_raises { l.receive_token!(Footman.create_new(HouseStark)) }
+    refute_raises { l.receive_token!(Knight.create_new(HouseStark)) }
+    refute_raises { l.receive_token!(SiegeEngine.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { l.receive_token!(Ship.create_new(HouseStark)) }
+    assert_equal('Cannot place Ship (House Stark) because Winterfell (3) is a land area', e.message)
+
+    e = assert_raises(RuntimeError) { s.receive_token!(Footman.create_new(HouseStark)) }
+    assert_equal('Cannot place Footman (House Stark) because Bay of Ice (0) is a sea area', e.message)
+    e = assert_raises(RuntimeError) { s.receive_token!(Knight.create_new(HouseStark)) }
+    assert_equal('Cannot place Knight (House Stark) because Bay of Ice (0) is a sea area', e.message)
+    e = assert_raises(RuntimeError) { s.receive_token!(SiegeEngine.create_new(HouseStark)) }
+    assert_equal('Cannot place Siege Engine (House Stark) because Bay of Ice (0) is a sea area', e.message)
+    refute_raises { s.receive_token!(Ship.create_new(HouseStark)) }
+
+    e = assert_raises(RuntimeError) { p.receive_token!(Footman.create_new(HouseStark)) }
+    assert_equal('Cannot place Footman (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
+    e = assert_raises(RuntimeError) { p.receive_token!(Knight.create_new(HouseStark)) }
+    assert_equal('Cannot place Knight (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
+    e = assert_raises(RuntimeError) { p.receive_token!(SiegeEngine.create_new(HouseStark)) }
+    assert_equal('Cannot place Siege Engine (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
+    refute_raises { s.receive_token!(Ship.create_new(HouseStark)) }
   end
 end
