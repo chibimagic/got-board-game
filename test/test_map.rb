@@ -44,6 +44,69 @@ class TestMap < MiniTest::Test
     assert_equal(false, @m.connected?(EastSummerSea, CastleBlack), 'CastleBlack and East Summer Sea should not be connected even when reversed')
   end
 
+  def test_connected_via_ship_transport
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, Starfall, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Winterfell))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
+
+    @m.area(BayOfIce).receive_token!(Ship.create_new(HouseStark))
+
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, Starfall, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Winterfell))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
+
+    @m.area(SunsetSea).receive_token!(Ship.create_new(HouseStark))
+    @m.area(WestSummerSea).receive_token!(Ship.create_new(HouseStark))
+
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Winterfell, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Starfall))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Starfall, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Winterfell))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
+
+    @m.area(TheShiveringSea).receive_token!(Ship.create_new(HouseLannister))
+
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Winterfell, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Starfall))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Starfall, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, Winterfell, CastleBlack))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
+    assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
+
+    @m.area(TheNarrowSea).receive_token!(Ship.create_new(HouseLannister))
+    @m.area(ShipbreakerBay).receive_token!(Ship.create_new(HouseLannister))
+    @m.area(EastSummerSea).receive_token!(Ship.create_new(HouseLannister))
+
+    assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Winterfell, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Starfall))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseStark, Starfall, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Winterfell))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, Winterfell, CastleBlack))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
+    assert_equal(true, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
+  end
+
   def test_connected_areas
     castle_black_land_classes = [Winterfell, Karhold]
     castle_black_sea_classes = [BayOfIce, TheShiveringSea]

@@ -259,6 +259,23 @@ class Map
     connections.include?([area_class1, area_class2]) || connections.include?([area_class2, area_class1])
   end
 
+  def connected_via_ship_transport?(house_class, area_class1, area_class2)
+    unless area_class1 < LandArea && area_class2 < LandArea
+      return false
+    end
+
+    controlled_sea_classes = controlled_areas(house_class).find_all { |area| area.is_a?(SeaArea) }.map { |area| area.class }
+
+    transport_sea_classes = connected_sea_classes(area_class1) & controlled_sea_classes
+    transport_sea_classes.each do |transport_sea_class|
+      new_connected_seas = connected_sea_classes(transport_sea_class) & controlled_sea_classes - transport_sea_classes
+      transport_sea_classes.concat(new_connected_seas)
+    end
+
+    connected_land_classes = transport_sea_classes.map { |sea_class| connected_land_classes(sea_class) }.flatten.uniq
+    connected_land_classes.include?(area_class2)
+  end
+
   def connected_area_classes(area_class)
     connections.find_all { |connection| connection.include?(area_class) }.map { |connection| connection - [area_class] }.flatten
   end
