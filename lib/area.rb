@@ -135,6 +135,10 @@ class PortArea < Area
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a port area'
     end
 
+    if token.is_a?(Ship) && get_tokens(Ship).count === 3
+      raise 'Cannot place more than 3 Ships in a port area'
+    end
+
     super(token)
   end
 end

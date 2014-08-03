@@ -224,4 +224,13 @@ class TestArea < MiniTest::Test
     assert_equal('Cannot place Siege Engine (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
     refute_raises { s.receive_token!(Ship.create_new(HouseStark)) }
   end
+
+  def test_port_three_ships_max
+    p = WinterfellPortToBayOfIce.create_new
+    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { p.receive_token!(Ship.create_new(HouseStark)) }
+    assert_equal('Cannot place more than 3 Ships in a port area', e.message)
+  end
 end
