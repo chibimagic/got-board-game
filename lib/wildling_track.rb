@@ -8,7 +8,8 @@ class WildlingTrack
   end
 
   def self.create_new
-    new(2)
+    strength = 2
+    new(strength)
   end
 
   def self.unserialize(data)
