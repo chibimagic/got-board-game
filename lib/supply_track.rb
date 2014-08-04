@@ -41,12 +41,12 @@ class SupplyTrack
   end
 
   def self.unserialize(data)
-    track = Hash[data.map { |supply_level, house_class_strings| [supply_level.to_i, house_class_strings.map { |house_class_string| house_class_string.constantize }] }]
+    track = data.map { |supply_level, house_class_strings| [supply_level.to_i, house_class_strings.map { |house_class_string| house_class_string.constantize }] }.to_h
     new(track)
   end
 
   def serialize
-    Hash[track.map { |supply_level, house_classes| [supply_level, house_classes.map { |house_class| house_class.name }] }]
+    track.map { |supply_level, house_classes| [supply_level, house_classes.map { |house_class| house_class.name }] }.to_h
   end
 
   def ==(o)

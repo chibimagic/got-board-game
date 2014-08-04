@@ -234,7 +234,7 @@ class Map
   end
 
   def serialize
-    Hash[@areas.map { |area| [area.class.name, area.serialize] }]
+    @areas.map { |area| [area.class.name, area.serialize] }.to_h
   end
 
   def ==(o)
@@ -284,8 +284,7 @@ class Map
   end
 
   def orders
-    areas_with_orders = @areas.find_all { |area| area.has_token?(OrderToken) }
-    Hash[areas_with_orders.map { |area| [area.class, area.get_tokens(OrderToken).first.class] }]
+    @areas.find_all { |area| area.has_token?(OrderToken) }.map { |area| [area.class, area.get_tokens(OrderToken).first.class] }.to_h
   end
 
   def orders_in?

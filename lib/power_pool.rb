@@ -25,7 +25,7 @@ class PowerPool
 
   def serialize
     houses = @tokens.map { |power_token| power_token.house_class }.uniq
-    Hash[houses.map { |house_class| [house_class.name, @tokens.count { |power_token| power_token.house_class == house_class }] }]
+    houses.map { |house_class| [house_class.name, @tokens.count { |power_token| power_token.house_class == house_class }] }.to_h
   end
 
   def ==(o)

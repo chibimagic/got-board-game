@@ -167,7 +167,7 @@ class Game
 
   def serialize
     {
-      :houses => Hash[@houses.map { |house| [house.class.name, house.serialize] }],
+      :houses => @houses.map { |house| [house.class.name, house.serialize] }.to_h,
       :map => @map.serialize,
       :game_state => @game_state.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },

@@ -129,10 +129,10 @@ end
 post '/games' do
   if @data.is_a?(Hash)
     validate_constants(@data.keys, House)
-    house_classes_to_usernames = Hash[@data.map { |house_class_string, username| [house_class_string.constantize, username] }]
+    house_classes_to_usernames = @data.map { |house_class_string, username| [house_class_string.constantize, username] }.to_h
   elsif @data.is_a?(Array)
     random_house_classes = Game.allowed_house_classes_for_players(@data.length).shuffle
-    house_classes_to_usernames = Hash[random_house_classes.map.with_index { |house_class, i| [house_class, @data[i]] }]
+    house_classes_to_usernames = random_house_classes.map.with_index { |house_class, i| [house_class, @data[i]] }.to_h
   end
 
   unless house_classes_to_usernames.has_value?(@username)
@@ -171,7 +171,7 @@ end
 post '/games/:game/orders' do |game_id|
   validate_constants(@data.keys, Area)
   validate_constants(@data.values, OrderToken)
-  orders = Hash[@data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }]
+  orders = @data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }.to_h
   orders.each { |area_class, order_class| @game.place_order!(@house_class, area_class, order_class) }
   { :game_id => game_id }.to_json
 end
