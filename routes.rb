@@ -138,10 +138,7 @@ post '/games' do
   unless house_classes_to_usernames.has_value?(@username)
     raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
   end
-  houses = house_classes_to_usernames.map do |house_class, username|
-    user = Storage.get_user(username)
-    house_class.create_new(user[:player_name])
-  end
+  houses = house_classes_to_usernames.map { |house_class, username| house_class.create_new }
   g = Game.create_new(houses)
 
   houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
@@ -156,8 +153,8 @@ end
 get '/games/:game' do |game_id|
   game_info = @game.serialize
   if game_info[:game_state][:game_period] == :assign_orders
-    game_info[:houses].each do |house|
-      house[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
+    game_info[:houses].each do |house, tokens|
+      tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
     end
     game_info[:map].each do |area, tokens|
       tokens.delete_if { |token| token.keys[0].constantize < OrderToken }

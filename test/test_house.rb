@@ -13,10 +13,7 @@ class TestHouse < MiniTest::Test
 
   def test_equality
     assert_equal(HouseStark.create_new, HouseStark.create_new)
-    assert_equal(HouseStark.create_new('a'), HouseStark.create_new('a'))
-    refute_equal(HouseStark.create_new('a'), HouseStark.create_new('b'))
     refute_equal(HouseStark.create_new, HouseLannister.create_new)
-    refute_equal(HouseStark.create_new('a'), HouseLannister.create_new('a'))
   end
 
   def test_units

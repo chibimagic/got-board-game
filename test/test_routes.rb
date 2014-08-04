@@ -80,7 +80,7 @@ class TestRoutes < MiniTest::Test
     assert_equal('Cannot create a game that does not include yourself: a, {}', response.body)
     response = @browser.post('/games', { 'HouseStark' => 'b' }.to_json)
     assert_equal('Cannot create a game that does not include yourself: a, {"HouseStark"=>"b"}', response.body)
-    response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'z' }.to_json)
+    response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'z' }.to_json)
     assert_equal('No user with username: z', response.body)
     response = @browser.post('/games', { 'HouseStark' => 'a' }.to_json)
     assert_equal('Cannot play A Game of Thrones (second edition) with 1 player', response.body)
@@ -135,8 +135,8 @@ class TestRoutes < MiniTest::Test
     game_id = JSON.parse(response.body)['game_id']
     response = @browser.get('/games/' + game_id.to_s)
     game = JSON.parse(response.body)
-    game['houses'].each do |house|
-      house['tokens'].each do |token|
+    game['houses'].each do |house, tokens|
+      tokens.each do |token|
         refute_operator(token.keys[0].constantize, :<, OrderToken)
       end
     end

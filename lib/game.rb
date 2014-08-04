@@ -146,7 +146,7 @@ class Game
 
   def self.unserialize(data)
     new(
-      data['houses'].map { |house| House.unserialize(house) },
+      data['houses'].map { |house_class_string, house_data| house_class_string.constantize.unserialize(house_data) },
       Map.unserialize(data['map']),
       GameState.unserialize(data['game_state']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
@@ -167,7 +167,7 @@ class Game
 
   def serialize
     {
-      :houses => @houses.map { |house| house.serialize },
+      :houses => Hash[@houses.map { |house| [house.class.name, house.serialize] }],
       :map => @map.serialize,
       :game_state => @game_state.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },

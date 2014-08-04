@@ -1,20 +1,16 @@
 class House
   include TokenHolder
 
-  attr_reader :player_name
-
   TITLE = ''
   MINIMUM_PLAYERS = 3
 
-  def initialize(player_name, tokens)
-    raise 'Invalid player name' unless player_name.is_a?(String)
+  def initialize(tokens)
     raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(HouseToken) }
 
-    @player_name = player_name
     @tokens = tokens
   end
 
-  def self.create_new(player_name = '')
+  def self.create_new
     tokens = []
 
     10.times { tokens.push(Footman.create_new(self)) }
@@ -41,28 +37,20 @@ class House
       ConsolidatePowerOrder.new(self),
       SpecialConsolidatePowerOrder.new(self),
     )
-    new(player_name, tokens)
+    new(tokens)
   end
 
   def self.unserialize(data)
-    house_class = data['house_class'].constantize
-    player_name = data['player_name']
-    tokens = data['tokens'].map { |token_data| Token.unserialize(token_data) }
-
-    house_class.new(player_name, tokens)
+    tokens = data.map { |token_data| Token.unserialize(token_data) }
+    new(tokens)
   end
 
   def serialize
-    {
-      :house_class => self.class.name,
-      :player_name => @player_name,
-      :tokens => @tokens.map { |token| token.serialize }
-    }
+    @tokens.map { |token| token.serialize }
   end
 
   def ==(o)
     self.class == o.class &&
-      @player_name == o.player_name &&
       @tokens == o.tokens
   end
 
@@ -71,8 +59,7 @@ class House
   end
 
   def to_s
-    name = @player_name.length > 0 ? @player_name : 'no name'
-    self.class::TITLE + ' (' + name + ')'
+    self.class::TITLE
   end
 
   def get_tokens(token_class)
