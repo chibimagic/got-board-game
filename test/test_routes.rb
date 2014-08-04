@@ -83,9 +83,16 @@ class TestRoutes < MiniTest::Test
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'z' }.to_json)
     assert_equal('No user with username: z', response.body)
     response = @browser.post('/games', { 'HouseStark' => 'a' }.to_json)
-    assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 1', response.body)
+    assert_equal('Cannot play A Game of Thrones (second edition) with 1 player', response.body)
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b' }.to_json)
-    assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 2', response.body)
+    assert_equal('Cannot play A Game of Thrones (second edition) with 2 players', response.body)
+  end
+
+  def test_create_game_random
+    response = @browser.post('/games', ['a', 'b', 'c'].to_json)
+    game_id = JSON.parse(response.body)['game_id']
+    response = @browser.get('/games/' + game_id.to_s)
+    assert_equal(true, Utility.valid_json?(response.body))
   end
 
   def test_create_retrieve

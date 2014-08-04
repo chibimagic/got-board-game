@@ -13,7 +13,7 @@ class TestGame < MiniTest::Test
     e = assert_raises(RuntimeError) { Game.create_new({}) }
     assert_equal('Need an array of houses', e.message)
     e = assert_raises(RuntimeError) { Game.create_new([]) }
-    assert_equal('A Game of Thrones (second edition) can only be played with 3-6 players, not 0', e.message)
+    assert_equal('Cannot play A Game of Thrones (second edition) with 0 players', e.message)
   end
 
   def test_game_setup

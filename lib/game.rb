@@ -111,18 +111,15 @@ class Game
     if !houses.is_a?(Array) || !houses.all? { |house| house.is_a?(House) }
       raise 'Need an array of houses'
     end
-    if houses.length < 3 || houses.length > 6
-      raise 'A Game of Thrones (second edition) can only be played with 3-6 players, not ' + houses.length.to_s
-    end
 
     house_classes = houses.map { |house| house.class }
+    allowed_house_classes = allowed_house_classes_for_players(house_classes.length)
+    unallowed_house_classes = house_classes - allowed_house_classes
+    unless unallowed_house_classes.empty?
+      raise 'Cannot choose ' + unallowed_house_classes.to_s + ' with ' + house_classes.length.to_s + ' players'
+    end
     if house_classes.uniq != house_classes
       raise 'Houses must be different'
-    end
-    house_classes.each do |house_class|
-      if house_classes.length < house_class::MINIMUM_PLAYERS
-        raise 'Cannot choose ' + house_class.to_s + ' with ' + house_classes.length.to_s + ' players'
-      end
     end
 
     players_turn = house_classes
@@ -206,6 +203,14 @@ class Game
       @westeros_deck_i == o.westeros_deck_i &&
       @westeros_deck_ii == o.westeros_deck_ii &&
       @westeros_deck_iii == o.westeros_deck_iii
+  end
+
+  def self.allowed_house_classes_for_players(player_count)
+    unless (3..6).include?(player_count)
+      raise 'Cannot play A Game of Thrones (second edition) with ' + player_count.to_s + ' ' + Utility.singular_plural(player_count, 'player', 'players')
+    end
+
+    HOUSE_CLASSES.find_all { |house_class| player_count >= house_class::MINIMUM_PLAYERS }
   end
 
   def house(house_class)

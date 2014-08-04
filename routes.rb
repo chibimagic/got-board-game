@@ -125,21 +125,28 @@ get '/games' do
 end
 
 # Start a new game
-# Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"}
+# Body: {"HouseStark":"jdoe","HouseLannister":"jsmith","HouseBaratheon":"jjones"} or ["jdoe","jsmith","jjames"]
 post '/games' do
-  validate_constants(@data.keys, House)
-  unless @data.has_value?(@username)
+  if @data.is_a?(Hash)
+    validate_constants(@data.keys, House)
+    house_classes_to_usernames = Hash[@data.map { |house_class_string, username| [house_class_string.constantize, username] }]
+  elsif @data.is_a?(Array)
+    random_house_classes = Game.allowed_house_classes_for_players(@data.length).shuffle
+    house_classes_to_usernames = Hash[random_house_classes.map.with_index { |house_class, i| [house_class, @data[i]] }]
+  end
+
+  unless house_classes_to_usernames.has_value?(@username)
     raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
   end
-  houses = @data.map do |house_class_string, username|
+  houses = house_classes_to_usernames.map do |house_class, username|
     user = Storage.get_user(username)
-    house_class_string.constantize.create_new(user[:player_name])
+    house_class.create_new(user[:player_name])
   end
   g = Game.create_new(houses)
 
   houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
   house_usernames = houses.map do |house_class|
-    username = @data.fetch(house_class.name, nil)
+    username = house_classes_to_usernames.fetch(house_class, nil)
   end
   game_id = Storage.create_game(g, *house_usernames)
   { :game_id => game_id }.to_json
