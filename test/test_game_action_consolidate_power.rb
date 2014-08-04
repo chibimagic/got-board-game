@@ -7,7 +7,7 @@ class TestGameActionConsolidatePower < MiniTest::Test
       { :area_class => WinterfellPortToBayOfIce, :expected_power => 1 }
     ]
     data.each do |datum|
-      g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+      g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
       power_before = g.house(HouseStark).count_tokens(PowerToken)
       g.map = Map.create_new([])
       token_class = datum[:area_class] < LandArea ? Footman : Ship
@@ -21,7 +21,7 @@ class TestGameActionConsolidatePower < MiniTest::Test
   end
 
   def test_consolidate_power_in_port_with_adjacent_enemy_ships
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     power_before = g.house(HouseStark).count_tokens(PowerToken)
     g.map = Map.create_new
     g.map.area(WinterfellPortToBayOfIce).receive_token!(Ship.create_new(HouseStark))

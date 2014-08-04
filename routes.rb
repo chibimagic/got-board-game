@@ -138,8 +138,7 @@ post '/games' do
   unless house_classes_to_usernames.has_value?(@username)
     raise 'Cannot create a game that does not include yourself: ' + @username.to_s + ', ' + @data.to_s
   end
-  houses = house_classes_to_usernames.map { |house_class, username| house_class.create_new }
-  g = Game.create_new(houses)
+  g = Game.create_new(house_classes_to_usernames.keys)
 
   houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
   house_usernames = houses.map do |house_class|

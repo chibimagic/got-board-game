@@ -2,7 +2,7 @@ class TestGame < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
     assert_equal('wrong number of arguments (0 for 16)', e.message)
-    e = assert_raises(ArgumentError) { Game.new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new]) }
+    e = assert_raises(ArgumentError) { Game.new([HouseStark, HouseLannister, HouseBaratheon]) }
     assert_equal('wrong number of arguments (1 for 16)', e.message)
   end
 
@@ -11,21 +11,14 @@ class TestGame < MiniTest::Test
     e = assert_raises(ArgumentError) { Game.create_new }
     assert_equal('wrong number of arguments (0 for 1)', e.message)
     e = assert_raises(RuntimeError) { Game.create_new({}) }
-    assert_equal('Need an array of houses', e.message)
+    assert_equal('Need an array of house classes', e.message)
     e = assert_raises(RuntimeError) { Game.create_new([]) }
     assert_equal('Cannot play A Game of Thrones (second edition) with 0 players', e.message)
   end
 
   def test_game_setup
-    houses = [
-      HouseStark.create_new,
-      HouseLannister.create_new,
-      HouseBaratheon.create_new,
-      HouseGreyjoy.create_new,
-      HouseTyrell.create_new,
-      HouseMartell.create_new
-    ]
-    game = Game.create_new(houses)
+    house_classes = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
+    game = Game.create_new(house_classes)
     assert_equal(6, game.houses.length)
     assert_equal(1, game.game_state.round)
     assert_equal(:assign_orders, game.game_state.game_period)
@@ -44,7 +37,7 @@ class TestGame < MiniTest::Test
       HouseMartell => { :footmen => 8, :knights => 4, :ships => 5, :siege_engines => 2 },
     }
     expected_units_remaining.each do |house_class, units_remaining|
-      house = houses.find { |house| house.class == house_class }
+      house = game.houses.find { |house| house.class == house_class }
       assert_equal(units_remaining[:footmen], house.count_tokens(Footman))
       assert_equal(units_remaining[:knights], house.count_tokens(Knight))
       assert_equal(units_remaining[:ships], house.count_tokens(Ship))
@@ -91,7 +84,7 @@ class TestGame < MiniTest::Test
   end
 
   def test_serialize
-    original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    original_game = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     stored_game = original_game.serialize.to_json
     restored_game = Game.unserialize(JSON.parse(stored_game))
     assert_equal(original_game, restored_game)
@@ -99,13 +92,13 @@ class TestGame < MiniTest::Test
 
   def test_equality
     # Different decks will make the games unequal
-    g1 = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
-    g2 = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g1 = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g2 = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     refute_equal(g1, g2)
   end
 
   def test_marshal_equality
-    original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    original_game = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     restored_game = Marshal.load(Marshal.dump(original_game))
     assert_equal(original_game, restored_game)
   end
@@ -116,10 +109,7 @@ class TestGame < MiniTest::Test
       [HouseMartell, HouseTyrell, HouseGreyjoy, HouseBaratheon, HouseLannister, HouseStark]
     ]
     data.each do |datum|
-      refute_raises {
-        houses = datum.map { |house_class| house_class.create_new }
-        g = Game.create_new(houses)
-      }
+      refute_raises { g = Game.create_new(datum) }
     end
   end
 
@@ -141,8 +131,7 @@ class TestGame < MiniTest::Test
     ]
     data.each do |datum|
       assert_raises(RuntimeError) {
-        houses = datum.map { |house_class| house_class.create_new }
-        g = Game.create_new(houses)
+        g = Game.create_new(datum)
       }
     end
   end

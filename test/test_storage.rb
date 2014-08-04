@@ -50,7 +50,7 @@ class TestStorage < MiniTest::Test
   def test_game_create_get
     usernames = [random_string, random_string, random_string, nil, nil, nil]
     usernames.map { |username| username.nil? ? nil : Storage.create_user(username, 'password', username) }
-    original_game = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    original_game = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     game_id = Storage.create_game(original_game, *usernames)
     games = Storage.list_games(usernames[0])
     assert_includes(games, { :game_id => game_id, :house => HouseStark }, 'New game not listed')

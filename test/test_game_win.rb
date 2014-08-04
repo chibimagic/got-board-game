@@ -1,6 +1,6 @@
 class TestGameWin < MiniTest::Test
   def test_victory_point_win
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP
     g.map.area(WhiteHarbor).receive_token!(Footman.create_new(HouseStark)) # 1 VP
@@ -10,7 +10,7 @@ class TestGameWin < MiniTest::Test
   end
 
   def test_stronghold_win
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(WhiteHarbor).receive_token!(Footman.create_new(HouseStark)) # 1 VP
@@ -22,7 +22,7 @@ class TestGameWin < MiniTest::Test
   end
 
   def test_supply_win
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(Lannisport).receive_token!(Footman.create_new(HouseLannister)) # 1 VP, 1 stronghold
@@ -34,7 +34,7 @@ class TestGameWin < MiniTest::Test
   end
 
   def test_power_win
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(Lannisport).receive_token!(Footman.create_new(HouseLannister)) # 1 VP, 1 stronghold
@@ -47,7 +47,7 @@ class TestGameWin < MiniTest::Test
   end
 
   def test_iron_throne_win
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(Lannisport).receive_token!(Footman.create_new(HouseLannister)) # 1 VP, 1 stronghold

@@ -1,6 +1,6 @@
 class TestGameActionCleanUp < MiniTest::Test
   def test_clean_up
-    g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
     g.map.area(CastleBlack).receive_token!(Footman.new(HouseStark, false))
     g.map.area(CastleBlack).receive_token!(SupportOrder.new(HouseStark))

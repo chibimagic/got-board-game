@@ -1,6 +1,6 @@
 class TestGamePlanningMessengerRaven < MiniTest::Test
   def setup
-    @g = Game.create_new([HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new])
+    @g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     @g.game_state.next_step
   end
 

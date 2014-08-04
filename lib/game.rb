@@ -107,12 +107,11 @@ class Game
     @westeros_deck_iii = westeros_deck_iii
   end
 
-  def self.create_new(houses)
-    if !houses.is_a?(Array) || !houses.all? { |house| house.is_a?(House) }
-      raise 'Need an array of houses'
+  def self.create_new(house_classes)
+    if !house_classes.is_a?(Array) || !house_classes.all? { |house_class| house_class.is_a?(Class) && house_class < House }
+      raise 'Need an array of house classes'
     end
 
-    house_classes = houses.map { |house| house.class }
     allowed_house_classes = allowed_house_classes_for_players(house_classes.length)
     unallowed_house_classes = house_classes - allowed_house_classes
     unless unallowed_house_classes.empty?
@@ -122,6 +121,7 @@ class Game
       raise 'Houses must be different'
     end
 
+    houses = house_classes.map { |house_class| house_class.create_new }
     players_turn = house_classes
 
     new(
