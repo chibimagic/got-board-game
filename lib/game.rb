@@ -368,6 +368,12 @@ class Game
 
     consolidate_power_order = @map.area(order_area_class).remove_token!(OrderToken)
     house_class = consolidate_power_order.house_class
+
+    if order_area_class < PortArea
+      connected_sea = @map.area(order_area_class::SEA_AREA)
+      return if connected_sea.controlling_house_class && connected_sea.controlling_house_class != house_class
+    end
+
     count = 1 + @map.area(order_area_class).power
     count.times do
       if @power_pool.has_token?(house_class)
