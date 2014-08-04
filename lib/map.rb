@@ -272,7 +272,7 @@ class Map
   end
 
   def controlled_areas(house_class)
-    @areas.find_all { |area| area.controlling_house == house_class }
+    @areas.find_all { |area| area.controlling_house_class == house_class }
   end
 
   def armies(house_class)

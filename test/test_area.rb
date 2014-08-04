@@ -132,16 +132,16 @@ class TestArea < MiniTest::Test
 
   def test_house_control
     area = CastleBlack.create_new
-    assert_equal(nil, area.controlling_house, 'Area should be initially uncontrolled')
+    assert_equal(nil, area.controlling_house_class, 'Area should be initially uncontrolled')
 
     area.receive_token!(Footman.create_new(HouseStark))
-    assert_equal(HouseStark, area.controlling_house, 'Area should be controlled by House Stark')
+    assert_equal(HouseStark, area.controlling_house_class, 'Area should be controlled by House Stark')
 
     area.remove_token!(Footman)
-    assert_equal(nil, area.controlling_house, 'Area should revert to uncontrolled')
+    assert_equal(nil, area.controlling_house_class, 'Area should revert to uncontrolled')
 
     area.receive_token!(Footman.create_new(HouseLannister))
-    assert_equal(HouseLannister, area.controlling_house, 'Area should be controlled by House Lannister')
+    assert_equal(HouseLannister, area.controlling_house_class, 'Area should be controlled by House Lannister')
   end
 
   def test_unit_count

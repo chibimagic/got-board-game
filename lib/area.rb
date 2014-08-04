@@ -61,7 +61,7 @@ class Area
     self.class::POWER
   end
 
-  def controlling_house
+  def controlling_house_class
     @tokens.empty? ? nil : @tokens[0].house_class
   end
 
@@ -85,8 +85,8 @@ class Area
   end
 
   def receive_token!(token)
-    if has_token?(Token) && controlling_house != token.house_class
-      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house.to_s
+    if has_token?(Token) && controlling_house_class != token.house_class
+      raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house_class.to_s
     end
 
     if token.is_a?(OrderToken)
