@@ -24,7 +24,7 @@ class TestMap < MiniTest::Test
 
   def test_connection_count_area
     @m.areas.each do |area|
-      assert_equal(area.connection_count, @m.connected_areas(area.class).count, area.to_s + ' has wrong number of connections')
+      assert_equal(area.connection_count, @m.connected_area_classes(area.class).count, area.to_s + ' has wrong number of connections')
     end
   end
 
@@ -45,11 +45,11 @@ class TestMap < MiniTest::Test
   end
 
   def test_connected_areas
-    castle_black_lands = [Winterfell, Karhold]
-    castle_black_seas = [BayOfIce, TheShiveringSea]
-    assert_equal(castle_black_lands.to_set + castle_black_seas.to_set, @m.connected_areas(CastleBlack).to_set, 'Castle Black has wrong areas connected')
-    assert_equal(castle_black_lands.to_set, @m.connected_lands(CastleBlack).to_set, 'Castle Black has wrong areas connected')
-    assert_equal(castle_black_seas.to_set, @m.connected_seas(CastleBlack).to_set, 'Castle Black has wrong areas connected')
+    castle_black_land_classes = [Winterfell, Karhold]
+    castle_black_sea_classes = [BayOfIce, TheShiveringSea]
+    assert_equal(castle_black_land_classes.to_set + castle_black_sea_classes.to_set, @m.connected_area_classes(CastleBlack).to_set, 'Castle Black has wrong areas connected')
+    assert_equal(castle_black_land_classes.to_set, @m.connected_land_classes(CastleBlack).to_set, 'Castle Black has wrong areas connected')
+    assert_equal(castle_black_sea_classes.to_set, @m.connected_sea_classes(CastleBlack).to_set, 'Castle Black has wrong areas connected')
   end
 
   def test_army_count

@@ -317,19 +317,19 @@ class Game
     end
 
     if order_area_class < PortArea
-      connected_areas = [order_area_class::SEA_AREA]
+      connected_area_classes = [order_area_class::SEA_AREA]
     elsif order_area_class < LandArea
-      connected_areas = @map.connected_areas(order_area_class)
+      connected_area_classes = @map.connected_area_classes(order_area_class)
     elsif order_area_class < SeaArea
-      connected_areas = @map.connected_areas(order_area_class)
+      connected_area_classes = @map.connected_area_classes(order_area_class)
       connected_port = @map.class::AREAS.find { |area| area < PortArea && area::SEA_AREA == order_area_class }
       unless connected_port.nil?
-        connected_areas.push(connected_port)
+        connected_area_classes.push(connected_port)
       end
     else
       raise order_area_class.to_s + ' is not a valid area'
     end
-    unless target_area_class.nil? || connected_areas.include?(target_area_class)
+    unless target_area_class.nil? || connected_area_classes.include?(target_area_class)
       raise 'Cannot raid from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
     end
 

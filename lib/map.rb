@@ -259,16 +259,16 @@ class Map
     connections.include?([area_class1, area_class2]) || connections.include?([area_class2, area_class1])
   end
 
-  def connected_areas(area_class)
+  def connected_area_classes(area_class)
     connections.find_all { |connection| connection.include?(area_class) }.map { |connection| connection - [area_class] }.flatten
   end
 
-  def connected_lands(area_class)
-    connected_areas(area_class).find_all { |area_class| area_class < LandArea }
+  def connected_land_classes(area_class)
+    connected_area_classes(area_class).find_all { |area_class| area_class < LandArea }
   end
 
-  def connected_seas(area_class)
-    connected_areas(area_class).find_all { |area_class| area_class < SeaArea }
+  def connected_sea_classes(area_class)
+    connected_area_classes(area_class).find_all { |area_class| area_class < SeaArea }
   end
 
   def controlled_areas(house_class)
