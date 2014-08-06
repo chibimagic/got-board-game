@@ -65,6 +65,10 @@ class Area
     @tokens.empty? ? nil : @tokens[0].house_class
   end
 
+  def enemy_controlled?(house_class)
+    !controlling_house_class.nil? && controlling_house_class != house_class
+  end
+
   def mustering_points
     if has_stronghold?
       2
@@ -85,7 +89,7 @@ class Area
   end
 
   def receive_token!(token)
-    if has_token?(Token) && controlling_house_class != token.house_class
+    if enemy_controlled?(token.house_class)
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house_class.to_s
     end
 

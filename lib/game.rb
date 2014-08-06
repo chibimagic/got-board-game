@@ -376,7 +376,7 @@ class Game
 
     if order_area_class < PortArea
       connected_sea = @map.area(order_area_class::SEA_AREA)
-      return if connected_sea.controlling_house_class && connected_sea.controlling_house_class != house_class
+      return if connected_sea.enemy_controlled?(house_class)
     end
 
     count = 1 + @map.area(order_area_class).power
