@@ -250,14 +250,13 @@ class Game
     validate_game_state!(:messenger_raven, 'replace order')
 
     token = @map.area(area_class).remove_token!(OrderToken)
-
     if token.house_class != @kings_court_track.token_holder_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
+    house(token.house_class).receive_token(token)
 
     @messenger_raven_token.use!
     place_order!(token.house_class, area_class, new_order_class)
-    house(token.house_class).receive_token(token)
 
     @game_state.next_step
   end
@@ -319,6 +318,7 @@ class Game
 
     raid_order = @map.area(order_area_class).remove_token!(OrderToken)
     raiding_house_class = raid_order.house_class
+    house(raiding_house_class).receive_token(raid_order)
 
     return if target_area_class.nil?
 
@@ -331,6 +331,8 @@ class Game
     unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
       raise 'Cannot raid ' + raided_order.to_s
     end
+    house(raided_house_class).receive_token(raided_order)
+
     if raided_order.is_a?(ConsolidatePowerOrder)
       if @power_pool.has_token?(raiding_house_class)
         token = @power_pool.remove_token!(raiding_house_class)
@@ -382,6 +384,7 @@ class Game
     end
 
     # Execute non-combat movement first
+    house(march_order.house_class).receive_token(march_order)
     attacking_units = []
     areas_to_units.each do |target_area_class, units|
       units.each do |unit_class|
@@ -409,6 +412,7 @@ class Game
 
     consolidate_power_order = @map.area(order_area_class).remove_token!(OrderToken)
     house_class = consolidate_power_order.house_class
+    house(house_class).receive_token(consolidate_power_order)
 
     if order_area_class < PortArea
       connected_sea = @map.area(order_area_class::SEA_AREA)
