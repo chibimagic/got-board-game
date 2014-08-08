@@ -198,6 +198,24 @@ class Map
     [SunsetSea, TheGoldenSound],
     [SunsetSea, WestSummerSea],
     [TheNarrowSea, TheShiveringSea],
+    # Port to land
+    [DragonstonePortToShipbreakerBay, Dragonstone],
+    [LannisportPortToTheGoldenSound, Lannisport],
+    [OldtownPortToRedwyneStraits, Oldtown],
+    [PykePortToIronmansBay, Pyke],
+    [StormsEndPortToShipbreakerBay, StormsEnd],
+    [SunspearPortToEastSummerSea, Sunspear],
+    [WhiteHarborPortToTheNarrowSea, WhiteHarbor],
+    [WinterfellPortToBayOfIce, Winterfell],
+    # Port to sea
+    [DragonstonePortToShipbreakerBay, ShipbreakerBay],
+    [LannisportPortToTheGoldenSound, TheGoldenSound],
+    [OldtownPortToRedwyneStraits, RedwyneStraits],
+    [PykePortToIronmansBay, IronmansBay],
+    [StormsEndPortToShipbreakerBay, ShipbreakerBay],
+    [SunspearPortToEastSummerSea, EastSummerSea],
+    [WhiteHarborPortToTheNarrowSea, TheNarrowSea],
+    [WinterfellPortToBayOfIce, BayOfIce],
   ]
 
   def initialize(areas)
@@ -248,7 +266,13 @@ class Map
   end
 
   def area(area_class)
-    @areas.find { |area| area.class == area_class }
+    area = @areas.find { |area| area.class == area_class }
+
+    if area.nil?
+      raise 'Invalid area ' + area_class.to_s
+    else
+      area
+    end
   end
 
   def connections

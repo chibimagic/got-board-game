@@ -73,7 +73,7 @@ class TestGameActionRaid < MiniTest::Test
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, RaidOrder) }
     assert_equal('Must target area or nil with raid order, not Raid Order', e.message)
     e = assert_raises(RuntimeError) { g.execute_raid_order!(PortArea, nil) }
-    assert_equal('Area is not a valid area', e.message)
+    assert_equal('Invalid area Area', e.message)
   end
 
   def test_raid_ineligible

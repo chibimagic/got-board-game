@@ -113,8 +113,12 @@ class TestArea < MiniTest::Test
   def test_port_connection
     ports = @m.areas.find_all { |area| area.is_a?(PortArea) }
     ports.each do |port|
-      assert_equal(LandArea, port.land.superclass, port.to_s + ' should be connected to land')
-      assert_equal(SeaArea, port.sea.superclass, port.to_s + ' should be connected to the sea')
+      land_classes = @m.connected_land_classes(port.class)
+      sea_classes = @m.connected_sea_classes(port.class)
+      assert_equal(1, land_classes.length, port.to_s + ' should be connected to one land area')
+      assert_equal(1, sea_classes.length, port.to_s + ' should be connected to one sea area')
+      assert_equal(LandArea, land_classes.first.superclass, port.to_s + ' should be connected to land')
+      assert_equal(SeaArea, sea_classes.first.superclass, port.to_s + ' should be connected to the sea')
     end
   end
 
@@ -122,8 +126,8 @@ class TestArea < MiniTest::Test
     expected_port_lands = [Dragonstone, Lannisport, Oldtown, Pyke, StormsEnd, Sunspear, WhiteHarbor, Winterfell]
     expected_port_seas = [BayOfIce, EastSummerSea, IronmansBay, RedwyneStraits, ShipbreakerBay, TheGoldenSound, TheNarrowSea]
     ports = @m.areas.find_all { |area| area.is_a?(PortArea) }
-    port_lands = ports.map { |port| port.land }
-    port_seas = ports.map { |port| port.sea }
+    port_lands = ports.map { |port| @m.connected_land_classes(port.class) }.flatten
+    port_seas = ports.map { |port| @m.connected_sea_classes(port.class) }.flatten
     assert_equal(expected_port_lands.to_set, port_lands.to_set, 'Wrong land areas for port')
     assert_equal(expected_port_seas.to_set, port_seas.to_set, 'Wrong sea areas for port')
     assert_equal(port_lands, port_lands.uniq, 'Multiple ports in a land area')

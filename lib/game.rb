@@ -299,18 +299,11 @@ class Game
       raise 'Must target area or nil with raid order, not ' + target_area_class.to_s
     end
 
+    connected_area_classes = @map.connected_area_classes(order_area_class)
     if order_area_class < PortArea
-      connected_area_classes = [order_area_class::SEA_AREA]
+      connected_area_classes.reject! { |area_class| area_class < LandArea }
     elsif order_area_class < LandArea
-      connected_area_classes = @map.connected_area_classes(order_area_class)
-    elsif order_area_class < SeaArea
-      connected_area_classes = @map.connected_area_classes(order_area_class)
-      connected_port = @map.class::AREAS.find { |area| area < PortArea && area::SEA_AREA == order_area_class }
-      unless connected_port.nil?
-        connected_area_classes.push(connected_port)
-      end
-    else
-      raise order_area_class.to_s + ' is not a valid area'
+      connected_area_classes.reject! { |area_class| area_class < PortArea }
     end
     unless target_area_class.nil? || connected_area_classes.include?(target_area_class)
       raise 'Cannot raid from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
@@ -364,6 +357,9 @@ class Game
         @map.connected_via_ship_transport?(march_order.house_class, order_area_class, target_area_class)
         raise 'Cannot march from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
       end
+      if target_area_class < PortArea && @map.area(target_area_class).enemy_controlled?(march_order.house_class)
+        raise 'Cannot initiate combat in port area ' + target_area_class.to_s
+      end
     end
 
     # Verify combat count
@@ -415,8 +411,8 @@ class Game
     house(house_class).receive_token(consolidate_power_order)
 
     if order_area_class < PortArea
-      connected_sea = @map.area(order_area_class::SEA_AREA)
-      return if connected_sea.enemy_controlled?(house_class)
+      connected_sea_class = @map.connected_sea_classes(order_area_class).first
+      return if @map.area(connected_sea_class).enemy_controlled?(house_class)
     end
 
     count = 1 + @map.area(order_area_class).power

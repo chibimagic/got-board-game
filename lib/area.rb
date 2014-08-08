@@ -126,13 +126,7 @@ class LandArea < Area
 end
 
 class PortArea < Area
-  def land
-    self.class::LAND_AREA
-  end
-
-  def sea
-    self.class::SEA_AREA
-  end
+  CONNECTION_COUNT = 2
 
   def receive_token!(token)
     if [Footman, Knight, SiegeEngine].any? { |unit_class| token.is_a?(unit_class) }
@@ -149,7 +143,7 @@ end
 
 class BayOfIce < SeaArea
   TITLE = 'Bay of Ice'
-  CONNECTION_COUNT = 6
+  CONNECTION_COUNT = 7
 end
 
 class BlackwaterBay < SeaArea
@@ -159,17 +153,17 @@ end
 
 class EastSummerSea < SeaArea
   TITLE = 'East Summer Sea'
-  CONNECTION_COUNT = 7
+  CONNECTION_COUNT = 8
 end
 
 class IronmansBay < SeaArea
   TITLE = 'Ironman\'s Bay'
-  CONNECTION_COUNT = 7
+  CONNECTION_COUNT = 8
 end
 
 class RedwyneStraits < SeaArea
   TITLE = 'Redwyne Straits'
-  CONNECTION_COUNT = 5
+  CONNECTION_COUNT = 6
 end
 
 class SeaOfDorne < SeaArea
@@ -179,7 +173,7 @@ end
 
 class ShipbreakerBay < SeaArea
   TITLE = 'Shipbreaker Bay'
-  CONNECTION_COUNT = 7
+  CONNECTION_COUNT = 9
 end
 
 class SunsetSea < SeaArea
@@ -189,12 +183,12 @@ end
 
 class TheGoldenSound < SeaArea
   TITLE = 'The Golden Sound'
-  CONNECTION_COUNT = 5
+  CONNECTION_COUNT = 6
 end
 
 class TheNarrowSea < SeaArea
   TITLE = 'The Narrow Sea'
-  CONNECTION_COUNT = 10
+  CONNECTION_COUNT = 11
 end
 
 class TheShiveringSea < SeaArea
@@ -233,7 +227,7 @@ end
 
 class Dragonstone < LandArea
   TITLE = 'Dragonstone'
-  CONNECTION_COUNT = 1
+  CONNECTION_COUNT = 2
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
@@ -287,7 +281,7 @@ end
 
 class Lannisport < LandArea
   TITLE = 'Lannisport'
-  CONNECTION_COUNT = 4
+  CONNECTION_COUNT = 5
   STRONGHOLD = true
   SUPPLY = 2
 end
@@ -300,7 +294,7 @@ end
 
 class Oldtown < LandArea
   TITLE = 'Oldtown'
-  CONNECTION_COUNT = 4
+  CONNECTION_COUNT = 5
   STRONGHOLD = true
 end
 
@@ -313,7 +307,7 @@ end
 
 class Pyke < LandArea
   TITLE = 'Pyke'
-  CONNECTION_COUNT = 1
+  CONNECTION_COUNT = 2
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
@@ -362,13 +356,13 @@ end
 
 class StormsEnd < LandArea
   TITLE = 'Storm\'s End'
-  CONNECTION_COUNT = 5
+  CONNECTION_COUNT = 6
   CASTLE = true
 end
 
 class Sunspear < LandArea
   TITLE = 'Sunspear'
-  CONNECTION_COUNT = 4
+  CONNECTION_COUNT = 5
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
@@ -432,7 +426,7 @@ end
 
 class WhiteHarbor < LandArea
   TITLE = 'White Harbor'
-  CONNECTION_COUNT = 5
+  CONNECTION_COUNT = 6
   CASTLE = true
 end
 
@@ -444,7 +438,7 @@ end
 
 class Winterfell < LandArea
   TITLE = 'Winterfell'
-  CONNECTION_COUNT = 7
+  CONNECTION_COUNT = 8
   STRONGHOLD = true
   SUPPLY = 1
   POWER = 1
@@ -458,48 +452,32 @@ end
 
 class DragonstonePortToShipbreakerBay < PortArea
   TITLE = 'Dragonstone Port (Shipbreaker Bay)'
-  LAND_AREA = Dragonstone
-  SEA_AREA = ShipbreakerBay
 end
 
 class LannisportPortToTheGoldenSound < PortArea
   TITLE = 'Lannisport Port (The Golden Sound)'
-  LAND_AREA = Lannisport
-  SEA_AREA = TheGoldenSound
 end
 
 class OldtownPortToRedwyneStraits < PortArea
   TITLE = 'Oldtown Port (Redwyne Straits)'
-  LAND_AREA = Oldtown
-  SEA_AREA = RedwyneStraits
 end
 
 class PykePortToIronmansBay < PortArea
   TITLE = 'Pyke Port (Ironmans Bay)'
-  LAND_AREA = Pyke
-  SEA_AREA = IronmansBay
 end
 
 class StormsEndPortToShipbreakerBay < PortArea
   TITLE = 'Storm\'s End Port (Shipbreaker Bay)'
-  LAND_AREA = StormsEnd
-  SEA_AREA = ShipbreakerBay
 end
 
 class SunspearPortToEastSummerSea < PortArea
   TITLE = 'Sunspear Port (East Summer Sea)'
-  LAND_AREA = Sunspear
-  SEA_AREA = EastSummerSea
 end
 
 class WhiteHarborPortToTheNarrowSea < PortArea
   TITLE = 'White Harbor Port (The Narrow Sea)'
-  LAND_AREA = WhiteHarbor
-  SEA_AREA = TheNarrowSea
 end
 
 class WinterfellPortToBayOfIce < PortArea
   TITLE = 'Winterfell Port (Bay of Ice)'
-  LAND_AREA = Winterfell
-  SEA_AREA = BayOfIce
 end
