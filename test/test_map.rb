@@ -130,11 +130,4 @@ class TestMap < MiniTest::Test
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
-
-  def test_orders
-    h = HouseStark
-    @m.area(Winterfell).receive_token!(Footman.create_new(h))
-    @m.area(Winterfell).receive_token!(WeakMarchOrder.new(h))
-    assert_equal({ Winterfell => WeakMarchOrder }, @m.orders)
-  end
 end

@@ -324,10 +324,6 @@ class Map
     controlled_areas(house_class).count { |area| area.has_token?(OrderToken) && area.get_tokens(OrderToken).first.special }
   end
 
-  def orders
-    @areas.find_all { |area| area.has_token?(OrderToken) }.map { |area| [area.class, area.get_tokens(OrderToken).first.class] }.to_h
-  end
-
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end
