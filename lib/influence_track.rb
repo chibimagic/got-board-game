@@ -1,6 +1,8 @@
 class InfluenceTrack
   attr_reader :track
 
+  TITLE = 'Influence'
+
   def initialize(track)
     raise 'Invalid track' unless track.is_a?(Array) && track.all? { |house_class| house_class < House }
 
@@ -32,6 +34,10 @@ class InfluenceTrack
       @track == o.track
   end
 
+  def to_s
+    self.class::TITLE + ' track'
+  end
+
   def token_holder_class
     @track[0]
   end
@@ -43,8 +49,11 @@ class InfluenceTrack
 end
 
 class IronThroneTrack < InfluenceTrack
+  TITLE = 'Iron Throne'
+
   def next_player(house_class, wrap_around = true)
     current_index = @track.find_index(house_class)
+
     if current_index + 1 == @track.length
       wrap_around ? @track[0] : nil
     else
@@ -54,10 +63,13 @@ class IronThroneTrack < InfluenceTrack
 end
 
 class FiefdomsTrack < InfluenceTrack
+  TITLE = 'Fiefdoms'
 end
 
 class KingsCourtTrack < InfluenceTrack
   attr_reader :special_orders
+
+  TITLE = 'King\'s Court'
   FIVE_SIX_PLAYER_SPECIAL_ORDERS = [3, 3, 2, 1, 0, 0]
   THREE_FOUR_PLAYER_SPECIAL_ORDERS = [3, 2, 1, 0]
 
