@@ -134,4 +134,50 @@ class TestGame < MiniTest::Test
       }
     end
   end
+
+  def test_players_turn_all
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+
+    assert_equal([HouseStark, HouseLannister, HouseBaratheon].to_set, g.players_turn.to_set)
+    g.place_order!(HouseStark, Winterfell, RaidOrder)
+    g.place_order!(HouseLannister, Lannisport, RaidOrder)
+    g.place_order!(HouseBaratheon, Dragonstone, RaidOrder)
+    g.place_order!(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order!(HouseLannister, StoneySept, MarchOrder)
+    g.place_order!(HouseBaratheon, Kingswood, MarchOrder)
+    g.place_order!(HouseStark, TheShiveringSea, ConsolidatePowerOrder)
+    g.place_order!(HouseLannister, TheGoldenSound, ConsolidatePowerOrder)
+    g.place_order!(HouseBaratheon, ShipbreakerBay, ConsolidatePowerOrder)
+
+    assert_equal(:messenger_raven, g.game_period)
+    assert_equal([HouseLannister], g.players_turn)
+    g.skip_messenger_raven
+
+    assert_equal(:resolve_raid_orders, g.game_period)
+    assert_equal([HouseBaratheon], g.players_turn)
+    g.execute_raid_order!(Dragonstone, nil)
+    assert_equal([HouseLannister], g.players_turn)
+    g.execute_raid_order!(Lannisport, nil)
+    assert_equal([HouseStark], g.players_turn)
+    g.execute_raid_order!(Winterfell, nil)
+
+    assert_equal(:resolve_march_orders, g.game_period)
+    assert_equal([HouseBaratheon], g.players_turn)
+    g.execute_march_order!(Kingswood, { Kingswood => [Footman] }, nil)
+    assert_equal([HouseLannister], g.players_turn)
+    g.execute_march_order!(StoneySept, { StoneySept => [Footman] }, nil)
+    assert_equal([HouseStark], g.players_turn)
+    g.execute_march_order!(WhiteHarbor, { WhiteHarbor => [Footman] }, nil)
+
+    assert_equal(:resolve_consolidate_power_orders, g.game_period)
+    assert_equal([HouseBaratheon], g.players_turn)
+    g.execute_consolidate_power_order!(ShipbreakerBay)
+    assert_equal([HouseLannister], g.players_turn)
+    g.execute_consolidate_power_order!(TheGoldenSound)
+    assert_equal([HouseStark], g.players_turn)
+    g.execute_consolidate_power_order!(TheShiveringSea)
+
+    assert_equal(:clean_up, g.game_period)
+    assert_equal([], g.players_turn)
+  end
 end

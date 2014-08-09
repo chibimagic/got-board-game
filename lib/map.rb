@@ -324,6 +324,10 @@ class Map
     controlled_areas(house_class).count { |area| area.has_token?(OrderToken) && area.get_tokens(OrderToken).first.special }
   end
 
+  def has_order?(order_class, house_class)
+    @areas.any? { |area| area.has_token?(order_class) && area.controlling_house_class == house_class }
+  end
+
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end

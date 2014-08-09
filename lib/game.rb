@@ -268,7 +268,21 @@ class Game
     if period_data.nil?
       raise 'Invalid game period'
     end
+
     @game_period = new_game_period
+    @players_turn = []
+    case @game_period
+    when :assign_orders
+      @players_turn = houses.map { |house| house.class }
+    when :messenger_raven
+      @players_turn = [@kings_court_track.token_holder_class]
+    when :resolve_raid_orders
+      next_players_turn(RaidOrder)
+    when :resolve_march_orders
+      next_players_turn(MarchOrder)
+    when :resolve_consolidate_power_orders
+      next_players_turn(ConsolidatePowerOrder)
+    end
   end
 
   def game_period_string
@@ -285,6 +299,30 @@ class Game
     end
   end
   private :validate_game_state!
+
+  def next_players_turn(order_token_class)
+    case @players_turn.length
+    when 0
+      player = @iron_throne_track.token_holder_class
+    when 1
+      player = @iron_throne_track.next_player(@players_turn.first, true)
+    else
+      raise 'Cannot determine next player when multiple players are active: ' + @players_turn.to_s
+    end
+
+    until @map.has_order?(order_token_class, player) ||
+      @players_turn.empty? && player == @iron_throne_track.track.last ||
+      !@players_turn.empty? && player == @players_turn.first
+      player = @iron_throne_track.next_player(player, true)
+    end
+
+    if @map.has_order?(order_token_class, player)
+      @players_turn = [player]
+    else
+      current_period_index = GAME_PERIODS.find_index { |period| period[0] == @game_period }
+      self.game_period = GAME_PERIODS[current_period_index + 1][0]
+    end
+  end
 
   def place_order!(house_class, area_class, order_class)
     unless @game_period == :assign_orders || @game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
@@ -309,8 +347,7 @@ class Game
     end
 
     if @players_turn.empty?
-      @game_period = :messenger_raven
-      @players_turn = [@kings_court_track.token_holder_class]
+      self.game_period = :messenger_raven
     end
   end
 
@@ -326,7 +363,7 @@ class Game
     @messenger_raven_token.use!
     place_order!(token.house_class, area_class, new_order_class)
 
-    @game_period = :resolve_raid_orders
+    self.game_period = :resolve_raid_orders
   end
 
   def look_at_wildling_deck
@@ -340,21 +377,21 @@ class Game
     validate_game_state!(:messenger_raven, 'replace card at top of wildling deck')
 
     @wildling_deck.place_at_top(card)
-    @game_period = :resolve_raid_orders
+    self.game_period = :resolve_raid_orders
   end
 
   def replace_wildling_card_bottom(card)
     validate_game_state!(:messenger_raven, 'replace card at bottom of wildling deck')
 
     @wildling_deck.place_at_bottom(card)
-    @game_period = :resolve_raid_orders
+    self.game_period = :resolve_raid_orders
   end
 
   def skip_messenger_raven
     validate_game_state!(:messenger_raven, 'skip messenger raven step')
 
     @messenger_raven_token.use!
-    @game_period = :resolve_raid_orders
+    self.game_period = :resolve_raid_orders
   end
 
   def execute_raid_order!(order_area_class, target_area_class = nil)
@@ -381,29 +418,31 @@ class Game
     raiding_house_class = raid_order.house_class
     house(raiding_house_class).receive_token(raid_order)
 
-    return if target_area_class.nil?
-
-    raided_order = @map.area(target_area_class).remove_token!(OrderToken)
-    raided_house_class = raided_order.house_class
-    if raiding_house_class == raided_house_class
-      raise 'Cannot raid your own orders'
-    end
-    normal_raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
-    unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
-      raise 'Cannot raid ' + raided_order.to_s
-    end
-    house(raided_house_class).receive_token(raided_order)
-
-    if raided_order.is_a?(ConsolidatePowerOrder)
-      if @power_pool.has_token?(raiding_house_class)
-        token = @power_pool.remove_token!(raiding_house_class)
-        house(raiding_house_class).receive_token(token)
+    unless target_area_class.nil?
+      raided_order = @map.area(target_area_class).remove_token!(OrderToken)
+      raided_house_class = raided_order.house_class
+      if raiding_house_class == raided_house_class
+        raise 'Cannot raid your own orders'
       end
-      if house(raided_house_class).has_token?(PowerToken)
-        token = house(raided_house_class).remove_token!(PowerToken)
-        @power_pool.receive_token(token)
+      normal_raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
+      unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
+        raise 'Cannot raid ' + raided_order.to_s
+      end
+      house(raided_house_class).receive_token(raided_order)
+
+      if raided_order.is_a?(ConsolidatePowerOrder)
+        if @power_pool.has_token?(raiding_house_class)
+          token = @power_pool.remove_token!(raiding_house_class)
+          house(raiding_house_class).receive_token(token)
+        end
+        if house(raided_house_class).has_token?(PowerToken)
+          token = house(raided_house_class).remove_token!(PowerToken)
+          @power_pool.receive_token(token)
+        end
       end
     end
+
+    next_players_turn(RaidOrder)
   end
 
   # area_classes_to_unit_classes: { CastleBlack => [Footman], Karhold => [Knight, SiegeEngine], Winterfell => [Footman] }
@@ -466,7 +505,9 @@ class Game
       @map.area(order_area_class).receive_token(power_token)
     end
 
-    unless combat_trigger_areas.empty?
+    if combat_trigger_areas.empty?
+      next_players_turn(MarchOrder)
+    else
       attacking_area = @map.area(order_area_class)
       defending_area = @map.area(combat_trigger_areas.first)
       @combat = Combat.create_new(attacking_area, defending_area, attacking_units)
@@ -492,6 +533,8 @@ class Game
         house(house_class).receive_token(token)
       end
     end
+
+    next_players_turn(ConsolidatePowerOrder)
   end
 
   def clean_up!

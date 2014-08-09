@@ -130,4 +130,29 @@ class TestMap < MiniTest::Test
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
+
+  def test_has_order
+    data = [
+      WeakMarchOrder,
+      MarchOrder,
+      SpecialMarchOrder,
+      DefenseOrder,
+      SpecialDefenseOrder,
+      SupportOrder,
+      SpecialSupportOrder,
+      RaidOrder,
+      SpecialRaidOrder,
+      ConsolidatePowerOrder,
+      SpecialConsolidatePowerOrder
+    ]
+    data.each do |datum|
+      m = Map.create_new
+      m.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
+      m.area(CastleBlack).receive_token!(datum.new(HouseStark))
+      assert_equal(true, m.has_order?(datum, HouseStark))
+      assert_equal(true, m.has_order?(datum.superclass, HouseStark))
+      assert_equal(false, m.has_order?(datum, HouseLannister))
+      assert_equal(false, m.has_order?(datum.superclass, HouseLannister))
+    end
+  end
 end
