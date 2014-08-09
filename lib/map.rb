@@ -328,10 +328,6 @@ class Map
     @areas.find_all { |area| area.has_token?(OrderToken) }.map { |area| [area.class, area.get_tokens(OrderToken).first.class] }.to_h
   end
 
-  def orders_in?
-    @areas.find { |area| area.has_token?(Unit) && !area.has_token?(OrderToken) } ? false : true
-  end
-
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end

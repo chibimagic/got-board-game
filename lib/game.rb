@@ -251,8 +251,14 @@ class Game
 
     @map.area(area_class).receive_token!(order)
 
-    if @game_state.game_period == :assign_orders && @map.orders_in?
-      @game_state.next_step
+    areas_needing_orders = @map.controlled_areas(house_class).find_all { |area| !area.has_token?(OrderToken) }
+    if areas_needing_orders.empty?
+      @players_turn.delete(house_class)
+    end
+
+    if @players_turn.empty?
+      @game_state.next_step # :messenger_raven
+      @players_turn = [@kings_court_track.token_holder_class]
     end
   end
 

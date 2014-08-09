@@ -11,7 +11,7 @@ class TestGamePlanningAssign < MiniTest::Test
     assert_equal('House Baratheon can only place 1 special order', e.message)
   end
 
-  def test_orders_in
+  def test_next_step
     assert_equal('Assign Orders', @g.game_state.step)
     @g.place_order!(HouseStark, TheShiveringSea, WeakMarchOrder)
     @g.place_order!(HouseStark, WhiteHarbor, MarchOrder)

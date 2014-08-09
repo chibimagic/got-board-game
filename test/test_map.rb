@@ -137,12 +137,4 @@ class TestMap < MiniTest::Test
     @m.area(Winterfell).receive_token!(WeakMarchOrder.new(h))
     assert_equal({ Winterfell => WeakMarchOrder }, @m.orders)
   end
-
-  def test_orders_in
-    assert_equal(true, @m.orders_in?)
-    @m.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
-    assert_equal(false, @m.orders_in?)
-    @m.area(CastleBlack).receive_token!(MarchOrder.new(HouseStark))
-    assert_equal(true, @m.orders_in?)
-  end
 end
