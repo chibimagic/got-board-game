@@ -456,7 +456,7 @@ class Game
         if combat_trigger_areas.include?(target_area_class)
           attacking_units.push(unit)
         else
-          @map.area(target_area_class).receive_token(unit)
+          @map.area(target_area_class).receive_token!(unit)
         end
       end
     end
