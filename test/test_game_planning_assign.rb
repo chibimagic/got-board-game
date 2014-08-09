@@ -12,7 +12,7 @@ class TestGamePlanningAssign < MiniTest::Test
   end
 
   def test_next_step
-    assert_equal('Assign Orders', @g.game_state.step)
+    assert_equal(:assign_orders, @g.game_period)
     @g.place_order!(HouseStark, TheShiveringSea, WeakMarchOrder)
     @g.place_order!(HouseStark, WhiteHarbor, MarchOrder)
     @g.place_order!(HouseStark, Winterfell, DefenseOrder)
@@ -22,14 +22,14 @@ class TestGamePlanningAssign < MiniTest::Test
     @g.place_order!(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
     @g.place_order!(HouseBaratheon, Dragonstone, MarchOrder)
     @g.place_order!(HouseBaratheon, Kingswood, DefenseOrder)
-    assert_equal('Messenger Raven', @g.game_state.step)
+    assert_equal(:messenger_raven, @g.game_period)
     e = assert_raises(RuntimeError) { @g.place_order!(HouseStark, TheShiveringSea, SpecialMarchOrder) }
-    assert_match(/^Cannot place order during .* Planning phase, Messenger Raven step$/, e.message)
+    assert_equal('Cannot place order during Planning phase, Messenger Raven step', e.message)
   end
 
   def test_replace_order!
     e = assert_raises(RuntimeError) { @g.replace_order!(CastleBlack, WeakMarchOrder) }
-    assert_match(/^Cannot replace order during .* Planning phase, Assign Orders step$/, e.message)
+    assert_equal('Cannot replace order during Planning phase, Assign Orders step', e.message)
 
     @g.place_order!(HouseStark, TheShiveringSea, WeakMarchOrder)
     @g.place_order!(HouseStark, WhiteHarbor, MarchOrder)

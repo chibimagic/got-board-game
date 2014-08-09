@@ -1,9 +1,9 @@
 class TestGame < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
-    assert_equal('wrong number of arguments (0 for 17)', e.message)
+    assert_equal('wrong number of arguments (0 for 19)', e.message)
     e = assert_raises(ArgumentError) { Game.new([HouseStark, HouseLannister, HouseBaratheon]) }
-    assert_equal('wrong number of arguments (1 for 17)', e.message)
+    assert_equal('wrong number of arguments (1 for 19)', e.message)
   end
 
   def test_new_game_invalid
@@ -20,10 +20,9 @@ class TestGame < MiniTest::Test
     house_classes = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
     game = Game.create_new(house_classes)
     assert_equal(6, game.houses.length)
-    assert_equal(1, game.game_state.round)
-    assert_equal(:assign_orders, game.game_state.game_period)
-    assert_equal('Planning', game.game_state.phase)
-    assert_equal('Assign Orders', game.game_state.step)
+    assert_equal(1, game.round)
+    assert_equal(:assign_orders, game.game_period)
+    assert_equal('Planning phase, Assign Orders step', game.game_period_string)
     assert_equal([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell], game.players_turn)
     assert_equal(false, game.valyrian_steel_blade_token.used)
     assert_equal(false, game.messenger_raven_token.used)

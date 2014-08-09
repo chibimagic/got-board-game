@@ -24,14 +24,15 @@ require_relative 'order_token.rb'
 require_relative 'garrison_token.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
-require_relative 'game_state.rb'
 require_relative 'combat.rb'
 
 class Game
   attr_accessor \
     :houses,
     :map,
-    :game_state,
+    :round,
+    :game_period,
+    :order_restriction,
     :combat,
     :players_turn,
     :wildling_track,
@@ -56,10 +57,30 @@ class Game
     HouseMartell
   ]
 
+  GAME_PERIODS = [
+    [:westeros, 'Westeros', nil],
+    [:assign_orders, 'Planning', 'Assign Orders'],
+    [:messenger_raven, 'Planning', 'Messenger Raven'],
+    [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
+    [:resolve_march_orders, 'Action', 'Resolve March Orders'],
+    [:resolve_consolidate_power_orders, 'Action', 'Resolve Consolidate Power Orders'],
+    [:clean_up, 'Action', 'Clean Up']
+  ]
+
+  ORDER_RESTRICTIONS = [
+    :no_march_special,
+    :no_defense,
+    :no_support,
+    :no_raid,
+    :no_consolidate_power
+  ]
+
   def initialize(
     houses,
     map,
-    game_state,
+    round,
+    game_period,
+    order_restriction,
     combat,
     players_turn,
     wildling_track,
@@ -77,7 +98,9 @@ class Game
   )
     raise 'Invalid houses' unless houses.is_a?(Array) && houses.all? { |house| house.is_a?(House) }
     raise 'Invalid Map' unless map.is_a?(Map)
-    raise 'Invalid game state' unless game_state.is_a?(GameState)
+    raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
+    raise 'Invalid game period' unless GAME_PERIODS.any? { |period| period[0] == game_period }
+    raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
     raise 'Invalid Combat' unless combat.is_a?(Combat) || combat.nil?
     raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
     raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
@@ -95,7 +118,9 @@ class Game
 
     @houses = houses
     @map = map
-    @game_state = game_state
+    @round = round
+    @game_period = game_period
+    @order_restriction = order_restriction
     @combat = combat
     @players_turn = players_turn
     @wildling_track = wildling_track
@@ -127,13 +152,18 @@ class Game
     end
 
     houses = house_classes.map { |house_class| house_class.create_new }
+    round = 1
+    game_period = :assign_orders
+    order_restriction = nil
     combat = nil
     players_turn = house_classes
 
     new(
       houses,
       Map.create_new(houses),
-      GameState.create_new,
+      round,
+      game_period,
+      order_restriction,
       combat,
       players_turn,
       WildlingTrack.create_new,
@@ -155,7 +185,9 @@ class Game
     new(
       data['houses'].map { |house_class_string, house_data| house_class_string.constantize.unserialize(house_data) },
       Map.unserialize(data['map']),
-      GameState.unserialize(data['game_state']),
+      data['round'],
+      data['game_period'].to_sym,
+      data['order_restriction'].nil? ? nil : data['order_restriction'].to_sym,
       Combat.unserialize(data['combat']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
       WildlingTrack.unserialize(data['wildling_track']),
@@ -177,7 +209,9 @@ class Game
     {
       :houses => @houses.map { |house| [house.class.name, house.serialize] }.to_h,
       :map => @map.serialize,
-      :game_state => @game_state.serialize,
+      :round => @round,
+      :game_period => @game_period,
+      :order_restriction => @order_restriction,
       :combat => @combat.nil? ? nil : @combat.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },
       :wildling_track => @wildling_track.serialize,
@@ -199,7 +233,9 @@ class Game
     self.class == o.class &&
       @houses == o.houses &&
       @map == o.map &&
-      @game_state == o.game_state &&
+      @round == o.round &&
+      @game_period == o.game_period &&
+      @order_restriction == o.order_restriction
       @combat == o.combat &&
       @wildling_track == o.wildling_track &&
       @iron_throne_track == o.iron_throne_track &&
@@ -227,16 +263,32 @@ class Game
     @houses.find { |house| house.class == house_class }
   end
 
+  def game_period=(new_game_period)
+    period_data = GAME_PERIODS.find { |period| period[0] == @game_period }
+    if period_data.nil?
+      raise 'Invalid game period'
+    end
+    @game_period = new_game_period
+  end
+
+  def game_period_string
+    period_data = GAME_PERIODS.find { |period| period[0] == @game_period }
+    string = period_data[1] + ' phase'
+    unless period_data[2].nil?
+      string += ', ' + period_data[2] + ' step'
+    end
+  end
+
   def validate_game_state!(expected_game_period, action_string)
-    unless @game_state.game_period == expected_game_period
-      raise 'Cannot ' + action_string + ' during ' + @game_state.to_s
+    unless @game_period == expected_game_period
+      raise 'Cannot ' + action_string + ' during ' + game_period_string
     end
   end
   private :validate_game_state!
 
   def place_order!(house_class, area_class, order_class)
-    unless @game_state.game_period == :assign_orders || @game_state.game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
-      raise 'Cannot place order during ' + @game_state.to_s
+    unless @game_period == :assign_orders || @game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
+      raise 'Cannot place order during ' + game_period_string
     end
 
     order = house(house_class).remove_token!(order_class)
@@ -257,7 +309,7 @@ class Game
     end
 
     if @players_turn.empty?
-      @game_state.next_step # :messenger_raven
+      @game_period = :messenger_raven
       @players_turn = [@kings_court_track.token_holder_class]
     end
   end
@@ -274,7 +326,7 @@ class Game
     @messenger_raven_token.use!
     place_order!(token.house_class, area_class, new_order_class)
 
-    @game_state.next_step
+    @game_period = :resolve_raid_orders
   end
 
   def look_at_wildling_deck
@@ -288,21 +340,21 @@ class Game
     validate_game_state!(:messenger_raven, 'replace card at top of wildling deck')
 
     @wildling_deck.place_at_top(card)
-    @game_state.next_step
+    @game_period = :resolve_raid_orders
   end
 
   def replace_wildling_card_bottom(card)
     validate_game_state!(:messenger_raven, 'replace card at bottom of wildling deck')
 
     @wildling_deck.place_at_bottom(card)
-    @game_state.next_step
+    @game_period = :resolve_raid_orders
   end
 
   def skip_messenger_raven
     validate_game_state!(:messenger_raven, 'skip messenger raven step')
 
     @messenger_raven_token.use!
-    @game_state.next_step
+    @game_period = :resolve_raid_orders
   end
 
   def execute_raid_order!(order_area_class, target_area_class = nil)

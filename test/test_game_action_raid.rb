@@ -2,8 +2,7 @@ class TestGameActionRaid < MiniTest::Test
   def raid_ready_game
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
-    g.game_state.next_step
-    g.game_state.next_step
+    g.game_period = :resolve_raid_orders
     g
   end
 
@@ -13,15 +12,15 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(RaidOrder.new(HouseStark))
-    g.game_state.next_step
+    g.game_period = :messenger_raven
 
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_match(/^Cannot execute raid order during .*$/, e.message)
 
-    g.game_state.next_step
+    g.game_period = :resolve_raid_orders
     refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
 
-    g.game_state.next_step
+    g.game_period = :resolve_march_orders
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_match(/^Cannot execute raid order during .*$/, e.message)
   end
