@@ -409,7 +409,9 @@ class Game
     end
 
     unless combat_trigger_areas.empty?
-      # initiate_combat(order_area_class, combat_trigger_areas.first, attacking_units, march_order)
+      attacking_area = @map.area(order_area_class)
+      defending_area = @map.area(combat_trigger_areas.first)
+      @combat = Combat.create_new(attacking_area, defending_area, attacking_units)
     end
   end
 
