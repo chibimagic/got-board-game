@@ -25,12 +25,14 @@ require_relative 'garrison_token.rb'
 require_relative 'unit.rb'
 require_relative 'house.rb'
 require_relative 'game_state.rb'
+require_relative 'combat.rb'
 
 class Game
   attr_accessor \
     :houses,
     :map,
     :game_state,
+    :combat,
     :players_turn,
     :wildling_track,
     :iron_throne_track,
@@ -58,6 +60,7 @@ class Game
     houses,
     map,
     game_state,
+    combat,
     players_turn,
     wildling_track,
     iron_throne_track,
@@ -75,6 +78,7 @@ class Game
     raise 'Invalid houses' unless houses.is_a?(Array) && houses.all? { |house| house.is_a?(House) }
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid game state' unless game_state.is_a?(GameState)
+    raise 'Invalid Combat' unless combat.is_a?(Combat) || combat.nil?
     raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
     raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
     raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
@@ -92,6 +96,7 @@ class Game
     @houses = houses
     @map = map
     @game_state = game_state
+    @combat = combat
     @players_turn = players_turn
     @wildling_track = wildling_track
     @iron_throne_track = iron_throne_track
@@ -122,12 +127,14 @@ class Game
     end
 
     houses = house_classes.map { |house_class| house_class.create_new }
+    combat = nil
     players_turn = house_classes
 
     new(
       houses,
       Map.create_new(houses),
       GameState.create_new,
+      combat,
       players_turn,
       WildlingTrack.create_new,
       IronThroneTrack.create_new(house_classes),
@@ -149,6 +156,7 @@ class Game
       data['houses'].map { |house_class_string, house_data| house_class_string.constantize.unserialize(house_data) },
       Map.unserialize(data['map']),
       GameState.unserialize(data['game_state']),
+      Combat.unserialize(data['combat']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
       WildlingTrack.unserialize(data['wildling_track']),
       IronThroneTrack.unserialize(data['iron_throne_track']),
@@ -170,6 +178,7 @@ class Game
       :houses => @houses.map { |house| [house.class.name, house.serialize] }.to_h,
       :map => @map.serialize,
       :game_state => @game_state.serialize,
+      :combat => @combat.nil? ? nil : @combat.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },
       :wildling_track => @wildling_track.serialize,
       :iron_throne_track => @iron_throne_track.serialize,
@@ -191,6 +200,7 @@ class Game
       @houses == o.houses &&
       @map == o.map &&
       @game_state == o.game_state &&
+      @combat == o.combat &&
       @wildling_track == o.wildling_track &&
       @iron_throne_track == o.iron_throne_track &&
       @fiefdoms_track == o.fiefdoms_track &&

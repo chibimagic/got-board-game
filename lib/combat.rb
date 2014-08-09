@@ -25,4 +25,14 @@ class Combat
       attacking_units
     )
   end
+
+  def self.unserialize(data)
+    return nil if data.nil?
+
+    attacking_area = data['attacking_area']
+    defending_area = data['defending_area']
+    attacking_units = data['attacking_units']
+
+    new(attacking_area, defending_area, attacking_units)
+  end
 end
