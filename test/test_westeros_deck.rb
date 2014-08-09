@@ -30,4 +30,16 @@ class TestWesterosDeck < MiniTest::Test
       assert_equal(10, d.cards_remaining, d.to_s + ' has wrong number of cards')
     end
   end
+
+  def test_decision_makers
+    decision_makers = []
+    @deck_classes.each do |deck_class|
+      deck_class.create_new.cards.each do |card|
+        if card.class::INFLUENCE_TRACK_DECISION
+          decision_makers.push(card.class::INFLUENCE_TRACK_DECISION)
+        end
+      end
+    end
+    assert_equal([IronThroneTrack, FiefdomsTrack, KingsCourtTrack].to_set, decision_makers.to_set)
+  end
 end

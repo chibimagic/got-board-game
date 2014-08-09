@@ -3,6 +3,7 @@ class WesterosCard < Card
   TEXT = ''
   ADVANCE_WILDLINGS = false
   RESTRICTION = nil
+  INFLUENCE_TRACK_DECISION = nil
 
   def title
     self.class::TITLE
@@ -17,6 +18,7 @@ class AThroneOfBlades < WesterosCard
   TITLE = 'A Throne of Blades'
   TEXT = 'The holder of the Iron Throne token chooses whether a) everyone updates their Supply, then reconcile armies b) everyone musters units, or c) this card has no effect.'
   ADVANCE_WILDLINGS = true
+  INFLUENCE_TRACK_DECISION = IronThroneTrack
 end
 
 class ClashOfKings < WesterosCard
@@ -28,6 +30,7 @@ class DarkWingsDarkWords < WesterosCard
   TITLE = 'Dark Wings, Dark Words'
   TEXT = 'The holder of the Messenger Raven chooses whether a) everyone bids on the three Influence tracks b) everyone collects one Power token for every power icon present in areas they control, or c) this card has no effect.'
   ADVANCE_WILDLINGS = true
+  INFLUENCE_TRACK_DECISION = KingsCourtTrack
 end
 
 class FeastForCrows < WesterosCard
@@ -56,6 +59,7 @@ end
 class PutToTheSword < WesterosCard
   TITLE = 'Put to the Sword'
   TEXT = 'The holder of the Valyrian Steel Blade chooses one of the following conditions for this Planning Phase: a) Defense Orders cannot be played b) March +1 Orders cannot be played, or c) no restrictions.'
+  INFLUENCE_TRACK_DECISION = FiefdomsTrack
 end
 
 class RainsOfAutumn < WesterosCard
