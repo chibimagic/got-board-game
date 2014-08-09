@@ -60,6 +60,28 @@ class TestInfluenceTrack < MiniTest::Test
     end
   end
 
+  def test_next_player
+    t = IronThroneTrack.new([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell])
+    assert_equal(HouseLannister, t.next_player(HouseStark))
+    assert_equal(HouseLannister, t.next_player(HouseStark, true))
+    assert_equal(HouseLannister, t.next_player(HouseStark, false))
+    assert_equal(HouseBaratheon, t.next_player(HouseLannister))
+    assert_equal(HouseBaratheon, t.next_player(HouseLannister, true))
+    assert_equal(HouseBaratheon, t.next_player(HouseLannister, false))
+    assert_equal(HouseGreyjoy, t.next_player(HouseBaratheon))
+    assert_equal(HouseGreyjoy, t.next_player(HouseBaratheon, true))
+    assert_equal(HouseGreyjoy, t.next_player(HouseBaratheon, false))
+    assert_equal(HouseTyrell, t.next_player(HouseGreyjoy))
+    assert_equal(HouseTyrell, t.next_player(HouseGreyjoy, true))
+    assert_equal(HouseTyrell, t.next_player(HouseGreyjoy, false))
+    assert_equal(HouseMartell, t.next_player(HouseTyrell))
+    assert_equal(HouseMartell, t.next_player(HouseTyrell, true))
+    assert_equal(HouseMartell, t.next_player(HouseTyrell, false))
+    assert_equal(HouseStark, t.next_player(HouseMartell))
+    assert_equal(HouseStark, t.next_player(HouseMartell, true))
+    assert_equal(nil, t.next_player(HouseMartell, false))
+  end
+
   def test_kings_court_orders
     data = [
       { HouseStark => 3, HouseLannister => 3, HouseBaratheon => 1, HouseGreyjoy => 0, HouseTyrell => 0, HouseMartell => 2 },

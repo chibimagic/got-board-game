@@ -43,6 +43,14 @@ class InfluenceTrack
 end
 
 class IronThroneTrack < InfluenceTrack
+  def next_player(house_class, wrap_around = true)
+    current_index = @track.find_index(house_class)
+    if current_index + 1 == @track.length
+      wrap_around ? @track[0] : nil
+    else
+      @track[current_index + 1]
+    end
+  end
 end
 
 class FiefdomsTrack < InfluenceTrack
