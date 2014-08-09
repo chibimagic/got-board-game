@@ -264,7 +264,7 @@ class Game
   end
 
   def game_period=(new_game_period)
-    period_data = GAME_PERIODS.find { |period| period[0] == @game_period }
+    period_data = GAME_PERIODS.find { |period| period[0] == new_game_period }
     if period_data.nil?
       raise 'Invalid game period'
     end
