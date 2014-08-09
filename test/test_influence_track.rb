@@ -82,6 +82,16 @@ class TestInfluenceTrack < MiniTest::Test
     assert_equal(nil, t.next_player(HouseMartell, false))
   end
 
+  def test_next_player_invalid
+    t = IronThroneTrack.new([HouseStark, HouseLannister, HouseBaratheon])
+    e = assert_raises(RuntimeError) { t.next_player(HouseMartell) }
+    assert_equal('House Martell is not in Iron Throne track', e.message)
+    e = assert_raises(RuntimeError) { t.next_player(HouseMartell, true) }
+    assert_equal('House Martell is not in Iron Throne track', e.message)
+    e = assert_raises(RuntimeError) { t.next_player(HouseMartell, false) }
+    assert_equal('House Martell is not in Iron Throne track', e.message)
+  end
+
   def test_kings_court_orders
     data = [
       { HouseStark => 3, HouseLannister => 3, HouseBaratheon => 1, HouseGreyjoy => 0, HouseTyrell => 0, HouseMartell => 2 },

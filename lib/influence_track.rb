@@ -52,6 +52,10 @@ class IronThroneTrack < InfluenceTrack
   TITLE = 'Iron Throne'
 
   def next_player(house_class, wrap_around = true)
+    unless @track.include?(house_class)
+      raise house_class.to_s + ' is not in ' + to_s
+    end
+
     current_index = @track.find_index(house_class)
 
     if current_index + 1 == @track.length
