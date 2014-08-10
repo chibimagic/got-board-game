@@ -300,6 +300,13 @@ class Game
   end
   private :validate_game_state!
 
+  def validate_players_turn(house_class)
+    unless @players_turn.include?(house_class)
+      raise house_class.to_s + ' cannot perform action during ' + @players_turn.to_s + ' turn'
+    end
+  end
+  private :validate_players_turn
+
   def next_players_turn(order_token_class)
     case @players_turn.length
     when 0
@@ -328,6 +335,7 @@ class Game
     unless @game_period == :assign_orders || @game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
       raise 'Cannot place order during ' + game_period_string
     end
+    validate_players_turn(house_class)
 
     order = house(house_class).remove_token!(order_class)
 
@@ -358,6 +366,7 @@ class Game
     if token.house_class != @kings_court_track.token_holder_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
+    validate_players_turn(token.house_class)
     house(token.house_class).receive_token(token)
 
     @messenger_raven_token.use!
@@ -416,6 +425,7 @@ class Game
 
     raid_order = @map.area(order_area_class).remove_token!(OrderToken)
     raiding_house_class = raid_order.house_class
+    validate_players_turn(raiding_house_class)
     house(raiding_house_class).receive_token(raid_order)
 
     unless target_area_class.nil?
@@ -449,6 +459,7 @@ class Game
   def execute_march_order!(order_area_class, area_classes_to_unit_classes, establish_control)
     validate_game_state!(:resolve_march_orders, 'execute march order')
     march_order = @map.area(order_area_class).remove_token!(OrderToken)
+    validate_players_turn(march_order.house_class)
 
     # Verify units
     marched_unit_classes = area_classes_to_unit_classes.values.flatten
@@ -519,6 +530,7 @@ class Game
 
     consolidate_power_order = @map.area(order_area_class).remove_token!(OrderToken)
     house_class = consolidate_power_order.house_class
+    validate_players_turn(house_class)
     house(house_class).receive_token(consolidate_power_order)
 
     if order_area_class < PortArea
