@@ -291,6 +291,8 @@ class Game
       next_players_turn(MarchOrder)
     when :resolve_consolidate_power_orders
       next_players_turn(ConsolidatePowerOrder)
+    when :clean_up
+      clean_up!
     end
   end
 
@@ -612,6 +614,12 @@ class Game
     end
     @messenger_raven_token.reset
     @valyrian_steel_blade_token.reset
+
+    if @round == 10
+      determine_winner
+    else
+      self.game_period = :westeros
+    end
   end
 
   def determine_winner

@@ -183,8 +183,8 @@ class TestGame < MiniTest::Test
     assert_equal([HouseStark], g.players_turn)
     g.execute_consolidate_power_order!(TheShiveringSea)
 
-    assert_equal(:clean_up, g.game_period)
-    assert_equal('Action phase, Clean Up step', g.game_period_string)
+    assert_equal(:westeros, g.game_period)
+    assert_equal('Westeros phase', g.game_period_string)
     assert_equal([], g.players_turn)
   end
 end
