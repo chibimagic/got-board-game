@@ -300,6 +300,7 @@ class Game
     unless period_data[2].nil?
       string += ', ' + period_data[2] + ' step'
     end
+    string
   end
 
   def validate_game_state!(expected_game_period, action_string)
