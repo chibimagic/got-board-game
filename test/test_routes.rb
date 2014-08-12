@@ -140,7 +140,7 @@ class TestRoutes < MiniTest::Test
         refute_operator(token.keys[0].constantize, :<, OrderToken)
       end
     end
-    game['map'].each do |area, tokens|
+    game['map']['areas'].each do |area, tokens|
       tokens.each do |token|
         refute_operator(token.keys[0].constantize, :<, OrderToken)
       end

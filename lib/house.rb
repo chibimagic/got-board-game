@@ -78,6 +78,7 @@ end
 class HouseStark < House
   TITLE = 'House Stark'
   HOME_AREA = Winterfell
+  INITIAL_SUPPLY = 1
 
   STARTING_UNITS = {
     Winterfell => [Knight, Footman],
@@ -88,14 +89,14 @@ class HouseStark < House
   STARTING_POSITIONS = {
     IronThroneTrack => 3,
     FiefdomsTrack => 4,
-    KingsCourtTrack => 2,
-    SupplyTrack => 1
+    KingsCourtTrack => 2
   }
 end
 
 class HouseLannister < House
   TITLE = 'House Lannister'
   HOME_AREA = Lannisport
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Lannisport => [Knight, Footman],
@@ -106,14 +107,14 @@ class HouseLannister < House
   STARTING_POSITIONS = {
     IronThroneTrack => 2,
     FiefdomsTrack => 6,
-    KingsCourtTrack => 1,
-    SupplyTrack => 2
+    KingsCourtTrack => 1
   }
 end
 
 class HouseBaratheon < House
   TITLE = 'House Baratheon'
   HOME_AREA = Dragonstone
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Dragonstone => [Knight, Footman],
@@ -124,8 +125,7 @@ class HouseBaratheon < House
   STARTING_POSITIONS = {
     IronThroneTrack => 1,
     FiefdomsTrack => 5,
-    KingsCourtTrack => 4,
-    SupplyTrack => 2
+    KingsCourtTrack => 4
   }
 end
 
@@ -133,6 +133,7 @@ class HouseGreyjoy < House
   TITLE = 'House Greyjoy'
   HOME_AREA = Pyke
   MINIMUM_PLAYERS = 4
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Pyke => [Knight, Footman],
@@ -144,8 +145,7 @@ class HouseGreyjoy < House
   STARTING_POSITIONS = {
     IronThroneTrack => 5,
     FiefdomsTrack => 1,
-    KingsCourtTrack => 6,
-    SupplyTrack => 2
+    KingsCourtTrack => 6
   }
 end
 
@@ -153,6 +153,7 @@ class HouseTyrell < House
   TITLE = 'House Tyrell'
   HOME_AREA = Highgarden
   MINIMUM_PLAYERS = 5
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Highgarden => [Knight, Footman],
@@ -163,8 +164,7 @@ class HouseTyrell < House
   STARTING_POSITIONS = {
     IronThroneTrack => 6,
     FiefdomsTrack => 2,
-    KingsCourtTrack => 5,
-    SupplyTrack => 2
+    KingsCourtTrack => 5
   }
 end
 
@@ -172,6 +172,7 @@ class HouseMartell < House
   TITLE = 'House Martell'
   HOME_AREA = Sunspear
   MINIMUM_PLAYERS = 6
+  INITIAL_SUPPLY = 2
 
   STARTING_UNITS = {
     Sunspear => [Knight, Footman],
@@ -182,7 +183,6 @@ class HouseMartell < House
   STARTING_POSITIONS = {
     IronThroneTrack => 4,
     FiefdomsTrack => 3,
-    KingsCourtTrack => 3,
-    SupplyTrack => 2
+    KingsCourtTrack => 3
   }
 end

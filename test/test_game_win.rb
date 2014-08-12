@@ -27,9 +27,9 @@ class TestGameWin < MiniTest::Test
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(Lannisport).receive_token!(Footman.create_new(HouseLannister)) # 1 VP, 1 stronghold
     g.map.area(Dragonstone).receive_token!(Footman.create_new(HouseBaratheon)) # 1 VP, 1 stronghold
-    g.supply_track.set_level(HouseStark, 1)
-    g.supply_track.set_level(HouseLannister, 2)
-    g.supply_track.set_level(HouseBaratheon, 1)
+    g.map.set_level(HouseStark, 1)
+    g.map.set_level(HouseLannister, 2)
+    g.map.set_level(HouseBaratheon, 1)
     assert_equal(HouseLannister, g.determine_winner)
   end
 
@@ -39,9 +39,9 @@ class TestGameWin < MiniTest::Test
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark)) # 1 VP, 1 stronghold
     g.map.area(Lannisport).receive_token!(Footman.create_new(HouseLannister)) # 1 VP, 1 stronghold
     g.map.area(Dragonstone).receive_token!(Footman.create_new(HouseBaratheon)) # 1 VP, 1 stronghold
-    g.supply_track.set_level(HouseStark, 1)
-    g.supply_track.set_level(HouseLannister, 1)
-    g.supply_track.set_level(HouseBaratheon, 1)
+    g.map.set_level(HouseStark, 1)
+    g.map.set_level(HouseLannister, 1)
+    g.map.set_level(HouseBaratheon, 1)
     g.house(HouseStark).receive_token(PowerToken.new(HouseStark)) # 1 power
     assert_equal(HouseStark, g.determine_winner)
   end

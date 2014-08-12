@@ -155,7 +155,7 @@ get '/games/:game' do |game_id|
     game_info[:houses].each do |house, tokens|
       tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
     end
-    game_info[:map].each do |area, tokens|
+    game_info[:map][:areas].each do |area, tokens|
       tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
     end
   end

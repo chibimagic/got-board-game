@@ -22,6 +22,80 @@ class TestMap < MiniTest::Test
     assert_equal(m1, m2)
   end
 
+  def test_initialize
+    houses = [HouseStark.create_new, HouseLannister.create_new, HouseBaratheon.create_new, HouseGreyjoy.create_new, HouseTyrell.create_new, HouseMartell.create_new]
+    m = Map.create_new(houses)
+    expected_supply_track = {
+      0 => [],
+      1 => [HouseStark],
+      2 => [HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell],
+      3 => [],
+      4 => [],
+      5 => [],
+      6 => [],
+    }
+    assert_equal(expected_supply_track, m.supply_track)
+  end
+
+  def test_initialize_invalid
+    data = [
+      [
+        [0 => []],
+        [1 => []],
+        [2 => []],
+        [3 => []],
+        [4 => []],
+        [5 => []],
+        [6 => []],
+      ],
+      {
+        '0' => [],
+        '1' => [],
+        '2' => [],
+        '3' => [],
+        '4' => [],
+        '5' => [],
+        '6' => [],
+      },
+      {
+        6 => [],
+        5 => [],
+        4 => [],
+        3 => [],
+        2 => [],
+        1 => [],
+        0 => [],
+      },
+      {
+        0 => {},
+        1 => {},
+        2 => {},
+        3 => {},
+        4 => {},
+        5 => {},
+        6 => {},
+      },
+      {
+        0 => [],
+        1 => [HouseStark.create_new],
+        2 => [HouseLannister.create_new],
+        3 => [HouseBaratheon.create_new],
+        4 => [HouseGreyjoy.create_new],
+        5 => [HouseTyrell.create_new],
+        6 => [HouseMartell.create_new],
+      }
+    ]
+    data.each do |datum|
+      begin
+        Map.new([], datum)
+        p datum
+      rescue
+      end
+      e = assert_raises(RuntimeError) { Map.new([], datum) }
+      assert_equal('Invalid supply track', e.message)
+    end
+  end
+
   def test_connection_count_area
     @m.areas.each do |area|
       assert_equal(area.connection_count, @m.connected_area_classes(area.class).count, area.to_s + ' has wrong number of connections')
@@ -154,5 +228,81 @@ class TestMap < MiniTest::Test
       assert_equal(false, m.has_order?(datum, HouseLannister))
       assert_equal(false, m.has_order?(datum.superclass, HouseLannister))
     end
+  end
+
+  def test_level_houses
+    m = Map.new([], {
+      0 => [],
+      1 => [HouseStark],
+      2 => [HouseLannister],
+      3 => [HouseBaratheon],
+      4 => [HouseGreyjoy],
+      5 => [HouseTyrell],
+      6 => [HouseMartell],
+    })
+
+    assert_equal(1, m.supply_level(HouseStark))
+    assert_equal(2, m.supply_level(HouseLannister))
+    assert_equal(3, m.supply_level(HouseBaratheon))
+    assert_equal(4, m.supply_level(HouseGreyjoy))
+    assert_equal(5, m.supply_level(HouseTyrell))
+    assert_equal(6, m.supply_level(HouseMartell))
+
+    assert_equal([HouseStark], m.houses(1))
+    assert_equal([HouseLannister], m.houses(2))
+    assert_equal([HouseBaratheon], m.houses(3))
+    assert_equal([HouseGreyjoy], m.houses(4))
+    assert_equal([HouseTyrell], m.houses(5))
+    assert_equal([HouseMartell], m.houses(6))
+  end
+
+  def test_set_level
+    m = Map.new([], {
+      0 => [],
+      1 => [HouseStark],
+      2 => [HouseLannister],
+      3 => [HouseBaratheon],
+      4 => [HouseGreyjoy],
+      5 => [HouseTyrell],
+      6 => [HouseMartell],
+    })
+
+    m.set_level(HouseStark, 6)
+    m.set_level(HouseLannister, 5)
+    m.set_level(HouseBaratheon, 5)
+    m.set_level(HouseGreyjoy, 0)
+    m.set_level(HouseGreyjoy, 4)
+    m.set_level(HouseTyrell, 0)
+
+    expected_track = {
+      0 => [HouseTyrell],
+      1 => [],
+      2 => [],
+      3 => [],
+      4 => [HouseGreyjoy],
+      5 => [HouseLannister, HouseBaratheon],
+      6 => [HouseMartell, HouseStark],
+    }
+
+    assert_equal(expected_track, m.supply_track)
+  end
+
+  def test_armies_allowed
+    m = Map.new([], {
+      0 => [],
+      1 => [HouseMartell],
+      2 => [HouseTyrell],
+      3 => [HouseGreyjoy],
+      4 => [HouseBaratheon],
+      5 => [HouseLannister],
+      6 => [HouseStark],
+    })
+
+    assert_equal([3, 2], m.armies_allowed(HouseMartell))
+    assert_equal([3, 2, 2], m.armies_allowed(HouseTyrell))
+    assert_equal([3, 2, 2, 2], m.armies_allowed(HouseGreyjoy))
+    assert_equal([3, 3, 2, 2], m.armies_allowed(HouseBaratheon))
+    assert_equal([4, 3, 2, 2], m.armies_allowed(HouseLannister))
+    assert_equal([4, 3, 2, 2, 2], m.armies_allowed(HouseStark))
   end
 end

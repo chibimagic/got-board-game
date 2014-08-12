@@ -1,9 +1,9 @@
 class TestGame < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
-    assert_equal('wrong number of arguments (0 for 20)', e.message)
+    assert_equal('wrong number of arguments (0 for 19)', e.message)
     e = assert_raises(ArgumentError) { Game.new([HouseStark, HouseLannister, HouseBaratheon]) }
-    assert_equal('wrong number of arguments (1 for 20)', e.message)
+    assert_equal('wrong number of arguments (1 for 19)', e.message)
   end
 
   def test_new_game_invalid
@@ -54,11 +54,11 @@ class TestGame < MiniTest::Test
       6 => []
     }
     expected_supply.each do |supply_level, houses|
-      assert_equal(houses.to_set, game.supply_track.houses(supply_level).to_set, 'Houses with supply ' + supply_level.to_s + ' should be: ' + houses.to_a.join(', '))
+      assert_equal(houses.to_set, game.map.houses(supply_level).to_set, 'Houses with supply ' + supply_level.to_s + ' should be: ' + houses.to_a.join(', '))
     end
     houses = [HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell]
     houses.each do |house_class|
-      assert_equal(house_class::STARTING_POSITIONS[SupplyTrack], game.supply_track.level(house_class))
+      assert_equal(house_class::INITIAL_SUPPLY, game.map.supply_level(house_class))
     end
 
     # All houses start with 3 controlled areas, except House Greyjoy

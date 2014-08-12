@@ -1,7 +1,7 @@
 class Map
   include Enumerable
 
-  attr_reader :areas
+  attr_reader :areas, :supply_track
 
   AREAS = [
     # Sea areas
@@ -218,10 +218,22 @@ class Map
     [WinterfellPortToBayOfIce, BayOfIce],
   ]
 
-  def initialize(areas)
+  ARMIES_ALLOWED = {
+    0 => [2, 2],
+    1 => [3, 2],
+    2 => [3, 2, 2],
+    3 => [3, 2, 2, 2],
+    4 => [3, 3, 2, 2],
+    5 => [4, 3, 2, 2],
+    6 => [4, 3, 2, 2, 2]
+  }
+
+  def initialize(areas, supply_track)
     raise 'Invalid areas' unless areas.is_a?(Array) && areas.all? { |area| area.is_a?(Area) }
+    raise 'Invalid supply track' unless supply_track.is_a?(Hash) && supply_track.keys == (0..6).to_a && supply_track.values.all? { |v| v.is_a?(Array) && v.all? { |house_class| house_class.class == Class && house_class < House } }
 
     @areas = areas
+    @supply_track = supply_track
   end
 
   def self.create_new(houses = [])
@@ -234,6 +246,15 @@ class Map
       areas.find { |area| area.class == token.area_class }.receive_token!(token)
     end
 
+    supply_track = {
+      0 => [],
+      1 => [],
+      2 => [],
+      3 => [],
+      4 => [],
+      5 => [],
+      6 => [],
+    }
     houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
@@ -242,22 +263,32 @@ class Map
         end
       end
       areas.find { |area| area.class == house.class::HOME_AREA }.receive_token!(GarrisonToken.new(house.class))
+      supply_track_position = house.class::INITIAL_SUPPLY
+      supply_track[supply_track_position].push(house.class)
     end
-    new(areas)
+
+    new(areas, supply_track)
   end
 
   def self.unserialize(data)
-    areas = data.map { |area_class_string, area_data| area_class_string.constantize.unserialize(area_data) }
-    new(areas)
+    areas = data['areas'].map { |area_class_string, area_data| area_class_string.constantize.unserialize(area_data) }
+    supply_track = data['supply_track'].map { |supply_level, house_class_strings| [supply_level.to_i, house_class_strings.map { |house_class_string| house_class_string.constantize }] }.to_h
+    new(areas, supply_track)
   end
 
   def serialize
-    @areas.map { |area| [area.class.name, area.serialize] }.to_h
+    areas = @areas.map { |area| [area.class.name, area.serialize] }.to_h
+    supply_track = @supply_track.map { |supply_level, house_classes| [supply_level, house_classes.map { |house_class| house_class.name }] }.to_h
+    {
+      :areas => areas,
+      :supply_track => supply_track
+    }
   end
 
   def ==(o)
     self.class == o.class &&
-      @areas == o.areas
+      @areas == o.areas &&
+      @supply_track == o.supply_track
   end
 
   # Fulfill Enumerable
@@ -334,6 +365,23 @@ class Map
 
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
+  end
+
+  def supply_level(house_class)
+    supply_track.select { |supply_level, house_classes| house_classes.include?(house_class) }.keys.first
+  end
+
+  def houses(supply_level)
+    supply_track.fetch(supply_level, [])
+  end
+
+  def set_level(house_class, new_supply_level)
+    supply_track.each_value { |v| v.delete(house_class) }
+    supply_track.fetch(new_supply_level).push(house_class)
+  end
+
+  def armies_allowed(house_class)
+    ARMIES_ALLOWED.fetch(supply_level(house_class))
   end
 
   def strongholds_controlled(house_class)

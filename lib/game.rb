@@ -13,7 +13,6 @@ require_relative 'area.rb'
 require_relative 'map.rb'
 require_relative 'wildling_track.rb'
 require_relative 'influence_track.rb'
-require_relative 'supply_track.rb'
 require_relative 'westeros_card.rb'
 require_relative 'westeros_deck.rb'
 require_relative 'neutral_force_token.rb'
@@ -42,7 +41,6 @@ class Game
     :kings_court_track,
     :valyrian_steel_blade_token,
     :messenger_raven_token,
-    :supply_track,
     :power_pool,
     :wildling_deck,
     :westeros_deck_i,
@@ -91,7 +89,6 @@ class Game
     kings_court_track,
     valyrian_steel_blade_token,
     messenger_raven_token,
-    supply_track,
     power_pool,
     wildling_deck,
     westeros_deck_i,
@@ -112,7 +109,6 @@ class Game
     raise 'Invalid King\'s Court Track' unless kings_court_track.is_a?(KingsCourtTrack)
     raise 'Invalid Valyrian Steel Blade token' unless valyrian_steel_blade_token.is_a?(ValyrianSteelBladeToken)
     raise 'Invalid Messenger Raven token' unless messenger_raven_token.is_a?(MessengerRavenToken)
-    raise 'Invalid Supply Track' unless supply_track.is_a?(SupplyTrack)
     raise 'Invalid Power Pool' unless power_pool.is_a?(PowerPool)
     raise 'Invalid Wildling Deck' unless wildling_deck.is_a?(WildlingDeck)
     raise 'Invalid Westeros Deck I' unless westeros_deck_i.is_a?(WesterosDeckI)
@@ -133,7 +129,6 @@ class Game
     @kings_court_track = kings_court_track
     @valyrian_steel_blade_token = valyrian_steel_blade_token
     @messenger_raven_token = messenger_raven_token
-    @supply_track = supply_track
     @power_pool = power_pool
     @wildling_deck = wildling_deck
     @westeros_deck_i = westeros_deck_i
@@ -178,7 +173,6 @@ class Game
       KingsCourtTrack.create_new(house_classes),
       ValyrianSteelBladeToken.create_new,
       MessengerRavenToken.create_new,
-      SupplyTrack.create_new(house_classes),
       PowerPool.create_new(house_classes),
       WildlingDeck.create_new,
       WesterosDeckI.create_new,
@@ -203,7 +197,6 @@ class Game
       KingsCourtTrack.unserialize(data['kings_court_track']),
       ValyrianSteelBladeToken.unserialize(data['valyrian_steel_blade_token']),
       MessengerRavenToken.unserialize(data['messenger_raven_token']),
-      SupplyTrack.unserialize(data['supply_track']),
       PowerPool.unserialize(data['power_pool']),
       WildlingDeck.unserialize(data['wildling_deck']),
       WesterosDeckI.unserialize(data['westeros_deck_i']),
@@ -228,7 +221,6 @@ class Game
       :kings_court_track => @kings_court_track.serialize,
       :valyrian_steel_blade_token => @valyrian_steel_blade_token.serialize,
       :messenger_raven_token => @messenger_raven_token.serialize,
-      :supply_track => @supply_track.serialize,
       :power_pool => @power_pool.serialize,
       :wildling_deck => @wildling_deck.serialize,
       :westeros_deck_i => @westeros_deck_i.serialize,
@@ -253,7 +245,6 @@ class Game
       @valyrian_steel_blade_token == o.valyrian_steel_blade_token &&
       @messenger_raven_token == o.messenger_raven_token &&
       @power_pool == o.power_pool &&
-      @supply_track == o.supply_track &&
       @wildling_deck == o.wildling_deck &&
       @westeros_deck_i == o.westeros_deck_i &&
       @westeros_deck_ii == o.westeros_deck_ii &&
@@ -635,8 +626,8 @@ class Game
       return candidate_house_classes.first
     end
 
-    supply_levels = candidate_house_classes.map { |house_class| @supply_track.level(house_class) }
-    candidate_house_classes = candidate_house_classes.find_all { |house_class| @supply_track.level(house_class) == supply_levels.max }
+    supply_levels = candidate_house_classes.map { |house_class| @map.supply_level(house_class) }
+    candidate_house_classes = candidate_house_classes.find_all { |house_class| @map.supply_level(house_class) == supply_levels.max }
     if candidate_house_classes.count == 1
       return candidate_house_classes.first
     end
