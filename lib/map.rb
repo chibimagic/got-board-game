@@ -384,6 +384,15 @@ class Map
     ARMIES_ALLOWED.fetch(supply_level(house_class))
   end
 
+  def conforms_to_supply_limits?(house_class)
+    actual = armies(house_class)
+    allowed = armies_allowed(house_class)
+    actual.each_with_index do |army_size, index|
+      return false if allowed[index].nil? || army_size > allowed[index]
+    end
+    true
+  end
+
   def strongholds_controlled(house_class)
     controlled_areas(house_class).count { |area| area.has_stronghold? }
   end

@@ -305,4 +305,40 @@ class TestMap < MiniTest::Test
     assert_equal([4, 3, 2, 2], m.armies_allowed(HouseLannister))
     assert_equal([4, 3, 2, 2, 2], m.armies_allowed(HouseStark))
   end
+
+  def test_supply_limits
+    data = [
+      # 0 => [2, 2],
+      # 1 => [3, 2],
+      # 2 => [3, 2, 2],
+      # 3 => [3, 2, 2, 2],
+      # 4 => [3, 3, 2, 2],
+      # 5 => [4, 3, 2, 2],
+      # 6 => [4, 3, 2, 2, 2]
+      { :armies => [], :supply_required => 0 },
+      { :armies => [2], :supply_required => 0 },
+      { :armies => [2, 2], :supply_required => 0 },
+      { :armies => [3, 2], :supply_required => 1 },
+      { :armies => [2, 2, 2], :supply_required => 2 },
+      { :armies => [2, 2, 2, 2], :supply_required => 3 },
+      { :armies => [3, 3], :supply_required => 4 },
+      { :armies => [4], :supply_required => 5 },
+      { :armies => [2, 2, 2, 2, 2], :supply_required => 6 },
+      { :armies => [5], :supply_required => nil },
+      { :armies => [3, 3, 3], :supply_required => nil },
+      { :armies => [2, 2, 2, 2, 2, 2], :supply_required => nil },
+    ]
+    areas = [CastleBlack, Winterfell, Karhold, TheStoneyShore, WhiteHarbor, WidowsWatch]
+    data.each do |datum|
+      m = Map.create_new
+      datum[:armies].each_with_index do |army_size, index|
+        army_size.times { m.area(areas[index]).receive_token!(Footman.create_new(HouseStark)) }
+      end
+      (0..6).each do |supply_level|
+        m.set_level(HouseStark, supply_level)
+        should_work = datum[:supply_required].is_a?(Integer) && supply_level >= datum[:supply_required]
+        assert_equal(should_work, m.conforms_to_supply_limits?(HouseStark))
+      end
+    end
+  end
 end
