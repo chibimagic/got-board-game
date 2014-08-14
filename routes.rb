@@ -184,6 +184,10 @@ end
 # Bid on influence track or wildling attack
 # Body: 4
 post '/games/:game/bid' do |game_id|
+  unless @data.is_a?(Integer)
+    raise 'Format: 4'
+  end
+  @game.bid(@house_class, @data)
 end
 
 # Use Valyrian Steel Blade token
