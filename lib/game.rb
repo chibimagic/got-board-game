@@ -31,6 +31,7 @@ class Game
     :map,
     :round,
     :game_period,
+    :bids,
     :musterable_areas,
     :order_restriction,
     :combat,
@@ -79,6 +80,7 @@ class Game
     map,
     round,
     game_period,
+    bids,
     musterable_areas,
     order_restriction,
     combat,
@@ -99,6 +101,7 @@ class Game
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
     raise 'Invalid game period' unless GAME_PERIODS.any? { |period| period[0] == game_period }
+    raise 'Invalid bids' unless bids.is_a?(Hash) && bids.keys.to_s == houses.map { |house| house.class }.to_s && bids.values.all? { |v| v.nil? || v.is_a?(Integer) }
     raise 'Invalid musterable areas' unless musterable_areas.is_a?(Hash) && musterable_areas.all? { |area, points| area < Area && (0..2).include?(points) }
     raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
     raise 'Invalid Combat' unless combat.is_a?(Combat) || combat.nil?
@@ -119,6 +122,7 @@ class Game
     @map = map
     @round = round
     @game_period = game_period
+    @bids = bids
     @musterable_areas = musterable_areas
     @order_restriction = order_restriction
     @combat = combat
@@ -153,6 +157,7 @@ class Game
     houses = house_classes.map { |house_class| house_class.create_new }
     round = 1
     game_period = :assign_orders
+    bids = house_classes.map { |house_class| [house_class, nil] }.to_h
     musterable_areas = {}
     order_restriction = nil
     combat = nil
@@ -163,6 +168,7 @@ class Game
       Map.create_new(houses),
       round,
       game_period,
+      bids,
       musterable_areas,
       order_restriction,
       combat,
@@ -187,6 +193,7 @@ class Game
       Map.unserialize(data['map']),
       data['round'],
       data['game_period'].to_sym,
+      data['bids'].map { |house_class_string, bid| [house_class_string.constantize, bid] }.to_h,
       data['musterable_areas'],
       data['order_restriction'].nil? ? nil : data['order_restriction'].to_sym,
       Combat.unserialize(data['combat']),
@@ -211,6 +218,7 @@ class Game
       :map => @map.serialize,
       :round => @round,
       :game_period => @game_period,
+      :bids => @bids.map { |house_class, bid| [house_class.name, bid] }.to_h,
       :musterable_areas => @musterable_areas,
       :order_restriction => @order_restriction,
       :combat => @combat.nil? ? nil : @combat.serialize,
@@ -235,6 +243,7 @@ class Game
       @map == o.map &&
       @round == o.round &&
       @game_period == o.game_period &&
+      @bids == o.bids &&
       @musterable_areas == o.musterable_areas &&
       @order_restriction == o.order_restriction
       @combat == o.combat &&
@@ -332,6 +341,20 @@ class Game
       current_period_index = GAME_PERIODS.find_index { |period| period[0] == @game_period }
       self.game_period = GAME_PERIODS[current_period_index + 1][0]
     end
+  end
+
+  def bid(house_class, power_tokens)
+    existing_bid = @bids.fetch(house_class)
+    unless existing_bid.nil?
+      raise house_class.to_s + ' has already bid ' + existing_bid.to_s
+    end
+
+    available_power = house(house_class).get_tokens(PowerToken).length
+    unless available_power >= power_tokens
+      raise 'Cannot bid ' + power_tokens.to_s + ' when ' + house_class.to_s + ' only has ' + available_power.to_s
+    end
+
+    @bids[house_class] = power_tokens
   end
 
   def muster_unit!(area_class, source_unit_class, final_unit_class, to_area_class)
