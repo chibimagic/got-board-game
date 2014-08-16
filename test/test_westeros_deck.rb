@@ -17,10 +17,21 @@ class TestWesterosDeck < MiniTest::Test
       d1 = deck_class.create_new
       d2 = deck_class.create_new
       refute_equal(d1, d2)
+      assert_equal(d1.active_card, d2.active_card)
+      refute_equal(d1.draw_pile, d2.draw_pile)
+      assert_equal(d1.discard_pile, d2.discard_pile)
 
-      10.times { d1.draw_from_top }
-      10.times { d2.draw_from_top }
-      assert_equal(d1, d2)
+      10.times do
+        d1.draw_from_top
+        d1.discard
+        d2.draw_from_top
+        d2.discard
+      end
+
+      refute_equal(d1, d2)
+      assert_equal(d1.active_card, d2.active_card)
+      assert_equal(d1.draw_pile, d2.draw_pile)
+      refute_equal(d1.discard_pile, d2.discard_pile)
     end
   end
 

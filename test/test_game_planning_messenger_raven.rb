@@ -18,18 +18,18 @@ class TestGamePlanningMessengerRaven < MiniTest::Test
   end
 
   def test_wildling_deck_top
-    card = @g.look_at_wildling_deck
-    @g.replace_wildling_card_top(card)
+    @g.look_at_wildling_deck
+    @g.replace_wildling_card_top
     refute_equal(:messenger_raven, @g.game_period)
-    e = assert_raises(RuntimeError) { @g.replace_wildling_card_bottom(card) }
+    e = assert_raises(RuntimeError) { @g.replace_wildling_card_bottom }
     assert_match(/^Cannot replace card at bottom of wildling deck during /, e.message)
   end
 
   def test_wildling_deck_bottom
-    card = @g.look_at_wildling_deck
-    @g.replace_wildling_card_bottom(card)
+    @g.look_at_wildling_deck
+    @g.replace_wildling_card_bottom
     refute_equal(:messenger_raven, @g.game_period)
-    e = assert_raises(RuntimeError) { @g.replace_wildling_card_top(card) }
+    e = assert_raises(RuntimeError) { @g.replace_wildling_card_top }
     assert_match(/^Cannot replace card at top of wildling deck during /, e.message)
   end
 

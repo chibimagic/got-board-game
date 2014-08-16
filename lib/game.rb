@@ -469,17 +469,17 @@ class Game
     @wildling_deck.draw_from_top
   end
 
-  def replace_wildling_card_top(card)
+  def replace_wildling_card_top
     validate_game_state!(:messenger_raven, 'replace card at top of wildling deck')
 
-    @wildling_deck.place_at_top(card)
+    @wildling_deck.place_at_top
     change_game_period(:resolve_raid_orders)
   end
 
-  def replace_wildling_card_bottom(card)
+  def replace_wildling_card_bottom
     validate_game_state!(:messenger_raven, 'replace card at bottom of wildling deck')
 
-    @wildling_deck.place_at_bottom(card)
+    @wildling_deck.place_at_bottom
     change_game_period(:resolve_raid_orders)
   end
 
