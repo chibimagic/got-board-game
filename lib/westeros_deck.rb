@@ -1,6 +1,4 @@
 class WesterosDeck < RandomDeck
-  include PlaceAtTopDeck
-  include PlaceAtBottomDeck
 end
 
 class WesterosDeckI < WesterosDeck
