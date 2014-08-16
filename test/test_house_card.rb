@@ -11,14 +11,14 @@ class TestHouseCard < MiniTest::Test
   # There are 7 House cards per House
   def test_deck_count
     @decks.each do |deck|
-      assert_equal(7, deck.cards.length, deck.to_s + ' has wrong number of cards')
+      assert_equal(7, deck.draw_pile.length, deck.to_s + ' has wrong number of cards')
     end
   end
 
   # The combat strength distribution is 4, 3, 2, 2, 1, 1, 0
   def test_deck_distribution
     @decks.each do |deck|
-      c = deck.cards
+      c = deck.draw_pile
       assert_equal(1, c.count { |card| card.combat_strength == 4 }, deck.to_s + ' has wrong number of combat strength 4 cards')
       assert_equal(1, c.count { |card| card.combat_strength == 3 }, deck.to_s + ' has wrong number of combat strength 3 cards')
       assert_equal(2, c.count { |card| card.combat_strength == 2 }, deck.to_s + ' has wrong number of combat strength 2 cards')
@@ -30,7 +30,7 @@ class TestHouseCard < MiniTest::Test
   # Each card has a title
   def test_card_title
     @decks.each do |deck|
-      deck.cards.each do |card|
+      deck.draw_pile.each do |card|
         refute_equal('', card.title, card.to_s + ' has no title')
       end
     end
@@ -39,7 +39,7 @@ class TestHouseCard < MiniTest::Test
   # Each card has either swords/fortifications or text
   def test_card_content
     @decks.each do |deck|
-      deck.cards.each do |card|
+      deck.draw_pile.each do |card|
         if card.swords > 0 || card.fortifications > 0
           assert_equal('', card.text, card.to_s + ' has both sword/fortifications and text')
         else
