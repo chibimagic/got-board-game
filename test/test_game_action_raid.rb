@@ -15,7 +15,7 @@ class TestGameActionRaid < MiniTest::Test
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_match(/^Cannot execute raid order during .*$/, e.message)
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
 
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
@@ -53,7 +53,7 @@ class TestGameActionRaid < MiniTest::Test
       token_class = datum[:to] < LandArea ? Footman : Ship
       g.map.area(datum[:to]).receive_token!(token_class.create_new(HouseLannister))
       g.map.area(datum[:to]).receive_token!(SupportOrder.new(HouseLannister))
-      g.game_period = :resolve_raid_orders
+      g.change_game_period(:resolve_raid_orders)
       if datum[:should_work]
         refute_raises(datum[:why]) { g.execute_raid_order!(datum[:from], datum[:to]) }
       else
@@ -67,7 +67,7 @@ class TestGameActionRaid < MiniTest::Test
     g = empty_map_game
     g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
 
     e = assert_raises(RuntimeError) { g.execute_raid_order!(RaidOrder, nil) }
     assert_equal('Must execute raid order from area, not Raid Order', e.message)
@@ -91,7 +91,7 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(BayOfIce).receive_token!(DefenseOrder.new(HouseLannister))
     g.map.area(TheShiveringSea).receive_token!(DefenseOrder.new(HouseLannister))
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack)
 
     assert_equal(false, g.map.area(CastleBlack).has_token?(OrderToken))
@@ -121,7 +121,7 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(BayOfIce).receive_token!(RaidOrder.new(HouseStark))
     g.map.area(TheShiveringSea).receive_token!(RaidOrder.new(HouseStark))
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack)
 
     assert_equal(false, g.map.area(CastleBlack).has_token?(OrderToken))
@@ -145,7 +145,7 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
     g.map.area(Winterfell).receive_token!(SpecialSupportOrder.new(HouseStark))
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_equal('Cannot raid your own orders', e.message)
 
@@ -176,7 +176,7 @@ class TestGameActionRaid < MiniTest::Test
       g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
       g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
       g.map.area(Winterfell).receive_token!(datum[:raided_order].new(HouseStark))
-      g.game_period = :resolve_raid_orders
+      g.change_game_period(:resolve_raid_orders)
       if datum[:should_work]
         refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
       else
@@ -193,7 +193,7 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(DefenseOrder.new(HouseStark))
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
   end
 
@@ -207,7 +207,7 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive_token!(ConsolidatePowerOrder.new(HouseStark))
 
-    g.game_period = :resolve_raid_orders
+    g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack, Winterfell)
 
     raiding_player_final_power_token_count = g.house(HouseLannister).count_tokens(PowerToken)

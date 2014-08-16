@@ -13,7 +13,7 @@ class TestGameActionConsolidatePower < MiniTest::Test
       token_class = datum[:area_class] < LandArea ? Footman : Ship
       g.map.area(datum[:area_class]).receive_token!(token_class.create_new(HouseStark))
       g.map.area(datum[:area_class]).receive_token!(ConsolidatePowerOrder.new(HouseStark))
-      g.game_period = :resolve_consolidate_power_orders
+      g.change_game_period(:resolve_consolidate_power_orders)
       g.execute_consolidate_power_order!(datum[:area_class])
       power_after = g.house(HouseStark).count_tokens(PowerToken)
       assert_equal(power_before + datum[:expected_power], power_after)
@@ -27,7 +27,7 @@ class TestGameActionConsolidatePower < MiniTest::Test
     g.map.area(WinterfellPortToBayOfIce).receive_token!(Ship.create_new(HouseStark))
     g.map.area(WinterfellPortToBayOfIce).receive_token!(ConsolidatePowerOrder.new(HouseStark))
     g.map.area(BayOfIce).receive_token!(Ship.create_new(HouseLannister))
-    g.game_period = :resolve_consolidate_power_orders
+    g.change_game_period(:resolve_consolidate_power_orders)
     g.execute_consolidate_power_order!(WinterfellPortToBayOfIce)
     power_after = g.house(HouseStark).count_tokens(PowerToken)
     assert_equal(power_before, power_after)

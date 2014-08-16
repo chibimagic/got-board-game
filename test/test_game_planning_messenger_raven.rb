@@ -1,7 +1,7 @@
 class TestGamePlanningMessengerRaven < MiniTest::Test
   def setup
     @g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
-    @g.game_period = :messenger_raven
+    @g.change_game_period(:messenger_raven)
   end
 
   def test_reuse_token

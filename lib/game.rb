@@ -30,7 +30,7 @@ class Game
     :houses,
     :map,
     :round,
-    :game_period,
+    :game_stack,
     :bids,
     :musterable_areas,
     :order_restriction,
@@ -79,7 +79,7 @@ class Game
     houses,
     map,
     round,
-    game_period,
+    game_stack,
     bids,
     musterable_areas,
     order_restriction,
@@ -100,7 +100,7 @@ class Game
     raise 'Invalid houses' unless houses.is_a?(Array) && houses.all? { |house| house.is_a?(House) }
     raise 'Invalid Map' unless map.is_a?(Map)
     raise 'Invalid round' unless round.is_a?(Integer) && 1 <= round && round <= 10
-    raise 'Invalid game period' unless GAME_PERIODS.any? { |period| period[0] == game_period }
+    raise 'Invalid game stack' unless game_stack.is_a?(Array) && game_stack.all? { |game_period| GAME_PERIODS.any? { |period_info| period_info[0] == game_period } }
     raise 'Invalid bids' unless bids.is_a?(Hash) && bids.keys.to_s == houses.map { |house| house.class }.to_s && bids.values.all? { |v| v.nil? || v.is_a?(Integer) }
     raise 'Invalid musterable areas' unless musterable_areas.is_a?(Hash) && musterable_areas.all? { |area, points| area < Area && (0..2).include?(points) }
     raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
@@ -121,7 +121,7 @@ class Game
     @houses = houses
     @map = map
     @round = round
-    @game_period = game_period
+    @game_stack = game_stack
     @bids = bids
     @musterable_areas = musterable_areas
     @order_restriction = order_restriction
@@ -156,7 +156,7 @@ class Game
 
     houses = house_classes.map { |house_class| house_class.create_new }
     round = 1
-    game_period = :assign_orders
+    game_stack = [:assign_orders]
     bids = house_classes.map { |house_class| [house_class, nil] }.to_h
     musterable_areas = {}
     order_restriction = nil
@@ -167,7 +167,7 @@ class Game
       houses,
       Map.create_new(houses),
       round,
-      game_period,
+      game_stack,
       bids,
       musterable_areas,
       order_restriction,
@@ -192,7 +192,7 @@ class Game
       data['houses'].map { |house_class_string, house_data| house_class_string.constantize.unserialize(house_data) },
       Map.unserialize(data['map']),
       data['round'],
-      data['game_period'].to_sym,
+      data['game_stack'].map { |game_period| game_period.to_sym },
       data['bids'].map { |house_class_string, bid| [house_class_string.constantize, bid] }.to_h,
       data['musterable_areas'],
       data['order_restriction'].nil? ? nil : data['order_restriction'].to_sym,
@@ -217,7 +217,7 @@ class Game
       :houses => @houses.map { |house| [house.class.name, house.serialize] }.to_h,
       :map => @map.serialize,
       :round => @round,
-      :game_period => @game_period,
+      :game_stack => @game_stack,
       :bids => @bids.map { |house_class, bid| [house_class.name, bid] }.to_h,
       :musterable_areas => @musterable_areas,
       :order_restriction => @order_restriction,
@@ -242,7 +242,7 @@ class Game
       @houses == o.houses &&
       @map == o.map &&
       @round == o.round &&
-      @game_period == o.game_period &&
+      @game_stack == o.game_stack &&
       @bids == o.bids &&
       @musterable_areas == o.musterable_areas &&
       @order_restriction == o.order_restriction
@@ -272,15 +272,19 @@ class Game
     @houses.find { |house| house.class == house_class }
   end
 
-  def game_period=(new_game_period)
-    period_data = GAME_PERIODS.find { |period| period[0] == new_game_period }
-    if period_data.nil?
+  def game_period
+    @game_stack.last
+  end
+
+  def add_game_period(new_game_period)
+    period_info = GAME_PERIODS.find { |period_info| period_info[0] == new_game_period }
+    if period_info.nil?
       raise 'Invalid game period'
     end
 
-    @game_period = new_game_period
+    @game_stack.push(new_game_period)
     @players_turn = []
-    case @game_period
+    case new_game_period
     when :assign_orders
       @players_turn = houses.map { |house| house.class }
     when :messenger_raven
@@ -296,17 +300,26 @@ class Game
     end
   end
 
+  def remove_game_period
+    @game_stack.pop
+  end
+
+  def change_game_period(new_game_period)
+    remove_game_period
+    add_game_period(new_game_period)
+  end
+
   def game_period_string
-    period_data = GAME_PERIODS.find { |period| period[0] == @game_period }
-    string = period_data[1] + ' phase'
-    unless period_data[2].nil?
-      string += ', ' + period_data[2] + ' step'
+    period_info = GAME_PERIODS.find { |period_info| period_info[0] == game_period }
+    string = period_info[1] + ' phase'
+    unless period_info[2].nil?
+      string += ', ' + period_info[2] + ' step'
     end
     string
   end
 
   def validate_game_state!(expected_game_period, action_string)
-    unless @game_period == expected_game_period
+    unless game_period == expected_game_period
       raise 'Cannot ' + action_string + ' during ' + game_period_string
     end
   end
@@ -338,8 +351,16 @@ class Game
     if @map.has_order?(order_token_class, player)
       @players_turn = [player]
     else
-      current_period_index = GAME_PERIODS.find_index { |period| period[0] == @game_period }
-      self.game_period = GAME_PERIODS[current_period_index + 1][0]
+      next_game_period =
+        case order_token_class.name
+        when 'RaidOrder'
+          :resolve_march_orders
+        when 'MarchOrder'
+          :resolve_consolidate_power_orders
+        when 'ConsolidatePowerOrder'
+          :clean_up
+        end
+      change_game_period(next_game_period)
     end
   end
 
@@ -398,7 +419,7 @@ class Game
   end
 
   def place_order!(house_class, area_class, order_class)
-    unless @game_period == :assign_orders || @game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
+    unless game_period == :assign_orders || game_period == :messenger_raven && house_class == @kings_court_track.token_holder_class
       raise 'Cannot place order during ' + game_period_string
     end
     validate_players_turn(house_class)
@@ -421,7 +442,7 @@ class Game
     end
 
     if @players_turn.empty?
-      self.game_period = :messenger_raven
+      change_game_period(:messenger_raven)
     end
   end
 
@@ -438,7 +459,7 @@ class Game
     @messenger_raven_token.use!
     place_order!(token.house_class, area_class, new_order_class)
 
-    self.game_period = :resolve_raid_orders
+    change_game_period(:resolve_raid_orders)
   end
 
   def look_at_wildling_deck
@@ -452,21 +473,21 @@ class Game
     validate_game_state!(:messenger_raven, 'replace card at top of wildling deck')
 
     @wildling_deck.place_at_top(card)
-    self.game_period = :resolve_raid_orders
+    change_game_period(:resolve_raid_orders)
   end
 
   def replace_wildling_card_bottom(card)
     validate_game_state!(:messenger_raven, 'replace card at bottom of wildling deck')
 
     @wildling_deck.place_at_bottom(card)
-    self.game_period = :resolve_raid_orders
+    change_game_period(:resolve_raid_orders)
   end
 
   def skip_messenger_raven
     validate_game_state!(:messenger_raven, 'skip messenger raven step')
 
     @messenger_raven_token.use!
-    self.game_period = :resolve_raid_orders
+    change_game_period(:resolve_raid_orders)
   end
 
   def execute_raid_order!(order_area_class, target_area_class = nil)
@@ -632,7 +653,7 @@ class Game
     if @round == 10
       determine_winner
     else
-      self.game_period = :westeros
+      change_game_period(:westeros)
     end
   end
 
