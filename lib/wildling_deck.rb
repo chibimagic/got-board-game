@@ -1,6 +1,5 @@
 class WildlingDeck < RandomDeck
-  include PlaceAtTopDeck
-  include PlaceAtBottomDeck
+  include ReplaceIntoDrawPileDeck
 
   STARTING_CARD_CLASSES = [
     AKingBeyondTheWall,

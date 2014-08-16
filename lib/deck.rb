@@ -67,7 +67,7 @@ class Deck
   end
 end
 
-module PlaceAtTopDeck
+module ReplaceIntoDrawPileDeck
   def place_at_top
     if @active_card.nil?
       raise 'No active card to place'
@@ -76,9 +76,7 @@ module PlaceAtTopDeck
     @draw_pile.unshift(@active_card)
     @active_card = nil
   end
-end
 
-module PlaceAtBottomDeck
   def place_at_bottom
     if @active_card.nil?
       raise 'No active card to place'
