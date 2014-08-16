@@ -49,6 +49,14 @@ class Deck
       @discard_pile == o.discard_pile
   end
 
+  def draw
+    unless @active_card.nil?
+      raise 'Cannot draw with active card'
+    end
+
+    @active_card = @draw_pile.shift
+  end
+
   def discard
     if @active_card.nil?
       raise 'No active card to discard'
@@ -56,16 +64,6 @@ class Deck
 
     @discard_pile.push(@active_card)
     @active_card = nil
-  end
-end
-
-module DrawFromTopDeck
-  def draw_from_top
-    unless @active_card.nil?
-      raise 'Cannot draw with active card'
-    end
-
-    @active_card = @draw_pile.shift
   end
 end
 

@@ -466,7 +466,7 @@ class Game
     validate_game_state!(:messenger_raven, 'look at wildling deck')
 
     @messenger_raven_token.use!
-    @wildling_deck.draw_from_top
+    @wildling_deck.draw
   end
 
   def replace_wildling_card_top

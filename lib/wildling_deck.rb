@@ -1,5 +1,4 @@
 class WildlingDeck < RandomDeck
-  include DrawFromTopDeck
   include PlaceAtTopDeck
   include PlaceAtBottomDeck
 

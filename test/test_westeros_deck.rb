@@ -22,9 +22,9 @@ class TestWesterosDeck < MiniTest::Test
       assert_equal(d1.discard_pile, d2.discard_pile)
 
       10.times do
-        d1.draw_from_top
+        d1.draw
         d1.discard
-        d2.draw_from_top
+        d2.draw
         d2.discard
       end
 

@@ -1,5 +1,4 @@
 class WesterosDeck < RandomDeck
-  include DrawFromTopDeck
   include PlaceAtTopDeck
   include PlaceAtBottomDeck
 end
