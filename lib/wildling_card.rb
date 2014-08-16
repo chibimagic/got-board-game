@@ -52,7 +52,7 @@ end
 class PreemptiveRaid < WildlingCard
   TITLE = 'Preemptive Raid'
   LOWEST_BIDDER = 'Choose one of the following: A. Destroys 2 of his units anywhere. B. Is reduced 2 positions on his highest Influence track.'
-  EVERYONE_ELSE = 'Noting happens.'
+  EVERYONE_ELSE = 'Nothing happens.'
   HIGHEST_BIDDER = 'The wildlings immediately attack again with a strength of 6. You do not participate in the bidding against this attack. (nor do you receive any rewards or penalties)'
 end
 
