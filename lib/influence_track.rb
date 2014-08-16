@@ -46,6 +46,16 @@ class InfluenceTrack
   def position(house_class)
     @track.find_index(house_class) + 1
   end
+
+  def move_to_top(house_class)
+    @track.delete(house_class)
+    @track.unshift(house_class)
+  end
+
+  def move_to_bottom(house_class)
+    @track.delete(house_class)
+    @track.push(house_class)
+  end
 end
 
 class IronThroneTrack < InfluenceTrack

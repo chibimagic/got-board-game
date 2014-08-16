@@ -60,6 +60,17 @@ class TestInfluenceTrack < MiniTest::Test
     end
   end
 
+  def test_move
+    tracks = [IronThroneTrack, FiefdomsTrack, KingsCourtTrack]
+    tracks.each do |track_class|
+      t = track_class.new([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell])
+      t.move_to_top(HouseMartell)
+      assert_equal([HouseMartell, HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell], t.track)
+      t.move_to_bottom(HouseStark)
+      assert_equal([HouseMartell, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseStark], t.track)
+    end
+  end
+
   def test_next_player
     t = IronThroneTrack.new([HouseStark, HouseLannister, HouseBaratheon, HouseGreyjoy, HouseTyrell, HouseMartell])
     assert_equal(HouseLannister, t.next_player(HouseStark))
