@@ -287,8 +287,8 @@ class Map
 
   def ==(o)
     self.class == o.class &&
-      @areas == o.areas &&
-      @supply_track == o.supply_track
+      self.areas == o.areas &&
+      self.supply_track == o.supply_track
   end
 
   # Fulfill Enumerable

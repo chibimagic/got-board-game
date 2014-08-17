@@ -31,7 +31,7 @@ class InfluenceTrack
 
   def ==(o)
     self.class == o.class &&
-      @track == o.track
+      self.track == o.track
   end
 
   def to_s

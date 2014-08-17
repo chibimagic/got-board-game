@@ -29,7 +29,7 @@ class UsableDominanceToken < DominanceToken
 
   def ==(o)
     self.class == o.class &&
-      @used == o.used
+      self.used == o.used
   end
 
   def use!

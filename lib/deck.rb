@@ -46,9 +46,9 @@ class Deck
 
   def ==(o)
     self.class == o.class &&
-      @active_card == o.active_card &&
-      @draw_pile == o.draw_pile &&
-      @discard_pile == o.discard_pile
+      self.active_card == o.active_card &&
+      self.draw_pile == o.draw_pile &&
+      self.discard_pile == o.discard_pile
   end
 
   # Fulfill Enumerable

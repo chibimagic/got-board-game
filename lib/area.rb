@@ -30,7 +30,7 @@ class Area
 
   def ==(o)
     self.class == o.class &&
-      @items == o.items
+      self.items == o.items
   end
 
   def self.to_s

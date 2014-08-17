@@ -62,8 +62,8 @@ class House
 
   def ==(o)
     self.class == o.class &&
-      @items == o.items &&
-      @house_cards == o.house_cards
+      self.items == o.items &&
+      self.house_cards == o.house_cards
   end
 
   def self.to_s

@@ -23,7 +23,7 @@ class WildlingTrack
 
   def ==(o)
     self.class == o.class &&
-      @strength == o.strength
+      self.strength == o.strength
   end
 
   def increase

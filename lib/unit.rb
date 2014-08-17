@@ -30,8 +30,8 @@ class Unit < HouseToken
 
   def ==(o)
     self.class == o.class &&
-      @house_class == o.house_class &&
-      @routed == o.routed
+      self.house_class == o.house_class &&
+      self.routed == o.routed
   end
 
   def combat_strength(attacked_area_class)

@@ -29,7 +29,7 @@ class PowerPool
 
   def ==(o)
     self.class == o.class &&
-      @items == o.items
+      self.items == o.items
   end
 
   def to_s

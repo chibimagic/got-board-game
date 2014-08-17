@@ -242,25 +242,25 @@ class Game
 
   def ==(o)
     self.class == o.class &&
-      @houses == o.houses &&
-      @map == o.map &&
-      @round == o.round &&
-      @game_stack == o.game_stack &&
-      @bids == o.bids &&
-      @musterable_areas == o.musterable_areas &&
-      @order_restriction == o.order_restriction
-      @combat == o.combat &&
-      @wildling_track == o.wildling_track &&
-      @iron_throne_track == o.iron_throne_track &&
-      @fiefdoms_track == o.fiefdoms_track &&
-      @kings_court_track == o.kings_court_track &&
-      @valyrian_steel_blade_token == o.valyrian_steel_blade_token &&
-      @messenger_raven_token == o.messenger_raven_token &&
-      @power_pool == o.power_pool &&
-      @wildling_deck == o.wildling_deck &&
-      @westeros_deck_i == o.westeros_deck_i &&
-      @westeros_deck_ii == o.westeros_deck_ii &&
-      @westeros_deck_iii == o.westeros_deck_iii
+      self.houses == o.houses &&
+      self.map == o.map &&
+      self.round == o.round &&
+      self.game_stack == o.game_stack &&
+      self.bids == o.bids &&
+      self.musterable_areas == o.musterable_areas &&
+      self.order_restriction == o.order_restriction
+      self.combat == o.combat &&
+      self.wildling_track == o.wildling_track &&
+      self.iron_throne_track == o.iron_throne_track &&
+      self.fiefdoms_track == o.fiefdoms_track &&
+      self.kings_court_track == o.kings_court_track &&
+      self.valyrian_steel_blade_token == o.valyrian_steel_blade_token &&
+      self.messenger_raven_token == o.messenger_raven_token &&
+      self.power_pool == o.power_pool &&
+      self.wildling_deck == o.wildling_deck &&
+      self.westeros_deck_i == o.westeros_deck_i &&
+      self.westeros_deck_ii == o.westeros_deck_ii &&
+      self.westeros_deck_iii == o.westeros_deck_iii
   end
 
   def self.allowed_house_classes_for_players(player_count)
