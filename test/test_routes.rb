@@ -136,7 +136,7 @@ class TestRoutes < MiniTest::Test
     response = @browser.get('/games/' + game_id.to_s)
     game = JSON.parse(response.body)
     game['houses'].each do |house, house_info|
-      house_info['items'].each do |token|
+      house_info['tokens'].each do |token|
         refute_operator(token.keys[0].constantize, :<, OrderToken)
       end
     end

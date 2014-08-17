@@ -1,30 +1,30 @@
 class House
   include ItemHolder
 
-  attr_reader :house_cards
+  attr_reader :tokens, :house_cards
 
   TITLE = ''
   MINIMUM_PLAYERS = 3
 
-  def initialize(items, house_cards)
-    raise 'Invalid items' unless items.is_a?(Array) && items.all? { |item| item.is_a?(HouseToken) }
+  def initialize(tokens, house_cards)
+    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(HouseToken) }
     raise 'Invalid house cards' unless house_cards.is_a?(HouseCardDeck)
 
-    @items = items
+    @tokens = tokens
     @house_cards = house_cards
   end
 
   def self.create_new
-    items = []
+    tokens = []
 
-    10.times { items.push(Footman.create_new(self)) }
-    5.times { items.push(Knight.create_new(self)) }
-    6.times { items.push(Ship.create_new(self)) }
-    2.times { items.push(SiegeEngine.create_new(self)) }
+    10.times { tokens.push(Footman.create_new(self)) }
+    5.times { tokens.push(Knight.create_new(self)) }
+    6.times { tokens.push(Ship.create_new(self)) }
+    2.times { tokens.push(SiegeEngine.create_new(self)) }
 
-    5.times { items.push(PowerToken.new(self)) }
+    5.times { tokens.push(PowerToken.new(self)) }
 
-    items.push(
+    tokens.push(
       WeakMarchOrder.new(self),
       MarchOrder.new(self),
       SpecialMarchOrder.new(self),
@@ -44,25 +44,25 @@ class House
 
     house_cards = self::HOUSE_CARD_DECK.create_new
 
-    new(items, house_cards)
+    new(tokens, house_cards)
   end
 
   def self.unserialize(data)
-    items = data['items'].map { |token_data| Token.unserialize(token_data) }
+    tokens = data['tokens'].map { |token_data| Token.unserialize(token_data) }
     house_cards = self::HOUSE_CARD_DECK.unserialize(data['house_cards'])
-    new(items, house_cards)
+    new(tokens, house_cards)
   end
 
   def serialize
     {
-      :items => @items.map { |token| token.serialize },
+      :tokens => @tokens.map { |token| token.serialize },
       :house_cards => @house_cards.serialize
     }
   end
 
   def ==(o)
     self.class == o.class &&
-      self.items == o.items &&
+      self.tokens == o.tokens &&
       self.house_cards == o.house_cards
   end
 
@@ -74,8 +74,14 @@ class House
     self.class::TITLE
   end
 
+  # Fulfill ItemHolder
+  def items
+    @tokens
+  end
+
+  # Fulfill ItemHolder
   def get_all(token_class)
-    @items.find_all { |token| token.is_a?(token_class) }
+    @tokens.find_all { |token| token.is_a?(token_class) }
   end
 end
 

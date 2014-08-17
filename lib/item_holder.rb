@@ -9,12 +9,16 @@ module ItemHolder
     get_all(criteria).count
   end
 
+  def items
+    raise 'To use ItemHolder, implement items'
+  end
+
   def get_all(criteria)
     raise 'To use ItemHolder, implement get_all'
   end
 
   def receive(item)
-    @items.push(item)
+    self.items.push(item)
   end
 
   def remove!(criteria)
@@ -23,6 +27,6 @@ module ItemHolder
     end
 
     item = get_all(criteria).first
-    @items.delete_at(@items.index(item))
+    self.items.delete_at(self.items.index(item))
   end
 end

@@ -1,6 +1,8 @@
 class Area
   include ItemHolder
 
+  attr_reader :tokens
+
   TITLE = 'Area'
   CONNECTION_COUNT = 0
   STRONGHOLD = false
@@ -8,29 +10,29 @@ class Area
   SUPPLY = 0
   POWER = 0
 
-  def initialize(items)
-    raise 'Invalid items' unless items.is_a?(Array) && items.all? { |item| item.is_a?(Token) }
+  def initialize(tokens)
+    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(Token) }
 
-    @items = items
+    @tokens = tokens
   end
 
   def self.create_new
-    items = []
-    new(items)
+    tokens = []
+    new(tokens)
   end
 
   def self.unserialize(data)
-    items = data.map { |token_data| Token.unserialize(token_data) }
-    new(items)
+    tokens = data.map { |token_data| Token.unserialize(token_data) }
+    new(tokens)
   end
 
   def serialize
-    @items.map { |item| item.serialize }
+    @tokens.map { |token| token.serialize }
   end
 
   def ==(o)
     self.class == o.class &&
-      self.items == o.items
+      self.tokens == o.tokens
   end
 
   def self.to_s
@@ -38,7 +40,7 @@ class Area
   end
 
   def to_s
-    self.class::TITLE + ' (' + @items.count.to_s + ')'
+    self.class::TITLE + ' (' + @tokens.count.to_s + ')'
   end
 
   def connection_count
@@ -62,7 +64,7 @@ class Area
   end
 
   def controlling_house_class
-    @items.empty? ? nil : @items[0].house_class
+    @tokens.empty? ? nil : @tokens[0].house_class
   end
 
   def enemy_controlled?(house_class)
@@ -79,8 +81,14 @@ class Area
     end
   end
 
+  # Fulfill ItemHolder
+  def items
+    @tokens
+  end
+
+  # Fulfill ItemHolder
   def get_all(token_class)
-    @items.find_all { |item| item.is_a?(token_class) }
+    @tokens.find_all { |token| token.is_a?(token_class) }
   end
 
   # Mask ItemHolder.receive
