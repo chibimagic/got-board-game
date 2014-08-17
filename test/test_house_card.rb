@@ -8,13 +8,6 @@ class TestHouseCard < MiniTest::Test
     end
   end
 
-  # There are 7 House cards per House
-  def test_deck_count
-    @decks.each do |deck|
-      assert_equal(7, deck.draw_pile.length, deck.to_s + ' has wrong number of cards')
-    end
-  end
-
   # The combat strength distribution is 4, 3, 2, 2, 1, 1, 0
   def test_deck_distribution
     @decks.each do |deck|
@@ -46,6 +39,19 @@ class TestHouseCard < MiniTest::Test
           refute_equal('', card.text, card.to_s + ' has no sword, fortiications, or text')
         end
       end
+    end
+  end
+
+  def test_select
+    @decks.each do |deck|
+      assert_equal(7, deck.draw_pile.length)
+      assert_equal(nil, deck.active_card)
+
+      card_class = deck.draw_pile.last.class
+      deck.select!(card_class)
+
+      assert_equal(card_class, deck.active_card.class)
+      assert_equal(6, deck.draw_pile.length)
     end
   end
 end

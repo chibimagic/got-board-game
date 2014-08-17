@@ -1,4 +1,19 @@
 class HouseCardDeck < Deck
+  include ItemHolder
+
+  # Fulfill ItemHolder
+  def items
+    @draw_pile
+  end
+
+  # Fulfill ItemHolder
+  def get_all(card_class)
+    @draw_pile.find_all { |card| card.is_a?(card_class) }
+  end
+
+  def select!(card_class)
+    @active_card = remove!(card_class)
+  end
 end
 
 class HouseStarkDeck < HouseCardDeck
