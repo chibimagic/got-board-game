@@ -1,30 +1,30 @@
 class House
-  include TokenHolder
+  include ItemHolder
 
   attr_reader :house_cards
 
   TITLE = ''
   MINIMUM_PLAYERS = 3
 
-  def initialize(tokens, house_cards)
-    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(HouseToken) }
+  def initialize(items, house_cards)
+    raise 'Invalid items' unless items.is_a?(Array) && items.all? { |item| item.is_a?(HouseToken) }
     raise 'Invalid house cards' unless house_cards.is_a?(HouseCardDeck)
 
-    @tokens = tokens
+    @items = items
     @house_cards = house_cards
   end
 
   def self.create_new
-    tokens = []
+    items = []
 
-    10.times { tokens.push(Footman.create_new(self)) }
-    5.times { tokens.push(Knight.create_new(self)) }
-    6.times { tokens.push(Ship.create_new(self)) }
-    2.times { tokens.push(SiegeEngine.create_new(self)) }
+    10.times { items.push(Footman.create_new(self)) }
+    5.times { items.push(Knight.create_new(self)) }
+    6.times { items.push(Ship.create_new(self)) }
+    2.times { items.push(SiegeEngine.create_new(self)) }
 
-    5.times { tokens.push(PowerToken.new(self)) }
+    5.times { items.push(PowerToken.new(self)) }
 
-    tokens.push(
+    items.push(
       WeakMarchOrder.new(self),
       MarchOrder.new(self),
       SpecialMarchOrder.new(self),
@@ -44,25 +44,25 @@ class House
 
     house_cards = self::HOUSE_CARD_DECK.create_new
 
-    new(tokens, house_cards)
+    new(items, house_cards)
   end
 
   def self.unserialize(data)
-    tokens = data['tokens'].map { |token_data| Token.unserialize(token_data) }
+    items = data['items'].map { |token_data| Token.unserialize(token_data) }
     house_cards = self::HOUSE_CARD_DECK.unserialize(data['house_cards'])
-    new(tokens, house_cards)
+    new(items, house_cards)
   end
 
   def serialize
     {
-      :tokens => @tokens.map { |token| token.serialize },
+      :items => @items.map { |token| token.serialize },
       :house_cards => @house_cards.serialize
     }
   end
 
   def ==(o)
     self.class == o.class &&
-      @tokens == o.tokens &&
+      @items == o.items &&
       @house_cards == o.house_cards
   end
 
@@ -74,8 +74,8 @@ class House
     self.class::TITLE
   end
 
-  def get_tokens(token_class)
-    @tokens.find_all { |token| token.is_a?(token_class) }
+  def get_all(token_class)
+    @items.find_all { |token| token.is_a?(token_class) }
   end
 end
 

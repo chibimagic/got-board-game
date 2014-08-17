@@ -1,42 +1,42 @@
 class PowerPool
-  include TokenHolder
+  include ItemHolder
 
-  def initialize(tokens)
-    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(PowerToken) }
+  def initialize(items)
+    raise 'Invalid items' unless items.is_a?(Array) && items.all? { |token| token.is_a?(PowerToken) }
 
-    @tokens = tokens
+    @items = items
   end
 
   def self.create_new(house_classes)
-    tokens = []
+    items = []
     house_classes.each do |house_class|
-      15.times { tokens.push(PowerToken.new(house_class)) }
+      15.times { items.push(PowerToken.new(house_class)) }
     end
-    new(tokens)
+    new(items)
   end
 
   def self.unserialize(data)
-    tokens = []
+    items = []
     data.each do |house_class_string, power_token_count|
-      power_token_count.times { tokens.push(PowerToken.new(house_class_string.constantize)) }
+      power_token_count.times { items.push(PowerToken.new(house_class_string.constantize)) }
     end
-    new(tokens)
+    new(items)
   end
 
   def serialize
-    @tokens.group_by { |token| token.house_class }.map { |house_class, tokens| [house_class.name, tokens.count] }.to_h
+    @items.group_by { |token| token.house_class }.map { |house_class, tokens| [house_class.name, tokens.count] }.to_h
   end
 
   def ==(o)
     self.class == o.class &&
-      @tokens == o.tokens
+      @items == o.items
   end
 
   def to_s
     'Power Pool'
   end
 
-  def get_tokens(house_class)
-    @tokens.find_all { |token| token.house_class == house_class }
+  def get_all(house_class)
+    @items.find_all { |token| token.house_class == house_class }
   end
 end

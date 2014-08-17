@@ -1,5 +1,5 @@
 class Area
-  include TokenHolder
+  include ItemHolder
 
   TITLE = 'Area'
   CONNECTION_COUNT = 0
@@ -8,29 +8,29 @@ class Area
   SUPPLY = 0
   POWER = 0
 
-  def initialize(tokens)
-    raise 'Invalid tokens' unless tokens.is_a?(Array) && tokens.all? { |token| token.is_a?(Token) }
+  def initialize(items)
+    raise 'Invalid items' unless items.is_a?(Array) && items.all? { |item| item.is_a?(Token) }
 
-    @tokens = tokens
+    @items = items
   end
 
   def self.create_new
-    tokens = []
-    new(tokens)
+    items = []
+    new(items)
   end
 
   def self.unserialize(data)
-    tokens = data.map { |token_data| Token.unserialize(token_data) }
-    new(tokens)
+    items = data.map { |token_data| Token.unserialize(token_data) }
+    new(items)
   end
 
   def serialize
-    @tokens.map { |token| token.serialize }
+    @items.map { |item| item.serialize }
   end
 
   def ==(o)
     self.class == o.class &&
-      @tokens == o.tokens
+      @items == o.items
   end
 
   def self.to_s
@@ -38,7 +38,7 @@ class Area
   end
 
   def to_s
-    self.class::TITLE + ' (' + @tokens.count.to_s + ')'
+    self.class::TITLE + ' (' + @items.count.to_s + ')'
   end
 
   def connection_count
@@ -62,7 +62,7 @@ class Area
   end
 
   def controlling_house_class
-    @tokens.empty? ? nil : @tokens[0].house_class
+    @items.empty? ? nil : @items[0].house_class
   end
 
   def enemy_controlled?(house_class)
@@ -79,34 +79,34 @@ class Area
     end
   end
 
-  def get_tokens(token_class)
-    @tokens.find_all { |token| token.is_a?(token_class) }
+  def get_all(token_class)
+    @items.find_all { |item| item.is_a?(token_class) }
   end
 
-  # Mask TokenHolder.receive_token
-  def receive_token(token)
-    raise 'Call :receive_token! instead'
+  # Mask ItemHolder.receive
+  def receive(token)
+    raise 'Call :receive! instead'
   end
 
-  def receive_token!(token)
+  def receive!(token)
     if enemy_controlled?(token.house_class)
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is controlled by ' + controlling_house_class.to_s
     end
 
     if token.is_a?(OrderToken)
-      if count_tokens(Unit) == 0
+      if count(Unit) == 0
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' has no units'
-      elsif has_token?(OrderToken)
+      elsif has?(OrderToken)
         raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' already has an order token'
       end
     end
 
-    TokenHolder.instance_method(:receive_token).bind(self).call(token)
+    ItemHolder.instance_method(:receive).bind(self).call(token)
   end
 end
 
 class SeaArea < Area
-  def receive_token!(token)
+  def receive!(token)
     if [Footman, Knight, SiegeEngine].any? { |unit_class| token.is_a?(unit_class) }
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a sea area'
     end
@@ -116,7 +116,7 @@ class SeaArea < Area
 end
 
 class LandArea < Area
-  def receive_token!(token)
+  def receive!(token)
     if token.is_a?(Ship)
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a land area'
     end
@@ -128,12 +128,12 @@ end
 class PortArea < Area
   CONNECTION_COUNT = 2
 
-  def receive_token!(token)
+  def receive!(token)
     if [Footman, Knight, SiegeEngine].any? { |unit_class| token.is_a?(unit_class) }
       raise 'Cannot place ' + token.to_s + ' because ' + to_s + ' is a port area'
     end
 
-    if token.is_a?(Ship) && get_tokens(Ship).count === 3
+    if token.is_a?(Ship) && get_all(Ship).count === 3
       raise 'Cannot place more than 3 Ships in a port area'
     end
 

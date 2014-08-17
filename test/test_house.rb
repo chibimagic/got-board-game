@@ -18,16 +18,16 @@ class TestHouse < MiniTest::Test
 
   def test_units
     @houses.each do |house|
-      assert_equal(10, house.count_tokens(Footman))
-      assert_equal(5, house.count_tokens(Knight))
-      assert_equal(6, house.count_tokens(Ship))
-      assert_equal(2, house.count_tokens(SiegeEngine))
+      assert_equal(10, house.count(Footman))
+      assert_equal(5, house.count(Knight))
+      assert_equal(6, house.count(Ship))
+      assert_equal(2, house.count(SiegeEngine))
     end
   end
 
   def test_power_tokens
     @houses.each do |house|
-      assert_equal(5, house.count_tokens(PowerToken))
+      assert_equal(5, house.count(PowerToken))
     end
   end
 end

@@ -10,10 +10,10 @@ class TestArea < MiniTest::Test
     assert_equal(a1, a2)
     refute_equal(a1, a3)
 
-    a1.receive_token!(Footman.create_new(HouseStark))
+    a1.receive!(Footman.create_new(HouseStark))
     refute_equal(a1, a2)
 
-    a1.remove_token!(Footman)
+    a1.remove!(Footman)
     assert_equal(a1, a2)
   end
 
@@ -138,66 +138,66 @@ class TestArea < MiniTest::Test
     area = CastleBlack.create_new
     assert_equal(nil, area.controlling_house_class, 'Area should be initially uncontrolled')
 
-    area.receive_token!(Footman.create_new(HouseStark))
+    area.receive!(Footman.create_new(HouseStark))
     assert_equal(HouseStark, area.controlling_house_class, 'Area should be controlled by House Stark')
 
-    area.remove_token!(Footman)
+    area.remove!(Footman)
     assert_equal(nil, area.controlling_house_class, 'Area should revert to uncontrolled')
 
-    area.receive_token!(Footman.create_new(HouseLannister))
+    area.receive!(Footman.create_new(HouseLannister))
     assert_equal(HouseLannister, area.controlling_house_class, 'Area should be controlled by House Lannister')
   end
 
   def test_unit_count
     area = Winterfell.create_new
-    assert_equal(0, area.count_tokens(Unit), 'Area should start with no units')
-    area.receive_token!(Footman.create_new(HouseStark))
-    assert_equal(1, area.count_tokens(Unit), 'Footman should count has 1 unit')
-    area.receive_token!(Knight.create_new(HouseStark))
-    assert_equal(2, area.count_tokens(Unit), 'Knight should count as 1 unit')
-    area.receive_token!(GarrisonToken.new(HouseStark))
-    assert_equal(2, area.count_tokens(Unit), 'Garrison token should not count as unit')
-    area.receive_token!(PowerToken.new(HouseStark))
-    assert_equal(2, area.count_tokens(Unit), 'Power token should not count as unit')
-    area.receive_token!(MarchOrder.new(HouseStark))
-    assert_equal(2, area.count_tokens(Unit), 'Orders should not count as unit')
+    assert_equal(0, area.count(Unit), 'Area should start with no units')
+    area.receive!(Footman.create_new(HouseStark))
+    assert_equal(1, area.count(Unit), 'Footman should count has 1 unit')
+    area.receive!(Knight.create_new(HouseStark))
+    assert_equal(2, area.count(Unit), 'Knight should count as 1 unit')
+    area.receive!(GarrisonToken.new(HouseStark))
+    assert_equal(2, area.count(Unit), 'Garrison token should not count as unit')
+    area.receive!(PowerToken.new(HouseStark))
+    assert_equal(2, area.count(Unit), 'Power token should not count as unit')
+    area.receive!(MarchOrder.new(HouseStark))
+    assert_equal(2, area.count(Unit), 'Orders should not count as unit')
   end
 
   def test_token_existence
     a = CastleBlack.create_new
-    assert_equal(false, a.has_token?(Footman))
-    assert_equal(false, a.has_token?(PowerToken))
-    assert_equal(false, a.has_token?(MarchOrder))
-    assert_equal(false, a.has_token?(GarrisonToken))
+    assert_equal(false, a.has?(Footman))
+    assert_equal(false, a.has?(PowerToken))
+    assert_equal(false, a.has?(MarchOrder))
+    assert_equal(false, a.has?(GarrisonToken))
 
-    a.receive_token!(Footman.create_new(HouseStark))
-    assert_equal(true, a.has_token?(Footman))
-    a.receive_token!(PowerToken.new(HouseStark))
-    assert_equal(true, a.has_token?(PowerToken))
-    a.receive_token!(MarchOrder.new(HouseStark))
-    assert_equal(true, a.has_token?(MarchOrder))
-    a.receive_token!(GarrisonToken.new(HouseStark))
-    assert_equal(true, a.has_token?(GarrisonToken))
+    a.receive!(Footman.create_new(HouseStark))
+    assert_equal(true, a.has?(Footman))
+    a.receive!(PowerToken.new(HouseStark))
+    assert_equal(true, a.has?(PowerToken))
+    a.receive!(MarchOrder.new(HouseStark))
+    assert_equal(true, a.has?(MarchOrder))
+    a.receive!(GarrisonToken.new(HouseStark))
+    assert_equal(true, a.has?(GarrisonToken))
   end
 
   def test_receive_token_override
     a = CastleBlack.create_new
-    e = assert_raises(RuntimeError) { a.receive_token(MarchOrder.new(HouseStark)) }
-    assert_equal('Call :receive_token! instead', e.message)
+    e = assert_raises(RuntimeError) { a.receive(MarchOrder.new(HouseStark)) }
+    assert_equal('Call :receive! instead', e.message)
   end
 
   def test_receive_token_area
     a = CastleBlack.create_new
 
-    e = assert_raises(RuntimeError) { a.receive_token!(MarchOrder.new(HouseStark)) }
+    e = assert_raises(RuntimeError) { a.receive!(MarchOrder.new(HouseStark)) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (0) has no units', e.message)
 
-    a.receive_token!(Footman.create_new(HouseStark))
-    e = assert_raises(RuntimeError) { a.receive_token!(MarchOrder.new(HouseLannister)) }
+    a.receive!(Footman.create_new(HouseStark))
+    e = assert_raises(RuntimeError) { a.receive!(MarchOrder.new(HouseLannister)) }
     assert_equal('Cannot place March Order (House Lannister) because Castle Black (1) is controlled by House Stark', e.message)
 
-    a.receive_token!(MarchOrder.new(HouseStark))
-    e = assert_raises(RuntimeError) { a.receive_token!(MarchOrder.new(HouseStark)) }
+    a.receive!(MarchOrder.new(HouseStark))
+    e = assert_raises(RuntimeError) { a.receive!(MarchOrder.new(HouseStark)) }
     assert_equal('Cannot place March Order (House Stark) because Castle Black (2) already has an order token', e.message)
   end
 
@@ -206,35 +206,35 @@ class TestArea < MiniTest::Test
     s = BayOfIce.create_new
     p = WinterfellPortToBayOfIce.create_new
 
-    refute_raises { l.receive_token!(Footman.create_new(HouseStark)) }
-    refute_raises { l.receive_token!(Knight.create_new(HouseStark)) }
-    refute_raises { l.receive_token!(SiegeEngine.create_new(HouseStark)) }
-    e = assert_raises(RuntimeError) { l.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { l.receive!(Footman.create_new(HouseStark)) }
+    refute_raises { l.receive!(Knight.create_new(HouseStark)) }
+    refute_raises { l.receive!(SiegeEngine.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { l.receive!(Ship.create_new(HouseStark)) }
     assert_equal('Cannot place Ship (House Stark) because Winterfell (3) is a land area', e.message)
 
-    e = assert_raises(RuntimeError) { s.receive_token!(Footman.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { s.receive!(Footman.create_new(HouseStark)) }
     assert_equal('Cannot place Footman (House Stark) because Bay of Ice (0) is a sea area', e.message)
-    e = assert_raises(RuntimeError) { s.receive_token!(Knight.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { s.receive!(Knight.create_new(HouseStark)) }
     assert_equal('Cannot place Knight (House Stark) because Bay of Ice (0) is a sea area', e.message)
-    e = assert_raises(RuntimeError) { s.receive_token!(SiegeEngine.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { s.receive!(SiegeEngine.create_new(HouseStark)) }
     assert_equal('Cannot place Siege Engine (House Stark) because Bay of Ice (0) is a sea area', e.message)
-    refute_raises { s.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { s.receive!(Ship.create_new(HouseStark)) }
 
-    e = assert_raises(RuntimeError) { p.receive_token!(Footman.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { p.receive!(Footman.create_new(HouseStark)) }
     assert_equal('Cannot place Footman (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
-    e = assert_raises(RuntimeError) { p.receive_token!(Knight.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { p.receive!(Knight.create_new(HouseStark)) }
     assert_equal('Cannot place Knight (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
-    e = assert_raises(RuntimeError) { p.receive_token!(SiegeEngine.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { p.receive!(SiegeEngine.create_new(HouseStark)) }
     assert_equal('Cannot place Siege Engine (House Stark) because Winterfell Port (Bay of Ice) (0) is a port area', e.message)
-    refute_raises { s.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { s.receive!(Ship.create_new(HouseStark)) }
   end
 
   def test_port_three_ships_max
     p = WinterfellPortToBayOfIce.create_new
-    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
-    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
-    refute_raises { p.receive_token!(Ship.create_new(HouseStark)) }
-    e = assert_raises(RuntimeError) { p.receive_token!(Ship.create_new(HouseStark)) }
+    refute_raises { p.receive!(Ship.create_new(HouseStark)) }
+    refute_raises { p.receive!(Ship.create_new(HouseStark)) }
+    refute_raises { p.receive!(Ship.create_new(HouseStark)) }
+    e = assert_raises(RuntimeError) { p.receive!(Ship.create_new(HouseStark)) }
     assert_equal('Cannot place more than 3 Ships in a port area', e.message)
   end
 end

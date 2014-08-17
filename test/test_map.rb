@@ -15,10 +15,10 @@ class TestMap < MiniTest::Test
     m2 = Map.create_new
     assert_equal(m1, m2)
 
-    m1.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
+    m1.area(CastleBlack).receive!(Footman.create_new(HouseStark))
     refute_equal(m1, m2)
 
-    m1.area(CastleBlack).remove_token!(Footman)
+    m1.area(CastleBlack).remove!(Footman)
     assert_equal(m1, m2)
   end
 
@@ -129,7 +129,7 @@ class TestMap < MiniTest::Test
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
 
-    @m.area(BayOfIce).receive_token!(Ship.create_new(HouseStark))
+    @m.area(BayOfIce).receive!(Ship.create_new(HouseStark))
 
     assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
     assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
@@ -141,8 +141,8 @@ class TestMap < MiniTest::Test
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
 
-    @m.area(SunsetSea).receive_token!(Ship.create_new(HouseStark))
-    @m.area(WestSummerSea).receive_token!(Ship.create_new(HouseStark))
+    @m.area(SunsetSea).receive!(Ship.create_new(HouseStark))
+    @m.area(WestSummerSea).receive!(Ship.create_new(HouseStark))
 
     assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
     assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
@@ -154,7 +154,7 @@ class TestMap < MiniTest::Test
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
 
-    @m.area(TheShiveringSea).receive_token!(Ship.create_new(HouseLannister))
+    @m.area(TheShiveringSea).receive!(Ship.create_new(HouseLannister))
 
     assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
     assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
@@ -166,9 +166,9 @@ class TestMap < MiniTest::Test
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, CastleBlack, Starfall))
     assert_equal(false, @m.connected_via_ship_transport?(HouseLannister, Starfall, CastleBlack))
 
-    @m.area(TheNarrowSea).receive_token!(Ship.create_new(HouseLannister))
-    @m.area(ShipbreakerBay).receive_token!(Ship.create_new(HouseLannister))
-    @m.area(EastSummerSea).receive_token!(Ship.create_new(HouseLannister))
+    @m.area(TheNarrowSea).receive!(Ship.create_new(HouseLannister))
+    @m.area(ShipbreakerBay).receive!(Ship.create_new(HouseLannister))
+    @m.area(EastSummerSea).receive!(Ship.create_new(HouseLannister))
 
     assert_equal(false, @m.connected_via_ship_transport?(HouseStark, BayOfIce, SunsetSea))
     assert_equal(true, @m.connected_via_ship_transport?(HouseStark, CastleBlack, Winterfell))
@@ -192,15 +192,15 @@ class TestMap < MiniTest::Test
   def test_army_count
     h1 = HouseStark
     h2 = HouseLannister
-    @m.area(CastleBlack).receive_token!(Footman.create_new(h1))
-    @m.area(Winterfell).receive_token!(SiegeEngine.create_new(h1))
-    @m.area(Winterfell).receive_token!(Knight.create_new(h1))
-    @m.area(Winterfell).receive_token!(Footman.create_new(h1))
-    @m.area(Karhold).receive_token!(Knight.create_new(h1))
-    @m.area(Karhold).receive_token!(Knight.create_new(h1))
-    @m.area(Lannisport).receive_token!(Knight.create_new(h2))
-    @m.area(Lannisport).receive_token!(Knight.create_new(h2))
-    @m.area(StoneySept).receive_token!(Knight.create_new(h2))
+    @m.area(CastleBlack).receive!(Footman.create_new(h1))
+    @m.area(Winterfell).receive!(SiegeEngine.create_new(h1))
+    @m.area(Winterfell).receive!(Knight.create_new(h1))
+    @m.area(Winterfell).receive!(Footman.create_new(h1))
+    @m.area(Karhold).receive!(Knight.create_new(h1))
+    @m.area(Karhold).receive!(Knight.create_new(h1))
+    @m.area(Lannisport).receive!(Knight.create_new(h2))
+    @m.area(Lannisport).receive!(Knight.create_new(h2))
+    @m.area(StoneySept).receive!(Knight.create_new(h2))
     assert_equal([3, 2], @m.armies(HouseStark), 'Army count wrong')
     assert_equal([2], @m.armies(HouseLannister), 'Army count wrong')
   end
@@ -221,8 +221,8 @@ class TestMap < MiniTest::Test
     ]
     data.each do |datum|
       m = Map.create_new
-      m.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
-      m.area(CastleBlack).receive_token!(datum.new(HouseStark))
+      m.area(CastleBlack).receive!(Footman.create_new(HouseStark))
+      m.area(CastleBlack).receive!(datum.new(HouseStark))
       assert_equal(true, m.has_order?(datum, HouseStark))
       assert_equal(true, m.has_order?(datum.superclass, HouseStark))
       assert_equal(false, m.has_order?(datum, HouseLannister))
@@ -332,7 +332,7 @@ class TestMap < MiniTest::Test
     data.each do |datum|
       m = Map.create_new
       datum[:armies].each_with_index do |army_size, index|
-        army_size.times { m.area(areas[index]).receive_token!(Footman.create_new(HouseStark)) }
+        army_size.times { m.area(areas[index]).receive!(Footman.create_new(HouseStark)) }
       end
       (0..6).each do |supply_level|
         m.set_level(HouseStark, supply_level)

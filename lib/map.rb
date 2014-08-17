@@ -243,7 +243,7 @@ class Map
     end
 
     NeutralForceTokens.get_tokens(houses.count).each do |token|
-      areas.find { |area| area.class == token.area_class }.receive_token!(token)
+      areas.find { |area| area.class == token.area_class }.receive!(token)
     end
 
     supply_track = {
@@ -258,11 +258,11 @@ class Map
     houses.each do |house|
       house.class::STARTING_UNITS.each do |area_class, starting_unit_classes|
         starting_unit_classes.each do |starting_unit_class|
-          unit = house.remove_token!(starting_unit_class)
-          areas.find { |area| area.class == area_class }.receive_token!(unit)
+          unit = house.remove!(starting_unit_class)
+          areas.find { |area| area.class == area_class }.receive!(unit)
         end
       end
-      areas.find { |area| area.class == house.class::HOME_AREA }.receive_token!(GarrisonToken.new(house.class))
+      areas.find { |area| area.class == house.class::HOME_AREA }.receive!(GarrisonToken.new(house.class))
       supply_track_position = house.class::INITIAL_SUPPLY
       supply_track[supply_track_position].push(house.class)
     end
@@ -348,15 +348,15 @@ class Map
   end
 
   def armies(house_class)
-    controlled_areas(house_class).map { |area| area.count_tokens(Unit) }.reject { |count| count < 2 }.sort.reverse
+    controlled_areas(house_class).map { |area| area.count(Unit) }.reject { |count| count < 2 }.sort.reverse
   end
 
   def special_orders_placed(house_class)
-    controlled_areas(house_class).count { |area| area.has_token?(OrderToken) && area.get_tokens(OrderToken).first.special }
+    controlled_areas(house_class).count { |area| area.has?(OrderToken) && area.get_all(OrderToken).first.special }
   end
 
   def has_order?(order_class, house_class)
-    @areas.any? { |area| area.has_token?(order_class) && area.controlling_house_class == house_class }
+    @areas.any? { |area| area.has?(order_class) && area.controlling_house_class == house_class }
   end
 
   def musterable_areas(house_class)

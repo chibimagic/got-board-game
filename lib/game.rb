@@ -8,7 +8,7 @@ require_relative 'house_card_deck.rb'
 require_relative 'wildling_card.rb'
 require_relative 'wildling_deck.rb'
 require_relative 'dominance_token.rb'
-require_relative 'token_holder.rb'
+require_relative 'item_holder.rb'
 require_relative 'area.rb'
 require_relative 'map.rb'
 require_relative 'wildling_track.rb'
@@ -385,7 +385,7 @@ class Game
       raise house_class.to_s + ' has already bid ' + existing_bid.to_s
     end
 
-    available_power = house(house_class).get_tokens(PowerToken).length
+    available_power = house(house_class).get_all(PowerToken).length
     unless available_power >= power_tokens
       raise 'Cannot bid ' + power_tokens.to_s + ' when ' + house_class.to_s + ' only has ' + available_power.to_s
     end
@@ -419,12 +419,12 @@ class Game
 
     house_class = area_class.controlling_house_class
     unless source_unit_class.nil?
-      unit = @map.area(area_class).remove_token!(source_unit_class)
-      house(house_class).receive_token(unit)
+      unit = @map.area(area_class).remove!(source_unit_class)
+      house(house_class).receive(unit)
     end
 
-    unit = house(house_class).remove_token!(final_unit_class)
-    @map.area(to_area_class).receive_token(unit)
+    unit = house(house_class).remove!(final_unit_class)
+    @map.area(to_area_class).receive(unit)
 
     @musterable_areas[area_class] -= point_cost
   end
@@ -439,7 +439,7 @@ class Game
     end
     validate_players_turn(house_class)
 
-    order = house(house_class).remove_token!(order_class)
+    order = house(house_class).remove!(order_class)
 
     if order.special
       special_allowed = @kings_court_track.special_orders_allowed(house_class)
@@ -449,9 +449,9 @@ class Game
       end
     end
 
-    @map.area(area_class).receive_token!(order)
+    @map.area(area_class).receive!(order)
 
-    areas_needing_orders = @map.controlled_areas(house_class).find_all { |area| !area.has_token?(OrderToken) }
+    areas_needing_orders = @map.controlled_areas(house_class).find_all { |area| !area.has?(OrderToken) }
     if areas_needing_orders.empty?
       @players_turn.delete(house_class)
     end
@@ -464,12 +464,12 @@ class Game
   def replace_order!(area_class, new_order_class)
     validate_game_state!(:messenger_raven, 'replace order')
 
-    token = @map.area(area_class).remove_token!(OrderToken)
+    token = @map.area(area_class).remove!(OrderToken)
     if token.house_class != @kings_court_track.token_holder_class
       raise 'Only the holder of the ' + @messenger_raven_token.to_s + ' may replace an order'
     end
     validate_players_turn(token.house_class)
-    house(token.house_class).receive_token(token)
+    house(token.house_class).receive(token)
 
     @messenger_raven_token.use!
     place_order!(token.house_class, area_class, new_order_class)
@@ -525,13 +525,13 @@ class Game
       raise 'Cannot raid from ' + order_area_class.to_s + ' to unconnected ' + target_area_class.to_s
     end
 
-    raid_order = @map.area(order_area_class).remove_token!(OrderToken)
+    raid_order = @map.area(order_area_class).remove!(OrderToken)
     raiding_house_class = raid_order.house_class
     validate_players_turn(raiding_house_class)
-    house(raiding_house_class).receive_token(raid_order)
+    house(raiding_house_class).receive(raid_order)
 
     unless target_area_class.nil?
-      raided_order = @map.area(target_area_class).remove_token!(OrderToken)
+      raided_order = @map.area(target_area_class).remove!(OrderToken)
       raided_house_class = raided_order.house_class
       if raiding_house_class == raided_house_class
         raise 'Cannot raid your own orders'
@@ -540,16 +540,16 @@ class Game
       unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
         raise 'Cannot raid ' + raided_order.to_s
       end
-      house(raided_house_class).receive_token(raided_order)
+      house(raided_house_class).receive(raided_order)
 
       if raided_order.is_a?(ConsolidatePowerOrder)
-        if @power_pool.has_token?(raiding_house_class)
-          token = @power_pool.remove_token!(raiding_house_class)
-          house(raiding_house_class).receive_token(token)
+        if @power_pool.has?(raiding_house_class)
+          token = @power_pool.remove!(raiding_house_class)
+          house(raiding_house_class).receive(token)
         end
-        if house(raided_house_class).has_token?(PowerToken)
-          token = house(raided_house_class).remove_token!(PowerToken)
-          @power_pool.receive_token(token)
+        if house(raided_house_class).has?(PowerToken)
+          token = house(raided_house_class).remove!(PowerToken)
+          @power_pool.receive(token)
         end
       end
     end
@@ -560,12 +560,12 @@ class Game
   # area_classes_to_unit_classes: { CastleBlack => [Footman], Karhold => [Knight, SiegeEngine], Winterfell => [Footman] }
   def execute_march_order!(order_area_class, area_classes_to_unit_classes, establish_control)
     validate_game_state!(:resolve_march_orders, 'execute march order')
-    march_order = @map.area(order_area_class).remove_token!(OrderToken)
+    march_order = @map.area(order_area_class).remove!(OrderToken)
     validate_players_turn(march_order.house_class)
 
     # Verify units
     marched_unit_classes = area_classes_to_unit_classes.values.flatten
-    existing_unit_classes = @map.area(order_area_class).get_tokens(Unit).map { |unit| unit.class }
+    existing_unit_classes = @map.area(order_area_class).get_all(Unit).map { |unit| unit.class }
     if marched_unit_classes.to_set != existing_unit_classes.to_set
       raise 'Marched units (' + marched_unit_classes.to_s + ') must match existing units in ' + order_area_class.to_s + ' (' + existing_unit_classes.to_s + ')'
     end
@@ -600,22 +600,22 @@ class Game
     end
 
     # Execute non-combat movement first
-    house(march_order.house_class).receive_token(march_order)
+    house(march_order.house_class).receive(march_order)
     attacking_units = []
     area_classes_to_unit_classes.each do |target_area_class, unit_classes|
       unit_classes.each do |unit_class|
-        unit = @map.area(order_area_class).remove_token!(unit_class)
+        unit = @map.area(order_area_class).remove!(unit_class)
         if combat_trigger_areas.include?(target_area_class)
           attacking_units.push(unit)
         else
-          @map.area(target_area_class).receive_token!(unit)
+          @map.area(target_area_class).receive!(unit)
         end
       end
     end
 
     if establish_control
-      power_token = house(order_house_class).remove_token!(PowerToken)
-      @map.area(order_area_class).receive_token(power_token)
+      power_token = house(order_house_class).remove!(PowerToken)
+      @map.area(order_area_class).receive(power_token)
     end
 
     if combat_trigger_areas.empty?
@@ -630,10 +630,10 @@ class Game
   def execute_consolidate_power_order!(order_area_class)
     validate_game_state!(:resolve_consolidate_power_orders, 'execute consolidate power order')
 
-    consolidate_power_order = @map.area(order_area_class).remove_token!(OrderToken)
+    consolidate_power_order = @map.area(order_area_class).remove!(OrderToken)
     house_class = consolidate_power_order.house_class
     validate_players_turn(house_class)
-    house(house_class).receive_token(consolidate_power_order)
+    house(house_class).receive(consolidate_power_order)
 
     if order_area_class < PortArea
       connected_sea_class = @map.connected_sea_classes(order_area_class).first
@@ -642,9 +642,9 @@ class Game
 
     count = 1 + @map.area(order_area_class).power
     count.times do
-      if @power_pool.has_token?(house_class)
-        token = @power_pool.remove_token!(house_class)
-        house(house_class).receive_token(token)
+      if @power_pool.has?(house_class)
+        token = @power_pool.remove!(house_class)
+        house(house_class).receive(token)
       end
     end
 
@@ -653,14 +653,14 @@ class Game
 
   def clean_up!
     @map.each do |area|
-      if area.has_token?(SupportOrder)
-        token = area.remove_token!(SupportOrder)
-        house(token.house_class).receive_token(token)
-      elsif area.has_token?(DefenseOrder)
-        token = area.remove_token!(DefenseOrder)
-        house(token.house_class).receive_token(token)
+      if area.has?(SupportOrder)
+        token = area.remove!(SupportOrder)
+        house(token.house_class).receive(token)
+      elsif area.has?(DefenseOrder)
+        token = area.remove!(DefenseOrder)
+        house(token.house_class).receive(token)
       end
-      area.get_tokens(Unit).each { |unit| unit.reset }
+      area.get_all(Unit).each { |unit| unit.reset }
     end
     @messenger_raven_token.reset
     @valyrian_steel_blade_token.reset
@@ -691,8 +691,8 @@ class Game
       return candidate_house_classes.first
     end
 
-    power_counts = candidate_house_classes.map { |house_class| house(house_class).count_tokens(PowerToken) }
-    candidate_house_classes = candidate_house_classes.find_all { |house_class| house(house_class).count_tokens(PowerToken) == power_counts.max }
+    power_counts = candidate_house_classes.map { |house_class| house(house_class).count(PowerToken) }
+    candidate_house_classes = candidate_house_classes.find_all { |house_class| house(house_class).count(PowerToken) == power_counts.max }
     if candidate_house_classes.count == 1
       return candidate_house_classes.first
     end

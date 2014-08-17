@@ -37,10 +37,10 @@ class TestGame < MiniTest::Test
     }
     expected_units_remaining.each do |house_class, units_remaining|
       house = game.houses.find { |house| house.class == house_class }
-      assert_equal(units_remaining[:footmen], house.count_tokens(Footman))
-      assert_equal(units_remaining[:knights], house.count_tokens(Knight))
-      assert_equal(units_remaining[:ships], house.count_tokens(Ship))
-      assert_equal(units_remaining[:siege_engines], house.count_tokens(SiegeEngine))
+      assert_equal(units_remaining[:footmen], house.count(Footman))
+      assert_equal(units_remaining[:knights], house.count(Knight))
+      assert_equal(units_remaining[:ships], house.count(Ship))
+      assert_equal(units_remaining[:siege_engines], house.count(SiegeEngine))
     end
 
     # All houses except House Stark begin at supply = 2
@@ -71,14 +71,14 @@ class TestGame < MiniTest::Test
     area_classes = game.map.controlled_areas(HouseIndependent).map { |area| area.class }
     assert_equal([KingsLanding, TheEyrie], area_classes, 'Wrong neutral tokens')
 
-    assert_equal(90, game.power_pool.tokens.count, 'Wrong number of tokens in power pool')
+    assert_equal(90, game.power_pool.items.count, 'Wrong number of tokens in power pool')
     game.houses.each do |house|
-      assert_equal(5, house.count_tokens(PowerToken), house.to_s + ' has wrong number of power tokens')
+      assert_equal(5, house.count(PowerToken), house.to_s + ' has wrong number of power tokens')
     end
 
     # Garrison tokens
     expected_garrison_token_locations = [Winterfell, Lannisport, Dragonstone, Pyke, Highgarden, Sunspear]
-    actual_garrison_token_locations = game.map.areas.find_all { |area| area.has_token?(GarrisonToken) }.map { |area| area.class }
+    actual_garrison_token_locations = game.map.areas.find_all { |area| area.has?(GarrisonToken) }.map { |area| area.class }
     assert_equal(expected_garrison_token_locations.to_set, actual_garrison_token_locations.to_set, 'Garrison tokens in wrong places')
   end
 

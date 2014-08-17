@@ -8,7 +8,7 @@ class TestGamePlanningMessengerRaven < MiniTest::Test
     card = @g.look_at_wildling_deck
     assert_equal(:messenger_raven, @g.game_period)
 
-    @g.map.area(Lannisport).receive_token!(MarchOrder.new(HouseLannister))
+    @g.map.area(Lannisport).receive!(MarchOrder.new(HouseLannister))
     e = assert_raises(RuntimeError) { @g.replace_order!(Lannisport, RaidOrder) }
     assert_equal('Messenger Raven token has already been used', e.message)
     e = assert_raises(RuntimeError) { @g.look_at_wildling_deck }

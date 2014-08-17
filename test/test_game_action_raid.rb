@@ -7,10 +7,10 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_step
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Winterfell).receive_token!(RaidOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(RaidOrder.new(HouseStark))
 
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_match(/^Cannot execute raid order during .*$/, e.message)
@@ -48,11 +48,11 @@ class TestGameActionRaid < MiniTest::Test
     data.each do |datum|
       g = empty_map_game
       token_class = datum[:from] < LandArea ? Footman : Ship
-      g.map.area(datum[:from]).receive_token!(token_class.create_new(HouseStark))
-      g.map.area(datum[:from]).receive_token!(RaidOrder.new(HouseStark))
+      g.map.area(datum[:from]).receive!(token_class.create_new(HouseStark))
+      g.map.area(datum[:from]).receive!(RaidOrder.new(HouseStark))
       token_class = datum[:to] < LandArea ? Footman : Ship
-      g.map.area(datum[:to]).receive_token!(token_class.create_new(HouseLannister))
-      g.map.area(datum[:to]).receive_token!(SupportOrder.new(HouseLannister))
+      g.map.area(datum[:to]).receive!(token_class.create_new(HouseLannister))
+      g.map.area(datum[:to]).receive!(SupportOrder.new(HouseLannister))
       g.change_game_period(:resolve_raid_orders)
       if datum[:should_work]
         refute_raises(datum[:why]) { g.execute_raid_order!(datum[:from], datum[:to]) }
@@ -65,8 +65,8 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_invalid_area
     g = empty_map_game
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseStark))
     g.change_game_period(:resolve_raid_orders)
 
     e = assert_raises(RuntimeError) { g.execute_raid_order!(RaidOrder, nil) }
@@ -79,81 +79,81 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_ineligible
     g = empty_map_game
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Karhold).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(BayOfIce).receive_token!(Ship.create_new(HouseLannister))
-    g.map.area(TheShiveringSea).receive_token!(Ship.create_new(HouseLannister))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
+    g.map.area(Karhold).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseLannister))
+    g.map.area(BayOfIce).receive!(Ship.create_new(HouseLannister))
+    g.map.area(TheShiveringSea).receive!(Ship.create_new(HouseLannister))
 
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
-    g.map.area(Karhold).receive_token!(DefenseOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(DefenseOrder.new(HouseLannister))
-    g.map.area(BayOfIce).receive_token!(DefenseOrder.new(HouseLannister))
-    g.map.area(TheShiveringSea).receive_token!(DefenseOrder.new(HouseLannister))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseStark))
+    g.map.area(Karhold).receive!(DefenseOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive!(DefenseOrder.new(HouseLannister))
+    g.map.area(BayOfIce).receive!(DefenseOrder.new(HouseLannister))
+    g.map.area(TheShiveringSea).receive!(DefenseOrder.new(HouseLannister))
 
     g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack)
 
-    assert_equal(false, g.map.area(CastleBlack).has_token?(OrderToken))
+    assert_equal(false, g.map.area(CastleBlack).has?(OrderToken))
 
-    assert_equal(true, g.map.area(Karhold).has_token?(Unit))
-    assert_equal(true, g.map.area(Winterfell).has_token?(Unit))
-    assert_equal(true, g.map.area(BayOfIce).has_token?(Unit))
-    assert_equal(true, g.map.area(TheShiveringSea).has_token?(Unit))
+    assert_equal(true, g.map.area(Karhold).has?(Unit))
+    assert_equal(true, g.map.area(Winterfell).has?(Unit))
+    assert_equal(true, g.map.area(BayOfIce).has?(Unit))
+    assert_equal(true, g.map.area(TheShiveringSea).has?(Unit))
 
-    assert_equal(true, g.map.area(Karhold).has_token?(OrderToken))
-    assert_equal(true, g.map.area(Winterfell).has_token?(OrderToken))
-    assert_equal(true, g.map.area(BayOfIce).has_token?(OrderToken))
-    assert_equal(true, g.map.area(TheShiveringSea).has_token?(OrderToken))
+    assert_equal(true, g.map.area(Karhold).has?(OrderToken))
+    assert_equal(true, g.map.area(Winterfell).has?(OrderToken))
+    assert_equal(true, g.map.area(BayOfIce).has?(OrderToken))
+    assert_equal(true, g.map.area(TheShiveringSea).has?(OrderToken))
   end
 
   def test_raid_no_effect
     g = empty_map_game
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(Karhold).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(BayOfIce).receive_token!(Ship.create_new(HouseStark))
-    g.map.area(TheShiveringSea).receive_token!(Ship.create_new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Karhold).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(BayOfIce).receive!(Ship.create_new(HouseStark))
+    g.map.area(TheShiveringSea).receive!(Ship.create_new(HouseStark))
 
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-    g.map.area(Karhold).receive_token!(RaidOrder.new(HouseStark))
-    g.map.area(Winterfell).receive_token!(RaidOrder.new(HouseStark))
-    g.map.area(BayOfIce).receive_token!(RaidOrder.new(HouseStark))
-    g.map.area(TheShiveringSea).receive_token!(RaidOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
+    g.map.area(Karhold).receive!(RaidOrder.new(HouseStark))
+    g.map.area(Winterfell).receive!(RaidOrder.new(HouseStark))
+    g.map.area(BayOfIce).receive!(RaidOrder.new(HouseStark))
+    g.map.area(TheShiveringSea).receive!(RaidOrder.new(HouseStark))
 
     g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack)
 
-    assert_equal(false, g.map.area(CastleBlack).has_token?(OrderToken))
+    assert_equal(false, g.map.area(CastleBlack).has?(OrderToken))
 
-    assert_equal(true, g.map.area(Karhold).has_token?(Unit))
-    assert_equal(true, g.map.area(Winterfell).has_token?(Unit))
-    assert_equal(true, g.map.area(BayOfIce).has_token?(Unit))
-    assert_equal(true, g.map.area(TheShiveringSea).has_token?(Unit))
+    assert_equal(true, g.map.area(Karhold).has?(Unit))
+    assert_equal(true, g.map.area(Winterfell).has?(Unit))
+    assert_equal(true, g.map.area(BayOfIce).has?(Unit))
+    assert_equal(true, g.map.area(TheShiveringSea).has?(Unit))
 
-    assert_equal(true, g.map.area(Karhold).has_token?(OrderToken))
-    assert_equal(true, g.map.area(Winterfell).has_token?(OrderToken))
-    assert_equal(true, g.map.area(BayOfIce).has_token?(OrderToken))
-    assert_equal(true, g.map.area(TheShiveringSea).has_token?(OrderToken))
+    assert_equal(true, g.map.area(Karhold).has?(OrderToken))
+    assert_equal(true, g.map.area(Winterfell).has?(OrderToken))
+    assert_equal(true, g.map.area(BayOfIce).has?(OrderToken))
+    assert_equal(true, g.map.area(TheShiveringSea).has?(OrderToken))
   end
 
   def test_raid_own_order
     g = empty_map_game
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
 
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseStark))
-    g.map.area(Winterfell).receive_token!(SpecialSupportOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseStark))
+    g.map.area(Winterfell).receive!(SpecialSupportOrder.new(HouseStark))
 
     g.change_game_period(:resolve_raid_orders)
     e = assert_raises(RuntimeError) { g.execute_raid_order!(CastleBlack, Winterfell) }
     assert_equal('Cannot raid your own orders', e.message)
 
-    assert_equal(true, g.map.area(CastleBlack).has_token?(Unit))
-    assert_equal(true, g.map.area(Winterfell).has_token?(Unit))
+    assert_equal(true, g.map.area(CastleBlack).has?(Unit))
+    assert_equal(true, g.map.area(Winterfell).has?(Unit))
 
-    assert_equal(true, g.map.area(CastleBlack).has_token?(OrderToken))
-    assert_equal(true, g.map.area(Winterfell).has_token?(OrderToken))
+    assert_equal(true, g.map.area(CastleBlack).has?(OrderToken))
+    assert_equal(true, g.map.area(Winterfell).has?(OrderToken))
   end
 
   def test_raid_raidable_orders
@@ -172,10 +172,10 @@ class TestGameActionRaid < MiniTest::Test
     ]
     data.each do |datum|
       g = empty_map_game
-      g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
-      g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-      g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-      g.map.area(Winterfell).receive_token!(datum[:raided_order].new(HouseStark))
+      g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+      g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
+      g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+      g.map.area(Winterfell).receive!(datum[:raided_order].new(HouseStark))
       g.change_game_period(:resolve_raid_orders)
       if datum[:should_work]
         refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
@@ -188,10 +188,10 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_special
     g = empty_map_game
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(CastleBlack).receive_token!(SpecialRaidOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Winterfell).receive_token!(DefenseOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(CastleBlack).receive!(SpecialRaidOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(DefenseOrder.new(HouseStark))
 
     g.change_game_period(:resolve_raid_orders)
     refute_raises { g.execute_raid_order!(CastleBlack, Winterfell) }
@@ -199,19 +199,19 @@ class TestGameActionRaid < MiniTest::Test
 
   def test_raid_power_token
     g = empty_map_game
-    raiding_player_initial_power_token_count = g.house(HouseLannister).count_tokens(PowerToken)
-    raided_player_initial_power_token_count = g.house(HouseStark).count_tokens(PowerToken)
+    raiding_player_initial_power_token_count = g.house(HouseLannister).count(PowerToken)
+    raided_player_initial_power_token_count = g.house(HouseStark).count(PowerToken)
 
-    g.map.area(CastleBlack).receive_token!(Footman.create_new(HouseLannister))
-    g.map.area(CastleBlack).receive_token!(RaidOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive_token!(Footman.create_new(HouseStark))
-    g.map.area(Winterfell).receive_token!(ConsolidatePowerOrder.new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(ConsolidatePowerOrder.new(HouseStark))
 
     g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack, Winterfell)
 
-    raiding_player_final_power_token_count = g.house(HouseLannister).count_tokens(PowerToken)
-    raided_player_final_power_token_count = g.house(HouseStark).count_tokens(PowerToken)
+    raiding_player_final_power_token_count = g.house(HouseLannister).count(PowerToken)
+    raided_player_final_power_token_count = g.house(HouseStark).count(PowerToken)
 
     assert_equal(raiding_player_initial_power_token_count + 1, raiding_player_final_power_token_count)
     assert_equal(raided_player_initial_power_token_count - 1, raided_player_final_power_token_count)
