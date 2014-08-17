@@ -1,4 +1,6 @@
 class Deck
+  include Enumerable
+
   attr_reader \
     :active_card,
     :draw_pile,
@@ -47,6 +49,11 @@ class Deck
       @active_card == o.active_card &&
       @draw_pile == o.draw_pile &&
       @discard_pile == o.discard_pile
+  end
+
+  # Fulfill Enumerable
+  def each(&block)
+    @draw_pile.each(&block)
   end
 
   def draw
