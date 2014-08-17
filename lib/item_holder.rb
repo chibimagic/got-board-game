@@ -21,12 +21,16 @@ module ItemHolder
     self.items.push(item)
   end
 
-  def remove!(criteria)
+  def get!(criteria)
     unless has?(criteria)
       raise to_s + ' has no items matching ' + criteria.to_s
     end
 
-    item = get_all(criteria).first
+    get_all(criteria).first
+  end
+
+  def remove!(criteria)
+    item = get!(criteria)
     self.items.delete_at(self.items.index(item))
   end
 end

@@ -352,7 +352,7 @@ class Map
   end
 
   def special_orders_placed(house_class)
-    controlled_areas(house_class).count { |area| area.has?(OrderToken) && area.get_all(OrderToken).first.special }
+    controlled_areas(house_class).count { |area| area.has?(OrderToken) && area.get!(OrderToken).special }
   end
 
   def has_order?(order_class, house_class)
