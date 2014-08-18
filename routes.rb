@@ -5,6 +5,7 @@ require_relative 'lib/storage.rb'
 
 enable :sessions
 set :session_secret, 'got-board-game'
+set :raise_errors, false
 set :show_exceptions, false
 
 # Routes that don't require authentication
