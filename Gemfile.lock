@@ -96,7 +96,6 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
-  json
   rails
   simplecov
   sinatra
