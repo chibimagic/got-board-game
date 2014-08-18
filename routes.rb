@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'JSON'
+require 'json'
 require_relative 'lib/game.rb'
 require_relative 'lib/storage.rb'
 
