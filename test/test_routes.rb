@@ -172,7 +172,10 @@ class TestRoutes < MiniTest::Test
 
   def teardown
     @usernames.each do |username|
-      @browser.post('/session', { 'username' => username, 'password' => 'password' }.to_json)
+      response = @browser.get('/session').body
+      if response.start_with?('No user with session id')
+        @browser.post('/session', { 'username' => username, 'password' => 'password' }.to_json)
+      end
       @browser.delete('/users/' + username)
     end
   end
