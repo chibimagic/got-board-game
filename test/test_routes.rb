@@ -3,7 +3,10 @@ class TestRoutes < MiniTest::Test
     @browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
     @usernames = ['a', 'b', 'c', 'd', 'e', 'f']
     @usernames.each do |username|
-      @browser.post('/users', { 'username' => username, 'password' => 'password', 'player_name' => username }.to_json)
+      response = @browser.post('/session', { 'username' => username, 'password' => 'password' }.to_json).body
+      if response.start_with?('No user with username')
+        @browser.post('/users', { 'username' => username, 'password' => 'password', 'player_name' => username }.to_json)
+      end
     end
     @browser.post('/session', { 'username' => @usernames[0], 'password' => 'password' }.to_json)
   end
