@@ -27,12 +27,12 @@ class Storage
     db.execute <<-EOT
       create table if not exists games (
         id integer primary key,
-        house_stark integer not null references users(id),
-        house_lannister integer not null references users(id),
-        house_baratheon integer not null references users(id),
-        house_greyjoy integer references users(id),
-        house_tyrell integer references users(id),
-        house_martell integer references users(id),
+        house_stark integer references users(id) on delete set default,
+        house_lannister integer references users(id) on delete set default,
+        house_baratheon integer references users(id) on delete set default,
+        house_greyjoy integer references users(id) on delete set default,
+        house_tyrell integer references users(id) on delete set default,
+        house_martell integer references users(id) on delete set default,
         data blob not null
       )
     EOT
