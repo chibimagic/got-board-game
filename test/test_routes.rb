@@ -1,11 +1,11 @@
 class TestRoutes < MiniTest::Test
   def setup
     @browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
-    usernames = ['a', 'b', 'c', 'd', 'e', 'f']
-    usernames.each do |username|
+    @usernames = ['a', 'b', 'c', 'd', 'e', 'f']
+    @usernames.each do |username|
       @browser.post('/users', { 'username' => username, 'password' => 'password', 'player_name' => username }.to_json)
     end
-    @browser.post('/session', { 'username' => usernames[0], 'password' => 'password' }.to_json)
+    @browser.post('/session', { 'username' => @usernames[0], 'password' => 'password' }.to_json)
   end
 
   def test_create_user_invalid
@@ -168,5 +168,12 @@ class TestRoutes < MiniTest::Test
     assert_equal('Cannot place March Order (House Stark) because Lannisport (3) is controlled by House Lannister', response.body)
     response = @browser.post('/games/' + game_id.to_s + '/orders', { 'TheShiveringSea' => 'WeakMarchOrder', 'WhiteHarbor' => 'MarchOrder', 'Winterfell' => 'DefenseOrder' }.to_json)
     assert_equal(true, Utility.valid_json?(response.body))
+  end
+
+  def teardown
+    @usernames.each do |username|
+      @browser.post('/session', { 'username' => username, 'password' => 'password' }.to_json)
+      @browser.delete('/users/' + username)
+    end
   end
 end
