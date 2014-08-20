@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'json'
-require_relative 'lib/game.rb'
+require_relative 'lib/game_controller.rb'
 require_relative 'lib/storage.rb'
 
 enable :sessions
