@@ -13,7 +13,7 @@ class TestStorage < MiniTest::Test
     username = random_string
     password = random_string
     player_name = random_string
-    Storage.create_user(username, password, player_name)
+    Storage.create_user!(username, password, player_name)
     expected_user_info = { :username => username, :player_name => player_name }
     user_info = Storage.get_user(username)
     assert_equal(expected_user_info, user_info, 'Incorrect user information')
@@ -37,8 +37,8 @@ class TestStorage < MiniTest::Test
 
   def test_duplicate_username
     username = random_string
-    Storage.create_user(username, random_string, random_string)
-    e = assert_raises(RuntimeError) { Storage.create_user(username, random_string, random_string) }
+    Storage.create_user!(username, random_string, random_string)
+    e = assert_raises(RuntimeError) { Storage.create_user!(username, random_string, random_string) }
     assert_match(/^Username is taken: /, e.message)
   end
 
@@ -49,7 +49,7 @@ class TestStorage < MiniTest::Test
 
   def test_game_create_get
     usernames = [random_string, random_string, random_string, nil, nil, nil]
-    usernames.map { |username| username.nil? ? nil : Storage.create_user(username, 'password', username) }
+    usernames.map { |username| username.nil? ? nil : Storage.create_user!(username, 'password', username) }
     original_game = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     game_id = Storage.create_game(original_game, *usernames)
     games = Storage.list_games(usernames[0])

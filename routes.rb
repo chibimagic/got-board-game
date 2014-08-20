@@ -102,7 +102,7 @@ post '/users' do
   username = @data['username']
   password = @data['password']
   player_name = @data['player_name']
-  Storage.create_user(username, password, player_name)
+  Storage.create_user!(username, password, player_name)
   { :username => username, :player_name => player_name }.to_json
 end
 
@@ -188,7 +188,7 @@ post '/games/:game/bid' do |game_id|
   unless @data.is_a?(Integer)
     raise 'Format: 4'
   end
-  @game.bid(@house_class, @data)
+  @game.bid!(@house_class, @data)
 end
 
 # Use Valyrian Steel Blade token

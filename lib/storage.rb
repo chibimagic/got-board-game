@@ -43,7 +43,7 @@ class Storage
     db.execute('select username from users').flatten
   end
 
-  def self.create_user(username, password, player_name)
+  def self.create_user!(username, password, player_name)
     unless db.execute('select id from users where username=?', username)[0].nil?
       raise 'Username is taken: ' + username.to_s
     end
