@@ -86,10 +86,10 @@ class TestGameActionRaid < MiniTest::Test
     g.map.area(TheShiveringSea).receive!(Ship.create_new(HouseLannister))
 
     g.map.area(CastleBlack).receive!(RaidOrder.new(HouseStark))
-    g.map.area(Karhold).receive!(DefenseOrder.new(HouseLannister))
-    g.map.area(Winterfell).receive!(DefenseOrder.new(HouseLannister))
-    g.map.area(BayOfIce).receive!(DefenseOrder.new(HouseLannister))
-    g.map.area(TheShiveringSea).receive!(DefenseOrder.new(HouseLannister))
+    g.map.area(Karhold).receive!(ConsolidatePowerOrder.new(HouseLannister))
+    g.map.area(Winterfell).receive!(ConsolidatePowerOrder.new(HouseLannister))
+    g.map.area(BayOfIce).receive!(ConsolidatePowerOrder.new(HouseLannister))
+    g.map.area(TheShiveringSea).receive!(ConsolidatePowerOrder.new(HouseLannister))
 
     g.change_game_period(:resolve_raid_orders)
     g.execute_raid_order!(CastleBlack)
