@@ -2,7 +2,7 @@ require 'sqlite3'
 require 'bcrypt'
 require 'base64'
 
-class Storage
+class StorageController
   def self.db
     db = SQLite3::Database.new('games.db')
     db.execute('pragma foreign_keys = on;')

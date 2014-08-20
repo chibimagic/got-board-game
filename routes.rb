@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
 require_relative 'lib/game_controller.rb'
-require_relative 'lib/storage.rb'
+require_relative 'lib/storage_controller.rb'
 
 enable :sessions
 set :session_secret, 'got-board-game'
@@ -40,23 +40,23 @@ before do
   route = [request.request_method.downcase, request.path_info]
   unless UNPROTECTED_ROUTES.include?(route)
     session_id = session['session_id']
-    @username = Storage.get_user_for_session(session_id)
+    @username = StorageController.get_user_for_session(session_id)
   end
 end
 
 before '/games/:game/?:path?' do |game_id, path|
-  games = Storage.list_games(@username)
+  games = StorageController.list_games(@username)
   game = games.find { |game| game[:game_id] == game_id.to_i }
   if game.nil?
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
-  @game = Storage.get_game(game_id)
+  @game = StorageController.get_game(game_id)
   @house_class = game[:house]
 end
 
 after '/games/:game/:path?' do |game_id, path|
   if request.post?
-    Storage.save_game(game_id, @game)
+    StorageController.save_game(game_id, @game)
   end
 end
 
@@ -80,8 +80,8 @@ post '/session' do
   username = @data['username']
   password = @data['password']
   session_id = session['session_id']
-  if Storage.correct_password?(username, password)
-    Storage.create_session(username, session_id)
+  if StorageController.correct_password?(username, password)
+    StorageController.create_session(username, session_id)
     { :username => username, :session_id => session_id }.to_json
   else
     raise 'Incorrect username or password'
@@ -90,7 +90,7 @@ end
 
 # List existing users
 get '/users' do
-  Storage.list_users.to_json
+  StorageController.list_users.to_json
 end
 
 # Create a user
@@ -102,13 +102,13 @@ post '/users' do
   username = @data['username']
   password = @data['password']
   player_name = @data['player_name']
-  Storage.create_user!(username, password, player_name)
+  StorageController.create_user!(username, password, player_name)
   { :username => username, :player_name => player_name }.to_json
 end
 
 # See information about an existing user
 get '/users/:username' do |username|
-  Storage.get_user(username).to_json
+  StorageController.get_user(username).to_json
 end
 
 # Delete a user
@@ -117,12 +117,12 @@ delete '/users/:username' do |username|
     raise 'Cannot delete another user'
   end
 
-  Storage.delete_user(username)
+  StorageController.delete_user(username)
 end
 
 # List existing games
 get '/games' do
-  Storage.list_games(@username).to_json
+  StorageController.list_games(@username).to_json
 end
 
 # Start a new game
@@ -145,7 +145,7 @@ post '/games' do
   house_usernames = houses.map do |house_class|
     username = house_classes_to_usernames.fetch(house_class, nil)
   end
-  game_id = Storage.create_game(g, *house_usernames)
+  game_id = StorageController.create_game(g, *house_usernames)
   { :game_id => game_id }.to_json
 end
 
