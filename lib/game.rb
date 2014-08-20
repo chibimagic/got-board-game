@@ -449,7 +449,12 @@ class Game
       end
     end
 
-    @map.area(area_class).receive!(order)
+    begin
+      @map.area(area_class).receive!(order)
+    rescue => e
+      house(house_class).receive(order)
+      raise e
+    end
 
     areas_needing_orders = @map.controlled_areas(house_class).find_all { |area| !area.has?(OrderToken) }
     if areas_needing_orders.empty?
@@ -471,8 +476,20 @@ class Game
     validate_players_turn(token.house_class)
     house(token.house_class).receive(token)
 
-    @messenger_raven_token.use!
-    place_order!(token.house_class, area_class, new_order_class)
+    begin
+      @messenger_raven_token.use!
+      begin
+        place_order!(token.house_class, area_class, new_order_class)
+      rescue => e
+        @messenger_raven_token.reset
+        raise e
+      end
+    rescue => e
+      @map.area(area_class).receive!(token)
+      raise e
+    end
+
+    house(token.house_class).receive(token)
 
     change_game_period(:resolve_raid_orders)
   end
@@ -527,31 +544,42 @@ class Game
 
     raid_order = @map.area(order_area_class).remove!(OrderToken)
     raiding_house_class = raid_order.house_class
-    validate_players_turn(raiding_house_class)
-    house(raiding_house_class).receive(raid_order)
 
-    unless target_area_class.nil?
-      raided_order = @map.area(target_area_class).remove!(OrderToken)
-      raided_house_class = raided_order.house_class
-      if raiding_house_class == raided_house_class
-        raise 'Cannot raid your own orders'
-      end
-      normal_raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
-      unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
-        raise 'Cannot raid ' + raided_order.to_s
-      end
-      house(raided_house_class).receive(raided_order)
+    begin
+      validate_players_turn(raiding_house_class)
+      house(raiding_house_class).receive(raid_order)
 
-      if raided_order.is_a?(ConsolidatePowerOrder)
-        if @power_pool.has?(raiding_house_class)
-          token = @power_pool.remove!(raiding_house_class)
-          house(raiding_house_class).receive(token)
-        end
-        if house(raided_house_class).has?(PowerToken)
-          token = house(raided_house_class).remove!(PowerToken)
-          @power_pool.receive(token)
+      unless target_area_class.nil?
+        raided_order = @map.area(target_area_class).remove!(OrderToken)
+        raided_house_class = raided_order.house_class
+        begin
+          if raiding_house_class == raided_house_class
+            raise 'Cannot raid your own orders'
+          end
+          normal_raidable_order_classes = [SupportOrder, RaidOrder, ConsolidatePowerOrder]
+          unless normal_raidable_order_classes.any? { |order_class| raided_order.is_a?(order_class) } || raid_order.special && raided_order.is_a?(DefenseOrder)
+            raise 'Cannot raid ' + raided_order.to_s
+          end
+          house(raided_house_class).receive(raided_order)
+
+          if raided_order.is_a?(ConsolidatePowerOrder)
+            if @power_pool.has?(raiding_house_class)
+              token = @power_pool.remove!(raiding_house_class)
+              house(raiding_house_class).receive(token)
+            end
+            if house(raided_house_class).has?(PowerToken)
+              token = house(raided_house_class).remove!(PowerToken)
+              @power_pool.receive(token)
+            end
+          end
+        rescue => e
+          @map.area(target_area_class).receive!(raided_order)
+          raise e
         end
       end
+    rescue => e
+      @map.area(order_area_class).receive!(raid_order)
+      raise e
     end
 
     next_players_turn(RaidOrder)
