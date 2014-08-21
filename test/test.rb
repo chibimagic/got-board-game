@@ -24,5 +24,6 @@ class MiniTest::Test
   end
 end
 
-Dir.chdir(File.dirname(__FILE__))
-Dir.glob('**/*_test.rb').each { |file| require_relative file }
+Dir.chdir(File.dirname(__FILE__)) do
+  Dir.glob('**/*_test.rb').each { |file| require_relative file }
+end
