@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
-require_relative 'lib/controllers/game_controller.rb'
-require_relative 'lib/controllers/storage_controller.rb'
+require_relative 'app/controllers/game_controller.rb'
+require_relative 'app/controllers/storage_controller.rb'
 
 enable :sessions
 set :session_secret, 'got-board-game'
