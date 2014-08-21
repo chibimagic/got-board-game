@@ -1,4 +1,4 @@
-class TestGamePlanningMessengerRaven < MiniTest::Test
+class GamePlanningMessengerRavenTest < MiniTest::Test
   def setup
     @g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     @g.change_game_period(:messenger_raven)

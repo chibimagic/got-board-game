@@ -1,4 +1,4 @@
-class TestGameActionConsolidatePower < MiniTest::Test
+class GameActionConsolidatePowerTest < MiniTest::Test
   def test_consolidate_power
     data = [
       { :area_class => KingsLanding, :expected_power => 3 },

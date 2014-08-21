@@ -1,4 +1,4 @@
-class TestWesterosDeck < MiniTest::Test
+class WesterosDeckTest < MiniTest::Test
   def setup
     @deck_classes = [WesterosDeckI, WesterosDeckII, WesterosDeckIII]
   end

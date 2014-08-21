@@ -1,4 +1,4 @@
-class TestGameActionRaid < MiniTest::Test
+class GameActionRaidTest < MiniTest::Test
   def empty_map_game
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])

@@ -1,4 +1,4 @@
-class TestGameWin < MiniTest::Test
+class GameWinTest < MiniTest::Test
   def test_victory_point_win
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])

@@ -1,4 +1,4 @@
-class TestGamePlanningAssign < MiniTest::Test
+class GamePlanningAssignTest < MiniTest::Test
   def setup
     @g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
   end

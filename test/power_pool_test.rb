@@ -1,4 +1,4 @@
-class TestPowerPool < MiniTest::Test
+class PowerPoolTest < MiniTest::Test
   def test_serialize
     original_pool = PowerPool.create_new([HouseStark, HouseLannister, HouseBaratheon])
     stored_pool = original_pool.serialize.to_json

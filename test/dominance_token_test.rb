@@ -1,4 +1,4 @@
-class TestDominanceToken < MiniTest::Test
+class DominanceTokenTest < MiniTest::Test
   def test_usable_token
     token_classes = [ValyrianSteelBladeToken, MessengerRavenToken]
     token_classes.each do |token_class|

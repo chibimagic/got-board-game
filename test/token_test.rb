@@ -1,4 +1,4 @@
-class TestToken < MiniTest::Test
+class TokenTest < MiniTest::Test
   def test_initialize_house_token
     refute_raises { Footman.create_new(HouseStark) }
     e = assert_raises(RuntimeError) { Footman.create_new(HouseStark.create_new) }

@@ -1,4 +1,4 @@
-class TestRoutes < MiniTest::Test
+class RoutesTest < MiniTest::Test
   def setup
     @browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
     @usernames = ['a', 'b', 'c', 'd', 'e', 'f']

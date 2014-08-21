@@ -1,4 +1,4 @@
-class TestHouseCard < MiniTest::Test
+class HouseCardTest < MiniTest::Test
   DECK_CLASSES = [HouseStarkDeck, HouseLannisterDeck, HouseBaratheonDeck, HouseGreyjoyDeck, HouseTyrellDeck, HouseMartellDeck]
 
   def setup

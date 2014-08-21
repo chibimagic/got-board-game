@@ -1,4 +1,4 @@
-class TestOrderToken < MiniTest::Test
+class OrderTokenTest < MiniTest::Test
   def setup
     @t = HouseStark.create_new.get_all(OrderToken)
   end

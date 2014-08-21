@@ -1,4 +1,4 @@
-class TestNeutralForceToken < MiniTest::Test
+class NeutralForceTokenTest < MiniTest::Test
   def test_token_counts
     data = [
       {

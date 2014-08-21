@@ -1,4 +1,4 @@
-class TestWesterosCard < MiniTest::Test
+class WesterosCardTest < MiniTest::Test
   def test_card_content
     decks = [WesterosDeckI, WesterosDeckII, WesterosDeckIII]
     decks.each do |deck_class|

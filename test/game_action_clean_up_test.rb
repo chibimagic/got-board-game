@@ -1,4 +1,4 @@
-class TestGameActionCleanUp < MiniTest::Test
+class GameActionCleanUpTest < MiniTest::Test
   def test_clean_up
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])

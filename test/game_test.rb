@@ -1,4 +1,4 @@
-class TestGame < MiniTest::Test
+class GameTest < MiniTest::Test
   def test_new_invalid
     e = assert_raises(ArgumentError) { Game.new }
     assert_equal('wrong number of arguments (0 for 20)', e.message)

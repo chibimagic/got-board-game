@@ -1,4 +1,4 @@
-class TestWildlingCard < MiniTest::Test
+class WildlingCardTest < MiniTest::Test
   # Every card has title, lowest bidder text, everyone else text, and highest bidder text
   def test_card_content
     d = WildlingDeck.create_new

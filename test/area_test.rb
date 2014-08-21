@@ -1,4 +1,4 @@
-class TestArea < MiniTest::Test
+class AreaTest < MiniTest::Test
   def setup
     @m = Map.create_new
   end

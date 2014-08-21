@@ -1,4 +1,4 @@
-class TestInfluenceTrack < MiniTest::Test
+class InfluenceTrackTest < MiniTest::Test
   def test_initialize
     data = [
       # Default track position for full board

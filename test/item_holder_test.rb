@@ -1,4 +1,4 @@
-class TestItemHolder < MiniTest::Test
+class ItemHolderTest < MiniTest::Test
   def test_remove_units
     h = HouseStark.create_new
     10.times { h.remove!(Footman) }
@@ -6,12 +6,12 @@ class TestItemHolder < MiniTest::Test
     assert_equal('House Stark has no items matching Footman', e.message)
   end
 
-  class TestClass
+  class SampleItemHolder
     include ItemHolder
   end
 
   def test_implement_get_tokens
-    o = TestClass.new
+    o = SampleItemHolder.new
     e = assert_raises(RuntimeError) { o.count(true) }
     assert_equal('To use ItemHolder, implement get_all', e.message)
   end

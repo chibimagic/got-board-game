@@ -1,4 +1,4 @@
-class TestWildlingTrack < MiniTest::Test
+class WildlingTrackTest < MiniTest::Test
   def setup
     @track = WildlingTrack.create_new
   end

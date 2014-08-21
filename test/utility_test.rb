@@ -1,4 +1,4 @@
-class TestUtility < MiniTest::Test
+class UtilityTest < MiniTest::Test
   def test_singular_plural
     assert_equal('tokens', Utility.singular_plural(0, 'token', 'tokens'))
     assert_equal('token', Utility.singular_plural(1, 'token', 'tokens'))

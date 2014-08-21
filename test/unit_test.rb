@@ -1,4 +1,4 @@
-class TestUnit < MiniTest::Test
+class UnitTest < MiniTest::Test
   def test_equality
     assert_equal(Footman.create_new(HouseStark), Footman.create_new(HouseStark))
     refute_equal(Footman.create_new(HouseStark), Footman.create_new(HouseLannister))
