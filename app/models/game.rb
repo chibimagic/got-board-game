@@ -213,6 +213,10 @@ class Game
     }
   end
 
+  def clone
+    Marshal.load(Marshal.dump(self))
+  end
+
   def ==(o)
     self.class == o.class &&
       self.houses == o.houses &&

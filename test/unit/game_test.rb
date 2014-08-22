@@ -102,6 +102,14 @@ class GameTest < MiniTest::Test
     assert_equal(original_game, restored_game)
   end
 
+  def test_clone
+    g1 = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g2 = g1.clone
+    g1.place_order!(HouseStark, Winterfell, RaidOrder)
+    assert_equal(1, g1.map.area(Winterfell).count(OrderToken))
+    assert_equal(0, g2.map.area(Winterfell).count(OrderToken))
+  end
+
   def test_house_selection_valid
     data = [
       [HouseStark, HouseLannister, HouseBaratheon],
