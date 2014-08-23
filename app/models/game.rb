@@ -279,10 +279,12 @@ class Game
       clean_up!
     end
   end
+  private :add_game_period
 
   def remove_game_period
     @game_stack.pop
   end
+  private :remove_game_period
 
   def change_game_period(new_game_period)
     remove_game_period
@@ -339,6 +341,7 @@ class Game
       change_game_period(next_game_period)
     end
   end
+  private :next_players_turn
 
   def westeros_setup
     @round += 1
@@ -355,6 +358,7 @@ class Game
       add_game_period(:wildling_attack)
     end
   end
+  private :westeros_setup
 
   def bid!(house_class, power_tokens)
     existing_bid = @bids.fetch(house_class)
