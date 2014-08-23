@@ -50,13 +50,13 @@ before '/games/:game/?:path?' do |game_id, path|
   if game.nil?
     halt(@username.to_s + ' does not have access to ' + game_id.to_s)
   end
-  @game = StorageController.get_game(game_id)
+  @game = GameController.new(StorageController.get_game(game_id))
   @house_class = game[:house]
 end
 
 after '/games/:game/:path?' do |game_id, path|
   if request.post?
-    StorageController.save_game(game_id, @game)
+    StorageController.save_game(game_id, @game.game)
   end
 end
 
@@ -151,7 +151,7 @@ end
 
 # See information about an existing game
 get '/games/:game' do |game_id|
-  game_info = @game.serialize
+  game_info = @game.game.serialize
   if game_info[:game_stack].last == :assign_orders
     game_info[:houses].each do |house, house_info|
       house_info[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
@@ -173,7 +173,7 @@ post '/games/:game/orders' do |game_id|
   validate_constants(@data.keys, Area)
   validate_constants(@data.values, OrderToken)
   orders = @data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }.to_h
-  orders.each { |area_class, order_class| @game.place_order!(@house_class, area_class, order_class) }
+  orders.each { |area_class, order_class| @game.game.place_order!(@house_class, area_class, order_class) }
   { :game_id => game_id }.to_json
 end
 
@@ -188,7 +188,7 @@ post '/games/:game/bid' do |game_id|
   unless @data.is_a?(Integer)
     raise 'Format: 4'
   end
-  @game.bid!(@house_class, @data)
+  @game.game.bid!(@house_class, @data)
 end
 
 # Use Valyrian Steel Blade token

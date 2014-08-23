@@ -27,4 +27,12 @@ require_relative '../models/combat.rb'
 require_relative '../models/game.rb'
 
 class GameController
+  def initialize(game)
+    raise 'Invalid game' unless game.is_a?(Game)
+    @game = game
+  end
+
+  def game
+    @game
+  end
 end
