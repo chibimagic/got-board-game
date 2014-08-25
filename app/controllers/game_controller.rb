@@ -35,4 +35,21 @@ class GameController
   def game
     @game
   end
+
+  def game_info
+    game_info = @game.serialize
+    if game_info[:game_stack].last == :assign_orders
+      game_info[:houses].each do |house, house_info|
+        house_info[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
+      end
+      game_info[:map][:areas].each do |area, tokens|
+        tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
+      end
+    end
+    game_info.delete(:wildling_deck)
+    game_info.delete(:westeros_deck_i)
+    game_info.delete(:westeros_deck_ii)
+    game_info.delete(:westeros_deck_iii)
+    game_info
+  end
 end
