@@ -363,6 +363,13 @@ class Map
     controlled_areas(house_class).map { |area| [area.class, area.mustering_points] }.to_h
   end
 
+  def place!(area_class, token)
+    area(area_class).receive!(token)
+    if token.is_a?(Unit) && !conforms_to_supply_limits?(token.house_class)
+      raise 'Placing ' + token.to_s + ' would exceed allowed supply of ' + armies_allowed(token.house_class).to_s
+    end
+  end
+
   def recalculate_supply(house_class)
     controlled_areas(house_class).inject(0) { |sum, area| sum + area.supply }
   end

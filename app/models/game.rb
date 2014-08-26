@@ -405,7 +405,7 @@ class Game
     end
 
     unit = house(house_class).remove!(final_unit_class)
-    @map.area(to_area_class).receive(unit)
+    @map.place!(to_area_class, unit)
 
     @musterable_areas[area_class] -= point_cost
   end
@@ -431,7 +431,7 @@ class Game
     end
 
     begin
-      @map.area(area_class).receive!(order)
+      @map.place!(area_class, order)
     rescue => e
       house(house_class).receive(order)
       raise e
@@ -466,7 +466,7 @@ class Game
         raise e
       end
     rescue => e
-      @map.area(area_class).receive!(token)
+      @map.place!(area_class, token)
       raise e
     end
 
@@ -554,12 +554,12 @@ class Game
             end
           end
         rescue => e
-          @map.area(target_area_class).receive!(raided_order)
+          @map.place!(target_area_class, raided_order)
           raise e
         end
       end
     rescue => e
-      @map.area(order_area_class).receive!(raid_order)
+      @map.place!(order_area_class, raid_order)
       raise e
     end
 
@@ -617,14 +617,14 @@ class Game
         if combat_trigger_areas.include?(target_area_class)
           attacking_units.push(unit)
         else
-          @map.area(target_area_class).receive!(unit)
+          @map.place!(target_area_class, unit)
         end
       end
     end
 
     if establish_control
       power_token = house(order_house_class).remove!(PowerToken)
-      @map.area(order_area_class).receive(power_token)
+      @map.place!(order_area_class, power_token)
     end
 
     if combat_trigger_areas.empty?
