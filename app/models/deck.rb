@@ -61,6 +61,10 @@ class Deck
       raise 'Cannot draw with active card'
     end
 
+    if @draw_pile.empty?
+      raise 'Cannot draw with empty draw pile'
+    end
+
     @active_card = @draw_pile.shift
   end
 
