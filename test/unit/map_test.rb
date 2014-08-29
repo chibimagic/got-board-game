@@ -88,7 +88,6 @@ class MapTest < MiniTest::Test
     data.each do |datum|
       begin
         Map.new([], datum)
-        p datum
       rescue
       end
       e = assert_raises(RuntimeError) { Map.new([], datum) }
