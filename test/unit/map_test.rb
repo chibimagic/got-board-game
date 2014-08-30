@@ -229,6 +229,16 @@ class MapTest < MiniTest::Test
     end
   end
 
+  def test_supply_limit
+    m = Map.create_new
+    m.set_level(HouseStark, 1)
+    m.place!(Winterfell, Footman.create_new(HouseStark))
+    m.place!(Winterfell, Footman.create_new(HouseStark))
+    m.place!(Winterfell, Footman.create_new(HouseStark))
+    e = assert_raises(RuntimeError) { m.place!(Winterfell, Footman.create_new(HouseStark)) }
+    assert_equal('Placing Footman (House Stark) would exceed supply limit of [3, 2]', e.message)
+  end
+
   def test_level_houses
     m = Map.new([], {
       0 => [],

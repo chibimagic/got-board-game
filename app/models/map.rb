@@ -366,7 +366,7 @@ class Map
   def place!(area_class, token)
     area(area_class).receive!(token)
     if token.is_a?(Unit) && !conforms_to_supply_limits?(token.house_class)
-      raise 'Placing ' + token.to_s + ' would exceed allowed supply of ' + armies_allowed(token.house_class).to_s
+      raise 'Placing ' + token.to_s + ' would exceed supply limit of ' + armies_allowed(token.house_class).to_s
     end
   end
 
