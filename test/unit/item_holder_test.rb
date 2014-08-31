@@ -10,8 +10,10 @@ class ItemHolderTest < MiniTest::Test
     include ItemHolder
   end
 
-  def test_implement_get_tokens
+  def test_implement_methods
     o = SampleItemHolder.new
+    e = assert_raises(RuntimeError) { o.items }
+    assert_equal('To use ItemHolder, implement items', e.message)
     e = assert_raises(RuntimeError) { o.count(true) }
     assert_equal('To use ItemHolder, implement get_all', e.message)
   end
