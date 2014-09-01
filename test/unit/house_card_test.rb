@@ -23,7 +23,7 @@ class HouseCardTest < MiniTest::Test
   # Each card has a title
   def test_card_title
     @decks.each do |deck|
-      deck.draw_pile.each do |card|
+      deck.each do |card|
         refute_equal('', card.title, card.to_s + ' has no title')
       end
     end
@@ -32,7 +32,7 @@ class HouseCardTest < MiniTest::Test
   # Each card has either swords/fortifications or text
   def test_card_content
     @decks.each do |deck|
-      deck.draw_pile.each do |card|
+      deck.each do |card|
         if card.swords > 0 || card.fortifications > 0
           assert_equal('', card.text, card.to_s + ' has both sword/fortifications and text')
         else

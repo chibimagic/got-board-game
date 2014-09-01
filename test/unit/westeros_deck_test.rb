@@ -45,7 +45,7 @@ class WesterosDeckTest < MiniTest::Test
   def test_decision_makers
     decision_makers = []
     @deck_classes.each do |deck_class|
-      deck_class.create_new.draw_pile.each do |card|
+      deck_class.create_new.each do |card|
         if card.class::INFLUENCE_TRACK_DECISION
           decision_makers.push(card.class::INFLUENCE_TRACK_DECISION)
         end
