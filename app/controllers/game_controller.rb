@@ -52,4 +52,8 @@ class GameController
     game_info.delete(:westeros_deck_iii)
     game_info
   end
+
+  def method_missing(name, *arguments)
+    @game.send(name, *arguments)
+  end
 end
