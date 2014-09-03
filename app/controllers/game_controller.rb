@@ -54,6 +54,13 @@ class GameController
   end
 
   def method_missing(name, *arguments)
-    @game.send(name, *arguments)
+    begin
+      game = Marshal.load(Marshal.dump(@game))
+      result = game.send(name, *arguments)
+      @game = game
+      result
+    rescue => e
+      raise e
+    end
   end
 end
