@@ -32,6 +32,11 @@ class GameController
     @game = game
   end
 
+  def self.create_new(house_classes)
+    game = Game.create_new(house_classes)
+    new(game)
+  end
+
   def game
     @game
   end

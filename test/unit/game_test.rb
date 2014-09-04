@@ -143,6 +143,23 @@ class GameTest < MiniTest::Test
     end
   end
 
+  def test_next_step
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    assert_equal(:assign_orders, g.game_period)
+    g.place_order!(HouseStark, TheShiveringSea, WeakMarchOrder)
+    g.place_order!(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order!(HouseStark, Winterfell, DefenseOrder)
+    g.place_order!(HouseLannister, TheGoldenSound, WeakMarchOrder)
+    g.place_order!(HouseLannister, Lannisport, MarchOrder)
+    g.place_order!(HouseLannister, StoneySept, DefenseOrder)
+    g.place_order!(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
+    g.place_order!(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order!(HouseBaratheon, Kingswood, DefenseOrder)
+    assert_equal(:messenger_raven, g.game_period)
+    e = assert_raises(RuntimeError) { g.place_order!(HouseStark, TheShiveringSea, SpecialMarchOrder) }
+    assert_equal('Cannot place order during Planning phase, Messenger Raven step', e.message)
+  end
+
   def test_game_period_players_turn
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
 

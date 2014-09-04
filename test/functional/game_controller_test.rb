@@ -1,12 +1,86 @@
-class GameActionRaidTest < MiniTest::Test
-  def empty_map_game
-    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
-    g.map = Map.create_new([])
-    g
+class GameControllerTest < MiniTest::Test
+  def test_place_orders_special
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    assert_equal(1, g.kings_court_track.special_orders_allowed(HouseBaratheon))
+    refute_raises { g.place_order!(HouseBaratheon, ShipbreakerBay, MarchOrder) }
+    refute_raises { g.place_order!(HouseBaratheon, Dragonstone, SpecialDefenseOrder) }
+    e = assert_raises(RuntimeError) { g.place_order!(HouseBaratheon, Dragonstone, SpecialMarchOrder) }
+    assert_equal('House Baratheon can only place 1 special order', e.message)
+  end
+
+  def test_messenger_reuse_token
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.change_game_period(:messenger_raven)
+    card = g.look_at_wildling_deck
+    assert_equal(:messenger_raven, g.game_period)
+
+    g.map.area(Lannisport).receive!(MarchOrder.new(HouseLannister))
+    e = assert_raises(RuntimeError) { g.replace_order!(Lannisport, RaidOrder) }
+    assert_equal('Messenger Raven token has already been used', e.message)
+    e = assert_raises(RuntimeError) { g.look_at_wildling_deck }
+    assert_equal('Messenger Raven token has already been used', e.message)
+    e = assert_raises(RuntimeError) { g.skip_messenger_raven }
+    assert_equal('Messenger Raven token has already been used', e.message)
+  end
+
+  def test_messenger_wildling_deck_top
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.change_game_period(:messenger_raven)
+    g.look_at_wildling_deck
+    g.replace_wildling_card_top
+    refute_equal(:messenger_raven, g.game_period)
+    e = assert_raises(RuntimeError) { g.replace_wildling_card_bottom }
+    assert_match(/^Cannot replace card at bottom of wildling deck during /, e.message)
+  end
+
+  def test_messenger_wildling_deck_bottom
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.change_game_period(:messenger_raven)
+    g.look_at_wildling_deck
+    g.replace_wildling_card_bottom
+    refute_equal(:messenger_raven, g.game_period)
+    e = assert_raises(RuntimeError) { g.replace_wildling_card_top }
+    assert_match(/^Cannot replace card at top of wildling deck during /, e.message)
+  end
+
+  def test_messenger_skip
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.change_game_period(:messenger_raven)
+    assert_equal(:messenger_raven, g.game_period)
+    g.skip_messenger_raven
+    refute_equal(:messenger_raven, g.game_period)
+  end
+
+  def test_replace_order
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    e = assert_raises(RuntimeError) { g.replace_order!(CastleBlack, WeakMarchOrder) }
+    assert_equal('Cannot replace order during Planning phase, Assign Orders step', e.message)
+
+    g.place_order!(HouseStark, TheShiveringSea, WeakMarchOrder)
+    g.place_order!(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order!(HouseStark, Winterfell, DefenseOrder)
+    g.place_order!(HouseLannister, TheGoldenSound, WeakMarchOrder)
+    g.place_order!(HouseLannister, Lannisport, MarchOrder)
+    g.place_order!(HouseLannister, StoneySept, DefenseOrder)
+    g.place_order!(HouseBaratheon, ShipbreakerBay, WeakMarchOrder)
+    g.place_order!(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order!(HouseBaratheon, Kingswood, DefenseOrder)
+
+    e = assert_raises(RuntimeError) { g.replace_order!(CastleBlack, WeakMarchOrder) }
+    assert_equal('Castle Black (0) has no items matching Order Token', e.message)
+    e = assert_raises(RuntimeError) { g.replace_order!(Winterfell, WeakMarchOrder) }
+    assert_equal('Only the holder of the Messenger Raven token may replace an order', e.message)
+    e = assert_raises(RuntimeError) { g.replace_order!(Lannisport, WeakMarchOrder) }
+    assert_equal('House Lannister has no items matching March Order', e.message)
+
+    refute_raises { g.replace_order!(Lannisport, RaidOrder) }
+
+    e = assert_raises(RuntimeError) { g.replace_order!(Lannisport, RaidOrder) }
+    assert_match(/^Cannot replace order during .* Resolve Raid Orders step$/, e.message)
   end
 
   def test_raid_step
-    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
     g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
     g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
@@ -46,7 +120,8 @@ class GameActionRaidTest < MiniTest::Test
       { :from => TheReach, :to => WhiteHarborPortToTheNarrowSea, :should_work => false, :why => 'Non-adjacent land areas cannot raid a port' },
     ]
     data.each do |datum|
-      g = empty_map_game
+      g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+      g.map = Map.create_new([])
       token_class = datum[:from] < LandArea ? Footman : Ship
       g.map.area(datum[:from]).receive!(token_class.create_new(HouseStark))
       g.map.area(datum[:from]).receive!(RaidOrder.new(HouseStark))
@@ -64,7 +139,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_invalid_area
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
     g.map.area(CastleBlack).receive!(RaidOrder.new(HouseStark))
     g.change_game_period(:resolve_raid_orders)
@@ -78,7 +154,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_ineligible
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
     g.map.area(Karhold).receive!(Footman.create_new(HouseLannister))
     g.map.area(Winterfell).receive!(Footman.create_new(HouseLannister))
@@ -108,7 +185,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_no_effect
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
     g.map.area(Karhold).receive!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
@@ -138,7 +216,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_own_order
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseStark))
     g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
 
@@ -171,7 +250,8 @@ class GameActionRaidTest < MiniTest::Test
       { :raided_order => SpecialConsolidatePowerOrder, :should_work => true },
     ]
     data.each do |datum|
-      g = empty_map_game
+      g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+      g.map = Map.create_new([])
       g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
       g.map.area(CastleBlack).receive!(RaidOrder.new(HouseLannister))
       g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
@@ -187,7 +267,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_special
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
     g.map.area(CastleBlack).receive!(SpecialRaidOrder.new(HouseLannister))
     g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
@@ -198,7 +279,8 @@ class GameActionRaidTest < MiniTest::Test
   end
 
   def test_raid_power_token
-    g = empty_map_game
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
     raiding_player_initial_power_token_count = g.house(HouseLannister).count(PowerToken)
     raided_player_initial_power_token_count = g.house(HouseStark).count(PowerToken)
 
@@ -215,5 +297,57 @@ class GameActionRaidTest < MiniTest::Test
 
     assert_equal(raiding_player_initial_power_token_count + 1, raiding_player_final_power_token_count)
     assert_equal(raided_player_initial_power_token_count - 1, raided_player_final_power_token_count)
+  end
+
+  def test_consolidate_power
+    data = [
+      { :area_class => KingsLanding, :expected_power => 3 },
+      { :area_class => CastleBlack, :expected_power => 2 },
+      { :area_class => TheShiveringSea, :expected_power => 1 },
+      { :area_class => WinterfellPortToBayOfIce, :expected_power => 1 }
+    ]
+    data.each do |datum|
+      g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+      power_before = g.house(HouseStark).count(PowerToken)
+      g.map = Map.create_new([])
+      token_class = datum[:area_class] < LandArea ? Footman : Ship
+      g.map.area(datum[:area_class]).receive!(token_class.create_new(HouseStark))
+      g.map.area(datum[:area_class]).receive!(ConsolidatePowerOrder.new(HouseStark))
+      g.change_game_period(:resolve_consolidate_power_orders)
+      g.execute_consolidate_power_order!(datum[:area_class])
+      power_after = g.house(HouseStark).count(PowerToken)
+      assert_equal(power_before + datum[:expected_power], power_after)
+    end
+  end
+
+  def test_consolidate_power_in_port_with_adjacent_enemy_ships
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    power_before = g.house(HouseStark).count(PowerToken)
+    g.map = Map.create_new
+    g.map.area(WinterfellPortToBayOfIce).receive!(Ship.create_new(HouseStark))
+    g.map.area(WinterfellPortToBayOfIce).receive!(ConsolidatePowerOrder.new(HouseStark))
+    g.map.area(BayOfIce).receive!(Ship.create_new(HouseLannister))
+    g.change_game_period(:resolve_consolidate_power_orders)
+    g.execute_consolidate_power_order!(WinterfellPortToBayOfIce)
+    power_after = g.house(HouseStark).count(PowerToken)
+    assert_equal(power_before, power_after)
+  end
+
+  def test_clean_up
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(CastleBlack).receive!(Footman.new(HouseStark, false))
+    g.map.area(CastleBlack).receive!(SupportOrder.new(HouseStark))
+    g.map.area(Lannisport).receive!(Footman.new(HouseLannister, true))
+    g.map.area(Lannisport).receive!(DefenseOrder.new(HouseLannister))
+    g.clean_up!
+    assert_equal(true, g.map.area(CastleBlack).has?(Footman))
+    assert_equal(false, g.map.area(CastleBlack).has?(OrderToken))
+    assert_equal(false, g.map.area(CastleBlack).get_all(Unit).any? { |unit| unit.routed })
+    assert_equal(true, g.map.area(Lannisport).has?(Footman))
+    assert_equal(false, g.map.area(Lannisport).has?(OrderToken))
+    assert_equal(false, g.map.area(Lannisport).get_all(Unit).any? { |unit| unit.routed })
+    assert_equal(false, g.messenger_raven_token.used)
+    assert_equal(false, g.valyrian_steel_blade_token.used)
   end
 end
