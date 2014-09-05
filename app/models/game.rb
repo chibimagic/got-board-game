@@ -623,7 +623,7 @@ class Game
     end
 
     if establish_control
-      power_token = house(order_house_class).remove!(PowerToken)
+      power_token = house(march_order.house_class).remove!(PowerToken)
       @map.place!(order_area_class, power_token)
     end
 

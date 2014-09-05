@@ -299,6 +299,87 @@ class GameControllerTest < MiniTest::Test
     assert_equal(raided_player_initial_power_token_count - 1, raided_player_final_power_token_count)
   end
 
+  def test_march_all_units
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { Winterfell => [Footman] }, nil) }
+    assert_equal('Marched units [Footman] must match existing units in Winterfell [Footman, Footman]', e.message)
+  end
+
+  def test_march_port_combat
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(BayOfIce).receive!(Ship.create_new(HouseStark))
+    g.map.area(WinterfellPortToBayOfIce).receive!(Ship.create_new(HouseLannister))
+    g.map.area(BayOfIce).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(BayOfIce, { WinterfellPortToBayOfIce => [Ship] }, nil) }
+    assert_equal('Cannot initiate combat in port area Winterfell Port (Bay of Ice)', e.message)
+  end
+
+  def test_march_adjacent_areas
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { Sunspear => [Footman] }, nil) }
+    assert_equal('Cannot march from Winterfell to unconnected Sunspear', e.message)
+  end
+
+  def test_march_multiple_combat
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Karhold).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { CastleBlack => [Footman], Karhold => [Footman], Winterfell => [Footman] }, nil) }
+    assert_equal('Cannot march into more than one area containing units of another House: [CastleBlack, Karhold]', e.message)
+  end
+
+  def test_march_establish_control
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.set_level(HouseStark, 1)
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { Winterfell => [Footman] }, true) }
+    assert_equal('Cannot specify Establish Control when not vacating Winterfell', e.message)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { Winterfell => [Footman] }, false) }
+    assert_equal('Cannot specify Establish Control when not vacating Winterfell', e.message)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { CastleBlack => [Footman] }, nil) }
+    assert_equal('Must specify Establish Control when vacating Winterfell', e.message)
+
+    power_token_count = g.house(HouseStark).count(PowerToken)
+    g.execute_march_order!(Winterfell, { CastleBlack => [Footman] }, true)
+    assert_equal(HouseStark, g.map.area(Winterfell).controlling_house_class)
+    assert_equal(HouseStark, g.map.area(CastleBlack).controlling_house_class)
+    assert_equal(power_token_count - 1, g.house(HouseStark).count(PowerToken))
+  end
+
+  def test_march_combat
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map = Map.create_new([])
+    g.map.area(Winterfell).receive!(Footman.create_new(HouseStark))
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+
+    assert_equal(nil, g.combat)
+    g.execute_march_order!(Winterfell, { CastleBlack => [Footman] }, false)
+    refute_equal(nil, g.combat)
+  end
+
   def test_consolidate_power
     data = [
       { :area_class => KingsLanding, :expected_power => 3 },

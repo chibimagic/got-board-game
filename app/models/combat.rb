@@ -16,8 +16,8 @@ class Combat
     raise 'Invalid attacking area' unless attacking_area.is_a?(Area)
     raise 'Invalid defending area' unless defending_area.is_a?(Area)
     raise 'Invalid attacking units' unless attacking_units.is_a?(Array) && attacking_units.all? { |unit| unit.is_a?(Unit) }
-    raise 'Invalid attacking house card' unless attacking_house_card.is_a?(HouseCard)
-    raise 'Invalid defending house card' unless defending_house_card.is_a?(HouseCard)
+    raise 'Invalid attacking house card' unless attacking_house_card.is_a?(HouseCard) || attacking_house_card.nil?
+    raise 'Invalid defending house card' unless defending_house_card.is_a?(HouseCard) || defending_house_card.nil?
 
     @attacking_area = attacking_area
     @defending_area = defending_area
