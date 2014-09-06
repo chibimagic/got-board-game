@@ -551,7 +551,7 @@ class Game
     marched_unit_classes = area_classes_to_unit_classes.values.flatten
     existing_unit_classes = @map.area(order_area_class).get_all(Unit).map { |unit| unit.class }
     if marched_unit_classes.sort != existing_unit_classes.sort
-      raise 'Marched units (' + marched_unit_classes.to_s + ') must match existing units in ' + order_area_class.to_s + ' (' + existing_unit_classes.to_s + ')'
+      raise 'Marched units ' + marched_unit_classes.to_s + ' must match existing units in ' + order_area_class.to_s + ' ' + existing_unit_classes.to_s
     end
 
     # Verify areas
