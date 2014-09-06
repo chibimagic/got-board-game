@@ -160,7 +160,7 @@ post '/games/:game/orders' do |game_id|
   validate_constants(@data.keys, Area)
   validate_constants(@data.values, OrderToken)
   orders = @data.map { |area_class_string, order_class_string| [area_class_string.constantize, order_class_string.constantize] }.to_h
-  orders.each { |area_class, order_class| @game.game.place_order!(@house_class, area_class, order_class) }
+  orders.each { |area_class, order_class| @game.place_order!(@house_class, area_class, order_class) }
   { :game_id => game_id }.to_json
 end
 
@@ -175,7 +175,7 @@ post '/games/:game/bid' do |game_id|
   unless @data.is_a?(Integer)
     raise 'Format: 4'
   end
-  @game.game.bid!(@house_class, @data)
+  @game.bid!(@house_class, @data)
 end
 
 # Use Valyrian Steel Blade token
