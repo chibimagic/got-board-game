@@ -266,7 +266,7 @@ class Game
     @players_turn = []
     case new_game_period
     when :assign_orders
-      @players_turn = houses.map { |house| house.class }
+      @players_turn = map.areas.map { |area| area.controlling_house }.uniq
     when :messenger_raven
       @players_turn = [@kings_court_track.token_holder_class]
     when :resolve_raid_orders
