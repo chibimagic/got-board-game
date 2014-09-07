@@ -1,4 +1,17 @@
 class GameControllerTest < MiniTest::Test
+  def test_bid_multiple
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.bid!(HouseStark, 1)
+    e = assert_raises(RuntimeError) { g.bid!(HouseStark, 1) }
+    assert_equal('House Stark has already bid 1', e.message)
+  end
+
+  def test_bid_more
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    e = assert_raises(RuntimeError) { g.bid!(HouseStark, 10) }
+    assert_equal('Cannot bid 10 when House Stark only has 5', e.message)
+  end
+
   def test_place_orders_special
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
     assert_equal(1, g.kings_court_track.special_orders_allowed(HouseBaratheon))
