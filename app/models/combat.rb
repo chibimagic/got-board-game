@@ -56,4 +56,25 @@ class Combat
       defending_house_card
     )
   end
+
+  def select_house_card(house_card)
+    attacking_house = attacking_area.controlling_house
+    defending_house = defending_area.controlling_house
+
+    if house_card.house == attacking_house
+      unless attacking_house_card.nil?
+        raise attacking_house.to_s + ' has already selected ' + attacking_house_card.to_s
+      end
+
+      attacking_house_card = house_card
+    elsif house_card.house == defending_house
+      unless defending_house_card.nil?
+        raise defending_house.to_s + ' has already selected ' + defending_house_card.to_s
+      end
+
+      defending_house_card = house_card
+    else
+      raise house_card.house.to_s + ' is not involved in the combat between ' + attacking_house.to_s + ' and ' + defending_house.to_s
+    end
+  end
 end

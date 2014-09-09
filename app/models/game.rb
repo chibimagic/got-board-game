@@ -611,6 +611,17 @@ class Game
     end
   end
 
+  def select_house_card(house_card_class)
+    validate_game_state!(:resolve_march_orders, 'select house card')
+
+    if @combat.nil?
+      raise 'Cannot select house card when there is no combat'
+    end
+
+    card = house(house_card_class::HOUSE).house_cards.select!(house_card_class)
+    @combat.select_house_card(card)
+  end
+
   def execute_consolidate_power_order!(order_area_class)
     validate_game_state!(:resolve_consolidate_power_orders, 'execute consolidate power order')
 
