@@ -5,10 +5,6 @@ class HouseCard < Card
   FORTIFICATIONS = 0
   TEXT = ''
 
-  def house
-    self.class::HOUSE
-  end
-
   def title
     self.class::TITLE
   end
@@ -31,7 +27,6 @@ class HouseCard < Card
 end
 
 class HouseStarkCard < HouseCard
-  HOUSE = HouseStark
 end
 
 class EddardStark < HouseStarkCard
@@ -76,7 +71,6 @@ class CatelynStark < HouseStarkCard
 end
 
 class HouseLannisterCard < HouseCard
-  HOUSE = HouseLannister
 end
 
 class TywinLannister < HouseLannisterCard
@@ -121,7 +115,6 @@ class CerseiLannister < HouseLannisterCard
 end
 
 class HouseBaratheonCard < HouseCard
-  HOUSE = HouseBaratheon
 end
 
 class StannisBaratheon < HouseBaratheonCard
@@ -167,7 +160,6 @@ class Patchface < HouseBaratheonCard
 end
 
 class HouseGreyjoyCard < HouseCard
-  HOUSE = HouseGreyjoy
 end
 
 class EuronCrowsEye < HouseGreyjoyCard
@@ -213,7 +205,6 @@ class AeronDamphair < HouseGreyjoyCard
 end
 
 class HouseTyrellCard < HouseCard
-  HOUSE = HouseTyrell
 end
 
 class MaceTyrell < HouseTyrellCard
@@ -258,7 +249,6 @@ class QueenOfThorns < HouseTyrellCard
 end
 
 class HouseMartellCard < HouseCard
-  HOUSE = HouseMartell
 end
 
 class TheRedViper < HouseMartellCard
