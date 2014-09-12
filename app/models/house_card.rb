@@ -1,9 +1,21 @@
 class HouseCard < Card
+  attr_reader :house_class
+
   TITLE = ''
   COMBAT_STRENGTH = 0
   SWORDS = 0
   FORTIFICATIONS = 0
   TEXT = ''
+
+  def initialize(house_class)
+    raise 'Invalid house class' unless house_class.is_a?(Class) && house_class < House
+
+    @house_class = house_class
+  end
+
+  def to_s
+    self.class::TITLE
+  end
 
   def title
     self.class::TITLE
