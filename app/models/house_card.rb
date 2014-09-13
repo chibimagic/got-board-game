@@ -1,16 +1,27 @@
-class HouseCard < Card
-  attr_reader :house_class
+class House
+end
+class HouseStark < House
+end
+class HouseLannister < House
+end
+class HouseBaratheon < House
+end
+class HouseGreyjoy < House
+end
+class HouseTyrell < House
+end
+class HouseMartell < House
+end
 
+class HouseCard < Card
   TITLE = ''
   COMBAT_STRENGTH = 0
   SWORDS = 0
   FORTIFICATIONS = 0
   TEXT = ''
 
-  def initialize(house_class)
-    raise 'Invalid house class' unless house_class.is_a?(Class) && house_class < House
-
-    @house_class = house_class
+  def house_class
+    self.class::HOUSE
   end
 
   def to_s
@@ -39,6 +50,7 @@ class HouseCard < Card
 end
 
 class HouseStarkCard < HouseCard
+  HOUSE = HouseStark
 end
 
 class EddardStark < HouseStarkCard
@@ -83,6 +95,7 @@ class CatelynStark < HouseStarkCard
 end
 
 class HouseLannisterCard < HouseCard
+  HOUSE = HouseLannister
 end
 
 class TywinLannister < HouseLannisterCard
@@ -127,6 +140,7 @@ class CerseiLannister < HouseLannisterCard
 end
 
 class HouseBaratheonCard < HouseCard
+  HOUSE = HouseBaratheon
 end
 
 class StannisBaratheon < HouseBaratheonCard
@@ -172,6 +186,7 @@ class Patchface < HouseBaratheonCard
 end
 
 class HouseGreyjoyCard < HouseCard
+  HOUSE = HouseGreyjoy
 end
 
 class EuronCrowsEye < HouseGreyjoyCard
@@ -217,6 +232,7 @@ class AeronDamphair < HouseGreyjoyCard
 end
 
 class HouseTyrellCard < HouseCard
+  HOUSE = HouseTyrell
 end
 
 class MaceTyrell < HouseTyrellCard
@@ -261,6 +277,7 @@ class QueenOfThorns < HouseTyrellCard
 end
 
 class HouseMartellCard < HouseCard
+  HOUSE = HouseMartell
 end
 
 class TheRedViper < HouseMartellCard

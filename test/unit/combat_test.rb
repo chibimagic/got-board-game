@@ -9,13 +9,13 @@ class CombatTest < MiniTest::Test
   end
 
   def test_select_house_card
-    e = assert_raises(RuntimeError) { @c.select_house_card(StannisBaratheon.new(HouseBaratheon)) }
+    e = assert_raises(RuntimeError) { @c.select_house_card(StannisBaratheon.new) }
     assert_equal("House Baratheon is not involved in the combat between House Stark and House Lannister", e.message)
-    @c.select_house_card(EddardStark.new(HouseStark))
-    e = assert_raises(RuntimeError) { @c.select_house_card(RobbStark.new(HouseStark)) }
+    @c.select_house_card(EddardStark.new)
+    e = assert_raises(RuntimeError) { @c.select_house_card(RobbStark.new) }
     assert_equal("House Stark has already selected Eddard Stark", e.message)
-    @c.select_house_card(TywinLannister.new(HouseLannister))
-    e = assert_raises(RuntimeError) { @c.select_house_card(SerGregorClegane.new(HouseLannister)) }
+    @c.select_house_card(TywinLannister.new)
+    e = assert_raises(RuntimeError) { @c.select_house_card(SerGregorClegane.new) }
     assert_equal("House Lannister has already selected Tywin Lannister", e.message)
   end
 end
