@@ -1,21 +1,28 @@
 class GameControllerTest < MiniTest::Test
   def test_game_info
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
-    game = g.game_info
-    game[:houses].each do |house, house_info|
-      house_info[:tokens].each do |token|
-        refute_operator(token.keys[0].constantize, :<, OrderToken)
-      end
+    info = g.game_info
+    refute_includes(info, :wildling_deck)
+    refute_includes(info, :westers_deck_i)
+    refute_includes(info, :westers_deck_ii)
+    refute_includes(info, :westers_deck_iii)
+  end
+
+  def test_game_info_tokens
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    info = g.game_info
+    info[:houses].each do |house, house_info|
+      assert_equal(0, house_info[:tokens].count { |token| token.keys[0].constantize < OrderToken })
     end
-    game[:map][:areas].each do |area, tokens|
-      tokens.each do |token|
-        refute_operator(token.keys[0].constantize, :<, OrderToken)
-      end
+    info[:map][:areas].each do |area, tokens|
+      assert_equal(0, tokens.count { |token| token.keys[0].constantize < OrderToken })
     end
-    refute_includes(game, :wildling_deck)
-    refute_includes(game, :westers_deck_i)
-    refute_includes(game, :westers_deck_ii)
-    refute_includes(game, :westers_deck_iii)
+
+    g.change_game_period(:messenger_raven)
+    info = g.game_info
+    info[:houses].each do |house, house_info|
+      assert_equal(15, house_info[:tokens].count { |token| token.keys[0].constantize < OrderToken })
+    end
   end
 
   def test_bid_multiple
