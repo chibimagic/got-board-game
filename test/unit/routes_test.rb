@@ -130,27 +130,6 @@ class RoutesTest < MiniTest::Test
     assert_equal(true, Utility.valid_json?(response.body))
   end
 
-  def test_game_information
-    response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
-    game_id = JSON.parse(response.body)['game_id']
-    response = @browser.get('/games/' + game_id.to_s)
-    game = JSON.parse(response.body)
-    game['houses'].each do |house, house_info|
-      house_info['tokens'].each do |token|
-        refute_operator(token.keys[0].constantize, :<, OrderToken)
-      end
-    end
-    game['map']['areas'].each do |area, tokens|
-      tokens.each do |token|
-        refute_operator(token.keys[0].constantize, :<, OrderToken)
-      end
-    end
-    refute_includes(game, 'wildling_deck')
-    refute_includes(game, 'westers_deck_i')
-    refute_includes(game, 'westers_deck_ii')
-    refute_includes(game, 'westers_deck_iii')
-  end
-
   def test_place_orders
     response = @browser.post('/games', { 'HouseStark' => 'a', 'HouseLannister' => 'b', 'HouseBaratheon' => 'c' }.to_json)
     game_id = JSON.parse(response.body)['game_id']

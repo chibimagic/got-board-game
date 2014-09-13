@@ -1,4 +1,23 @@
 class GameControllerTest < MiniTest::Test
+  def test_game_info
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    game = g.game_info
+    game[:houses].each do |house, house_info|
+      house_info[:tokens].each do |token|
+        refute_operator(token.keys[0].constantize, :<, OrderToken)
+      end
+    end
+    game[:map][:areas].each do |area, tokens|
+      tokens.each do |token|
+        refute_operator(token.keys[0].constantize, :<, OrderToken)
+      end
+    end
+    refute_includes(game, :wildling_deck)
+    refute_includes(game, :westers_deck_i)
+    refute_includes(game, :westers_deck_ii)
+    refute_includes(game, :westers_deck_iii)
+  end
+
   def test_bid_multiple
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.bid!(HouseStark, 1)
