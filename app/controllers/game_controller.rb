@@ -43,6 +43,7 @@ class GameController
 
   def game_info
     game_info = @game.serialize
+
     if game_info[:game_stack].last == :assign_orders
       game_info[:houses].each do |house, house_info|
         house_info[:tokens].delete_if { |token| token.keys[0].constantize < OrderToken }
@@ -51,6 +52,16 @@ class GameController
         tokens.delete_if { |token| token.keys[0].constantize < OrderToken }
       end
     end
+
+    if game_info[:combat]
+      if game_info[:combat][:attacking_house_card] ^ game_info[:combat][:defending_house_card]
+        attacking_house = game_info[:combat][:attacking_area].controlling_house_class
+        defending_house = game_info[:combat][:defending_area].controlling_house_class
+        game_info[:houses][attacking_house].delete(:house_cards)
+        game_info[:houses][defending_house].delete(:house_cards)
+      end
+    end
+
     game_info.delete(:wildling_deck)
     game_info.delete(:westeros_deck_i)
     game_info.delete(:westeros_deck_ii)
