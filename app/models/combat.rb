@@ -42,11 +42,11 @@ class Combat
   def self.unserialize(data)
     return nil if data.nil?
 
-    attacking_house_class = data['attacking_house_class']
-    defending_house_class = data['defending_house_class']
-    attacking_units = data['attacking_units']
-    attacking_house_card_class = data['attacking_house_card']
-    defending_house_card_class = data['defending_house_card']
+    attacking_house_class = data['attacking_house_class'].constantize
+    defending_house_class = data['defending_house_class'].constantize
+    attacking_units = data['attacking_units'].map { |token| Token.unserialize(token) }
+    attacking_house_card_class = data['attacking_house_card'].nil? ? nil : data['attacking_house_card'].constantize
+    defending_house_card_class = data['defending_house_card'].nil? ? nil : data['defending_house_card'].constantize
 
     new(
       attacking_house_class,
@@ -55,6 +55,25 @@ class Combat
       attacking_house_card_class,
       defending_house_card_class
     )
+  end
+
+  def serialize
+    {
+      :attacking_house_class => @attacking_house_class.name,
+      :defending_house_class => @defending_house_class.name,
+      :attacking_units => @attacking_units.map { |unit| unit.serialize },
+      :attacking_house_card_class => @attacking_house_card.nil? ? nil : @attacking_house_card.name,
+      :defending_house_card_class => @defending_house_card.nil? ? nil : @defending_house_card.name
+    }
+  end
+
+  def ==(o)
+    self.class == o.class &&
+      self.attacking_house_class == o.attacking_house_class &&
+      self.defending_house_class == o.defending_house_class &&
+      self.attacking_units == o.attacking_units &&
+      self.attacking_house_card_class == o.attacking_house_card_class &&
+      self.defending_house_card_class == o.defending_house_card_class
   end
 
   def select_house_card(house_card)
