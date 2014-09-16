@@ -1,11 +1,9 @@
 class CombatTest < MiniTest::Test
   def setup
-    attacking_area = Winterfell.create_new
-    attacking_area.receive!(Footman.create_new(HouseStark))
-    defending_area = CastleBlack.create_new
-    defending_area.receive!(Footman.create_new(HouseLannister))
+    attacking_house_class = HouseStark
+    defending_house_class = HouseLannister
     attacking_units = [Footman.create_new(HouseStark)]
-    @c = Combat.create_new(attacking_area, defending_area, attacking_units)
+    @c = Combat.create_new(attacking_house_class, defending_house_class, attacking_units)
   end
 
   def test_select_house_card
