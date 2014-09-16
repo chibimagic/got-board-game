@@ -25,6 +25,25 @@ class GameControllerTest < MiniTest::Test
     end
   end
 
+  def test_game_info_house_cards
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    info = g.game_info
+    info[:houses].each do |house, house_info|
+      assert_equal(7, house_info[:house_cards][:draw_pile].count)
+    end
+
+    attacking_units = [Footman.create_new(HouseStark)]
+    g.combat = Combat.create_new(HouseStark, HouseLannister, attacking_units)
+    info = g.game_info
+    info[:houses].each do |house, house_info|
+      if [HouseStark, HouseLannister].include?(house)
+        refute_includes(:house_cards, house)
+      else
+        assert_equal(7, house_info[:house_cards][:draw_pile].count)
+      end
+    end
+  end
+
   def test_bid_multiple
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.bid!(HouseStark, 1)
