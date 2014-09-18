@@ -45,8 +45,8 @@ class Combat
     attacking_house_class = data['attacking_house_class'].constantize
     defending_house_class = data['defending_house_class'].constantize
     attacking_units = data['attacking_units'].map { |token| Token.unserialize(token) }
-    attacking_house_card_class = data['attacking_house_card'].nil? ? nil : data['attacking_house_card'].constantize
-    defending_house_card_class = data['defending_house_card'].nil? ? nil : data['defending_house_card'].constantize
+    attacking_house_card_class = data['attacking_house_card_class'].nil? ? nil : data['attacking_house_card_class'].constantize
+    defending_house_card_class = data['defending_house_card_class'].nil? ? nil : data['defending_house_card_class'].constantize
 
     new(
       attacking_house_class,
@@ -62,8 +62,8 @@ class Combat
       :attacking_house_class => @attacking_house_class.name,
       :defending_house_class => @defending_house_class.name,
       :attacking_units => @attacking_units.map { |unit| unit.serialize },
-      :attacking_house_card_class => @attacking_house_card.nil? ? nil : @attacking_house_card.name,
-      :defending_house_card_class => @defending_house_card.nil? ? nil : @defending_house_card.name
+      :attacking_house_card_class => @attacking_house_card_class.nil? ? nil : @attacking_house_card_class.name,
+      :defending_house_card_class => @defending_house_card_class.nil? ? nil : @defending_house_card_class.name
     }
   end
 
@@ -78,14 +78,14 @@ class Combat
 
   def select_house_card(house_card)
     if house_card.house_class == @attacking_house_class
-      unless @attacking_house_card.nil?
-        raise @attacking_house_class.to_s + ' has already selected ' + @attacking_house_card.to_s
+      unless @attacking_house_card_class.nil?
+        raise @attacking_house_class.to_s + ' has already selected ' + @attacking_house_card_class.to_s
       end
 
       @attacking_house_card_class = house_card.class
     elsif house_card.house_class == @defending_house_class
-      unless @defending_house_card.nil?
-        raise @defending_house_class.to_s + ' has already selected ' + @defending_house_card.to_s
+      unless @defending_house_card_class.nil?
+        raise @defending_house_class.to_s + ' has already selected ' + @defending_house_card_class.to_s
       end
 
       @defending_house_card_class = house_card.class
