@@ -53,10 +53,10 @@ class GameController
       end
     end
 
-    if game_info[:combat]
-      if game_info[:combat][:attacking_house_card] ^ game_info[:combat][:defending_house_card]
-        attacking_house = game_info[:combat][:attacking_area].controlling_house_class
-        defending_house = game_info[:combat][:defending_area].controlling_house_class
+    unless game_info[:combat].nil?
+      if game_info[:combat][:attacking_house_card_class].nil? ^ game_info[:combat][:defending_house_card_class].nil?
+        attacking_house = game_info[:combat][:attacking_house_class]
+        defending_house = game_info[:combat][:defending_house_class]
         game_info[:houses][attacking_house].delete(:house_cards)
         game_info[:houses][defending_house].delete(:house_cards)
       end

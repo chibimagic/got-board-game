@@ -27,17 +27,20 @@ class GameControllerTest < MiniTest::Test
 
   def test_game_info_house_cards
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))
+    g.map.area(Winterfell).receive!(MarchOrder.new(HouseStark))
+    g.change_game_period(:resolve_march_orders)
+    g.execute_march_order!(Winterfell, { Winterfell => [Knight], CastleBlack => [Footman] }, nil)
     info = g.game_info
     info[:houses].each do |house, house_info|
       assert_equal(7, house_info[:house_cards][:draw_pile].count)
     end
 
-    attacking_units = [Footman.create_new(HouseStark)]
-    g.combat = Combat.create_new(HouseStark, HouseLannister, attacking_units)
+    g.select_house_card(EddardStark)
     info = g.game_info
     info[:houses].each do |house, house_info|
-      if [HouseStark, HouseLannister].include?(house)
-        refute_includes(:house_cards, house)
+      if [HouseStark, HouseLannister].include?(house.constantize)
+        refute_includes(house_info, :house_cards)
       else
         assert_equal(7, house_info[:house_cards][:draw_pile].count)
       end
