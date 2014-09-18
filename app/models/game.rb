@@ -605,7 +605,7 @@ class Game
     if combat_trigger_areas.empty?
       next_players_turn(MarchOrder)
     else
-      attacking_house_class = @map.area(order_area_class).controlling_house_class
+      attacking_house_class = march_order.house_class
       defending_house_class = @map.area(combat_trigger_areas.first).controlling_house_class
       @combat = Combat.create_new(attacking_house_class, defending_house_class, attacking_units)
     end
