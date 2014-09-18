@@ -24,6 +24,10 @@ class HouseCard < Card
     self.class::HOUSE
   end
 
+  def self.to_s
+    self::TITLE
+  end
+
   def to_s
     self.class::TITLE
   end
