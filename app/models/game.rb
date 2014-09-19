@@ -305,7 +305,7 @@ class Game
 
   def validate_players_turn!(house_class)
     unless @players_turn.include?(house_class)
-      raise house_class.to_s + ' cannot perform action during ' + @players_turn.to_s + ' turn'
+      raise house_class.to_s + ' cannot perform action during ' + @players_turn.to_sentence + '\'s turn'
     end
   end
   private :validate_players_turn!

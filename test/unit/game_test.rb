@@ -213,6 +213,25 @@ class GameTest < MiniTest::Test
     assert_equal([], g.players_turn)
   end
 
+  def test_correct_players_turn
+    g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    g.place_order!(HouseStark, Winterfell, MarchOrder)
+    g.place_order!(HouseStark, WhiteHarbor, MarchOrder)
+    g.place_order!(HouseStark, TheShiveringSea, MarchOrder)
+    g.place_order!(HouseLannister, Lannisport, MarchOrder)
+    g.place_order!(HouseLannister, StoneySept, MarchOrder)
+    g.place_order!(HouseLannister, TheGoldenSound, MarchOrder)
+    g.place_order!(HouseBaratheon, Dragonstone, MarchOrder)
+    g.place_order!(HouseBaratheon, Kingswood, MarchOrder)
+    g.place_order!(HouseBaratheon, ShipbreakerBay, MarchOrder)
+    g.skip_messenger_raven
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Winterfell, { Winterfell => [Knight, Footman] }, nil) }
+    assert_equal('House Stark cannot perform action during House Baratheon\'s turn', e.message)
+    e = assert_raises(RuntimeError) { g.execute_march_order!(Lannisport, { Lannisport => [Knight, Footman] }, nil) }
+    assert_equal('House Lannister cannot perform action during House Baratheon\'s turn', e.message)
+    refute_raises { g.execute_march_order!(Dragonstone, { Dragonstone => [Knight, Footman] }, nil) }
+  end
+
   def test_victory_point_win
     g = Game.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map = Map.create_new([])
