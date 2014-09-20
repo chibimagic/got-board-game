@@ -1,3 +1,5 @@
+I18n.config.enforce_available_locales = true
+
 class Game
   attr_accessor \
     :houses,
