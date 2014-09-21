@@ -19,6 +19,18 @@ class WildlingCard < Card
   def highest_bidder_text
     self.class::HIGHEST_BIDDER
   end
+
+  def lowest_bidder(house_class, game)
+    raise to_s + ' must implement lowest bidder'
+  end
+
+  def everyone_else(house_classes, game)
+    raise to_s + ' must implement everyone else'
+  end
+
+  def highest_bidder(house_class, game)
+    raise to_s + ' must implement highest bidder'
+  end
 end
 
 class AKingBeyondTheWall < WildlingCard
