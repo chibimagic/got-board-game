@@ -42,7 +42,6 @@ class Game
     [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
     [:resolve_march_orders, 'Action', 'Resolve March Orders'],
     [:resolve_consolidate_power_orders, 'Action', 'Resolve Consolidate Power Orders'],
-    [:clean_up, 'Action', 'Clean Up']
   ]
 
   ORDER_RESTRICTIONS = [
@@ -277,8 +276,6 @@ class Game
       next_players_turn(MarchOrder)
     when :resolve_consolidate_power_orders
       next_players_turn(ConsolidatePowerOrder)
-    when :clean_up
-      clean_up!
     end
   end
   private :add_game_period
@@ -331,16 +328,14 @@ class Game
     if @map.has_order?(order_token_class, player)
       @players_turn = [player]
     else
-      next_game_period =
-        case order_token_class.name
-        when 'RaidOrder'
-          :resolve_march_orders
-        when 'MarchOrder'
-          :resolve_consolidate_power_orders
-        when 'ConsolidatePowerOrder'
-          :clean_up
-        end
-      change_game_period(next_game_period)
+      case order_token_class.name
+      when 'RaidOrder'
+        change_game_period(:resolve_march_orders)
+      when 'MarchOrder'
+        change_game_period(:resolve_consolidate_power_orders)
+      when 'ConsolidatePowerOrder'
+        clean_up!
+      end
     end
   end
   private :next_players_turn
