@@ -36,7 +36,8 @@ class Game
     [:resolve_westeros_deck_i, 'Westeros', 'Resolve Westeros Deck I'],
     [:resolve_westeros_deck_ii, 'Westeros', 'Resolve Westeros Deck II'],
     [:resolve_westeros_deck_iii, 'Westeros', 'Resolve Westeros Deck III'],
-    [:wildling_attack, 'Westeros', 'Wildling Attack'],
+    [:bid_power, 'Wildling Attack', 'Bid Power'],
+    [:determine_attack_outcome, 'Wildling Attack', 'Determine Outcome'],
     [:assign_orders, 'Planning', 'Assign Orders'],
     [:messenger_raven, 'Planning', 'Messenger Raven'],
     [:resolve_raid_orders, 'Action', 'Resolve Raid Orders'],
@@ -352,7 +353,7 @@ class Game
     change_game_period(:resolve_westeros_deck_i)
 
     if @wildling_track.attacks?
-      add_game_period(:wildling_attack)
+      add_game_period(:bid_power)
     end
   end
   private :westeros_setup
