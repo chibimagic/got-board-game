@@ -38,6 +38,13 @@ class AKingBeyondTheWall < WildlingCard
   LOWEST_BIDDER = 'Moves his tokens to the lowest position of every Influence track.'
   EVERYONE_ELSE = 'In turn order, each player chooses either the Fiefdoms or King\'s Court Influence track and moves his token to the lowest position of that track.'
   HIGHEST_BIDDER = 'Moves his token to the top of one Influence track of his choice, then takes the appropriate Dominance token.'
+
+  def lowest_bidder(house_class, game)
+    tracks = [:iron_throne_track, :fiefdoms_track, :kings_court_track]
+    tracks.each do |track|
+      game[track].move_to_bottom(house_class)
+    end
+  end
 end
 
 class CrowKillers < WildlingCard
