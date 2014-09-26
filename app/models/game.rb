@@ -370,6 +370,24 @@ class Game
     end
 
     @bids[house_class] = power_tokens
+
+    unless @bids.values.include?(nil)
+      determine_attack_outcome
+    end
+  end
+
+  def determine_attack_outcome
+    nights_watch_strength = @bids.values.inject(0) { |sum, bid| sum + bid }
+
+    nights_watch_victory = nights_watch_strength >= @wildling_track.strength
+    highest_bidder_tie = @bids.values.count(@bids.values.max) > 1
+    lowest_bidder_tie = @bids.values.count(@bids.values.min) > 1
+
+    if (nights_watch_victory && highest_bidder_tie) || lowest_bidder_tie
+      add_game_period(:break_tie)
+    else
+      resolve_wildling_card
+    end
   end
 
   def muster_unit!(area_class, source_unit_class, final_unit_class, to_area_class)
