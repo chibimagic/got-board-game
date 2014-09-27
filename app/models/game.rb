@@ -390,6 +390,9 @@ class Game
     end
   end
 
+  def resolve_wildling_card
+  end
+
   def muster_unit!(area_class, source_unit_class, final_unit_class, to_area_class)
     unless @musterable_areas.include?(area_class)
       raise 'Cannot muster from ' + area_class.to_s
