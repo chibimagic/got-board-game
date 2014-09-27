@@ -25,6 +25,17 @@ class GameControllerTest < MiniTest::Test
     end
   end
 
+  def test_game_info_bids
+    g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
+    refute_includes(g.game_info, :bids)
+    g.bid!(HouseStark, 1)
+    refute_includes(g.game_info, :bids)
+    g.bid!(HouseLannister, 2)
+    refute_includes(g.game_info, :bids)
+    g.bid!(HouseBaratheon, 3)
+    assert_includes(g.game_info, :bids)
+  end
+
   def test_game_info_house_cards
     g = GameController.create_new([HouseStark, HouseLannister, HouseBaratheon])
     g.map.area(CastleBlack).receive!(Footman.create_new(HouseLannister))

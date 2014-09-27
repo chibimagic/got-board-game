@@ -53,6 +53,10 @@ class GameController
       end
     end
 
+    if game_info[:bids].values.include?(nil)
+      game_info.delete(:bids)
+    end
+
     unless game_info[:combat].nil?
       if game_info[:combat][:attacking_house_card_class].nil? ^ game_info[:combat][:defending_house_card_class].nil?
         attacking_house = game_info[:combat][:attacking_house_class]
