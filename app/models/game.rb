@@ -386,11 +386,22 @@ class Game
     if (nights_watch_victory && highest_bidder_tie) || lowest_bidder_tie
       add_game_period(:break_tie)
     else
-      resolve_wildling_card
+      extreme_bidder_house_class = nights_watch_victory ? @bids.max_by { |house_class, bid| bid } : @bids.min_by { |house_class, bid| bid }
+      resolve_wildling_card(nights_watch_victory, extreme_bidder_house_class)
     end
   end
 
-  def resolve_wildling_card
+  def resolve_wildling_card(nights_watch_victory, extreme_bidder_house_class)
+    @wildling_deck.draw
+    card = @wildling_deck.active_card
+    if nights_watch_victory
+      card.highest_bidder(extreme_bidder_house_class, game)
+    else
+      card.lowest_bidder(extreme_bidder_house_class, game)
+      everyone_else_house_classes = @iron_throne_track.track.delete(extreme_bidder_house_class)
+      card.everyone_else(everyone_else_house_classes, game)
+    end
+    @wildling_deck.discard
   end
 
   def muster_unit!(area_class, source_unit_class, final_unit_class, to_area_class)
