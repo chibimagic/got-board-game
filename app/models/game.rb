@@ -10,6 +10,7 @@ class Game
     :musterable_areas,
     :order_restriction,
     :combat,
+    :decision,
     :players_turn,
     :wildling_track,
     :iron_throne_track,
@@ -62,6 +63,7 @@ class Game
     musterable_areas,
     order_restriction,
     combat,
+    decision,
     players_turn,
     wildling_track,
     iron_throne_track,
@@ -83,6 +85,7 @@ class Game
     raise 'Invalid musterable areas' unless musterable_areas.is_a?(Hash) && musterable_areas.all? { |area, points| area < Area && (0..2).include?(points) }
     raise 'Invalid order restriction' unless order_restriction.nil? || ORDER_RESTRICTIONS.include?(order_restriction)
     raise 'Invalid Combat' unless combat.is_a?(Combat) || combat.nil?
+    raise 'Invalid Decision' unless decision.is_a?(Decision) || decision.nil?
     raise 'Invalid player\'s turn' unless players_turn.is_a?(Array) && players_turn.all? { |player| player < House }
     raise 'Invalid Wildling Track' unless wildling_track.is_a?(WildlingTrack)
     raise 'Invalid Iron Throne Track' unless iron_throne_track.is_a?(IronThroneTrack)
@@ -104,6 +107,7 @@ class Game
     @musterable_areas = musterable_areas
     @order_restriction = order_restriction
     @combat = combat
+    @decision = decision
     @players_turn = players_turn
     @wildling_track = wildling_track
     @iron_throne_track = iron_throne_track
@@ -139,6 +143,7 @@ class Game
     musterable_areas = {}
     order_restriction = nil
     combat = nil
+    decision = nil
     players_turn = house_classes
 
     new(
@@ -150,6 +155,7 @@ class Game
       musterable_areas,
       order_restriction,
       combat,
+      decision,
       players_turn,
       WildlingTrack.create_new,
       IronThroneTrack.create_new(house_classes),
@@ -175,6 +181,7 @@ class Game
       data['musterable_areas'],
       data['order_restriction'].nil? ? nil : data['order_restriction'].to_sym,
       Combat.unserialize(data['combat']),
+      Decision.unserialize(data['decision']),
       data['players_turn'].map { |house_class_string| house_class_string.constantize },
       WildlingTrack.unserialize(data['wildling_track']),
       IronThroneTrack.unserialize(data['iron_throne_track']),
@@ -200,6 +207,7 @@ class Game
       :musterable_areas => @musterable_areas,
       :order_restriction => @order_restriction,
       :combat => @combat.nil? ? nil : @combat.serialize,
+      :decision => @decision.nil? ? nil : @decision.serialize,
       :players_turn => @players_turn.map { |house_class| house_class.name },
       :wildling_track => @wildling_track.serialize,
       :iron_throne_track => @iron_throne_track.serialize,
@@ -229,6 +237,7 @@ class Game
       self.musterable_areas == o.musterable_areas &&
       self.order_restriction == o.order_restriction
       self.combat == o.combat &&
+      self.decision == o.decision &&
       self.wildling_track == o.wildling_track &&
       self.iron_throne_track == o.iron_throne_track &&
       self.fiefdoms_track == o.fiefdoms_track &&

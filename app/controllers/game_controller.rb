@@ -24,6 +24,7 @@ require_relative '../models/garrison_token.rb'
 require_relative '../models/unit.rb'
 require_relative '../models/house.rb'
 require_relative '../models/combat.rb'
+require_relative '../models/decision.rb'
 require_relative '../models/game.rb'
 
 class GameController

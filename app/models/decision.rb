@@ -15,4 +15,7 @@ class Decision
     @options = options
     @type = type
   end
+
+  def self.unserialize(data)
+  end
 end
