@@ -404,11 +404,11 @@ class Game
     @wildling_deck.draw
     card = @wildling_deck.active_card
     if nights_watch_victory
-      card.highest_bidder(extreme_bidder_house_class, game)
+      card.highest_bidder(extreme_bidder_house_class, self)
     else
       card.lowest_bidder(extreme_bidder_house_class, game)
       everyone_else_house_classes = @iron_throne_track.track.delete(extreme_bidder_house_class)
-      card.everyone_else(everyone_else_house_classes, game)
+      card.everyone_else(everyone_else_house_classes, self)
     end
     @wildling_deck.discard
   end
