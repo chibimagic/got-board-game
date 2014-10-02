@@ -3,6 +3,7 @@ class Combat
     :attacking_house_class,
     :defending_house_class,
     :attacking_units,
+    :supporting_areas,
     :attacking_house_card_class,
     :defending_house_card_class
 
@@ -10,23 +11,27 @@ class Combat
     attacking_house_class,
     defending_house_class,
     attacking_units,
+    supporting_areas,
     attacking_house_card_class,
     defending_house_card_class
   )
     raise 'Invalid attacking house class' unless attacking_house_class.is_a?(Class) && attacking_house_class < House
     raise 'Invalid defending house class' unless defending_house_class.is_a?(Class) && defending_house_class < House
     raise 'Invalid attacking units' unless attacking_units.is_a?(Array) && attacking_units.all? { |unit| unit.is_a?(Unit) }
+    raise 'Invalid supporting areas' unless supporting_areas.is_a?(Hash) && supporting_areas.keys.all? { |key| key.is_a?(Class) && key < Area } && supporting_areas.values.all? { |value| [true, false, nil].include?(value) }
     raise 'Invalid attacking house card class' unless attacking_house_card_class.nil? || attacking_house_card_class.is_a?(Class) && attacking_house_card_class < HouseCard
     raise 'Invalid defending house card class' unless defending_house_card_class.nil? || defending_house_card_class.is_a?(Class) && defending_house_card_class < HouseCard
 
     @attacking_house_class = attacking_house_class
     @defending_house_class = defending_house_class
     @attacking_units = attacking_units
+    @supporting_areas = supporting_areas
     @attacking_house_card_class = attacking_house_card_class
     @defending_house_card_class = defending_house_card_class
   end
 
-  def self.create_new(attacking_house_class, defending_house_class, attacking_units)
+  def self.create_new(attacking_house_class, defending_house_class, attacking_units, supporting_area_classes)
+    supporting_areas = supporting_area_classes.map { |area_class| [area_class, nil] }.to_h
     attacking_house_card_class = nil
     defending_house_card_class = nil
 
@@ -34,6 +39,7 @@ class Combat
       attacking_house_class,
       defending_house_class,
       attacking_units,
+      supporting_areas,
       attacking_house_card_class,
       defending_house_card_class
     )
@@ -45,6 +51,7 @@ class Combat
     attacking_house_class = data['attacking_house_class'].constantize
     defending_house_class = data['defending_house_class'].constantize
     attacking_units = data['attacking_units'].map { |token| Token.unserialize(token) }
+    supporting_areas = data['supporting_areas'].map { |area_class_string, support_offered| [area_class_string.constantize, support_offered] }.to_h
     attacking_house_card_class = data['attacking_house_card_class'].nil? ? nil : data['attacking_house_card_class'].constantize
     defending_house_card_class = data['defending_house_card_class'].nil? ? nil : data['defending_house_card_class'].constantize
 
@@ -52,6 +59,7 @@ class Combat
       attacking_house_class,
       defending_house_class,
       attacking_units,
+      supporting_areas,
       attacking_house_card_class,
       defending_house_card_class
     )
@@ -62,6 +70,7 @@ class Combat
       :attacking_house_class => @attacking_house_class.name,
       :defending_house_class => @defending_house_class.name,
       :attacking_units => @attacking_units.map { |unit| unit.serialize },
+      :supporting_areas => @supporting_areas.map { |area_class, support_offered| [area_class.name, support_offered] }.to_h
       :attacking_house_card_class => @attacking_house_card_class.nil? ? nil : @attacking_house_card_class.name,
       :defending_house_card_class => @defending_house_card_class.nil? ? nil : @defending_house_card_class.name
     }
@@ -72,6 +81,7 @@ class Combat
       self.attacking_house_class == o.attacking_house_class &&
       self.defending_house_class == o.defending_house_class &&
       self.attacking_units == o.attacking_units &&
+      self.supporting_areas == o.supporting_areas &&
       self.attacking_house_card_class == o.attacking_house_card_class &&
       self.defending_house_card_class == o.defending_house_card_class
   end
